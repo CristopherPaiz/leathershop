@@ -34,4 +34,6 @@ const chumpaSchema = new Schema({
   },
 });
 
+//a
+
 module.exports = mongoose.model("Chumpa", chumpaSchema);
