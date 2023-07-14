@@ -6,31 +6,17 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  precio: {
-    type: Number,
+  username: {
+    type: String,
+    required: true,
+    unique: [true, "El nombre de usuario ya existe"],
   },
-  precioAnterior: {
-    type: Number,
-  },
-  imagen: [
-    {
-      nombre: {
-        type: String,
-        required: true,
-      },
-      url: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
-  descripcion: {
+  imagen: {
     type: String,
   },
-  colores: [String],
-  tallas: [String],
-  especificaciones: {
+  rol: {
     type: String,
+    required: true,
   },
 });
 
