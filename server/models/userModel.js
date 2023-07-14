@@ -20,4 +20,5 @@ const userSchema = new Schema({
   },
 });
 
+//exacto
 module.exports = mongoose.model("User", userSchema);
