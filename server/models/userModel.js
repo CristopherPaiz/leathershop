@@ -11,6 +11,10 @@ const userSchema = new Schema({
     required: true,
     unique: [true, "El nombre de usuario ya existe"],
   },
+  password: {
+    type: String,
+    required: true,
+  },
   imagen: {
     type: String,
   },

@@ -15,7 +15,7 @@ router.get("/user/getall", async (req, res) => {
   }
 });
 
-// ======= obtener una chumpa por su id =======
+// ======= obtener un usuario por su id =======
 router.get("/user/getbyid/:id", async (req, res) => {
   try {
     const data = await User.findById(req.params.id);
@@ -28,14 +28,42 @@ router.get("/user/getbyid/:id", async (req, res) => {
   }
 });
 
+// ======= obtener un usuario por su username =======
+router.get("/user/getbyid/:id", async (req, res) => {
+  try {
+    const data = await User.findById(req.params.id);
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev: "No se pudo obtener al usuario por el id: " + req.params.id,
+      messageSys: error.message,
+    });
+  }
+});
+
+// ======= obtener un usuario por su username =======
+router.get("/user/getbyusername/:username", async (req, res) => {
+  try {
+    const data = await User.findOne({ username: req.params.username });
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev:
+        "No se pudo obtener al usuario por el username: " + req.params.username,
+      messageSys: error.message,
+    });
+  }
+});
+
 //======= crear un nuevo Usuario =======
 router.post("/user/add", async (req, res) => {
   try {
-    const { nombre, username, imagen, rol } = req.body;
+    const { nombre, username, password, imagen, rol } = req.body;
 
     const user = new User({
       nombre,
       username,
+      password,
       imagen,
       rol,
     });
