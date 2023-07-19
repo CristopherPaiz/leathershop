@@ -155,6 +155,22 @@ router.get("/CompraCosmetico/getall", async (req, res) => {
   }
 });
 
+// ======= obtener todos los CompraCosmeticos de un ID de producto =======
+router.get("/CompraCosmetico/getbyproductid/:idProducto", async (req, res) => {
+  try {
+    const idProducto = req.params.idProducto;
+    const data = await CompraCosmetico.find({ idProducto });
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev:
+        "No se pudo obtener los detalles de compra de los cosmeticos para el ID de producto: " +
+        req.params.idProducto,
+      messageSys: error.message,
+    });
+  }
+});
+
 // ======= obtener un cosmetico por su id =======
 router.get("/CompraCosmetico/getbyid/:id", async (req, res) => {
   try {
