@@ -4,6 +4,7 @@ const express = require("express");
 const connect = require("./database/connection");
 const routesChumpa = require("./routes/routeChumpa");
 const routesUser = require("./routes/routeUser");
+const routeCosmetico = require("./routes/routeCosmetico");
 
 connect();
 const app = express();
@@ -11,6 +12,7 @@ const app = express();
 app.use(express.json());
 app.use("/api", routesChumpa);
 app.use("/api", routesUser);
+app.use("/api", routeCosmetico);
 app.use(cors());
 
 app.listen(port, () => {
