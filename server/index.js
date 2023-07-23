@@ -8,12 +8,17 @@ const routeCosmetico = require("./routes/routeCosmetico");
 
 connect();
 const app = express();
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 
 app.use(express.json());
 app.use("/api", routesChumpa);
 app.use("/api", routesUser);
 app.use("/api", routeCosmetico);
-app.use(cors());
 
 app.listen(port, () => {
   console.log("Server is running on port: " + port);

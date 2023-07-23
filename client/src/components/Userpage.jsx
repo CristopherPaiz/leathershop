@@ -3,10 +3,11 @@ import { contexto } from "../context/ContextProvider";
 import { Navigate } from "react-router-dom";
 
 const Userpage = () => {
-  const usuario = useContext(contexto);
+  const USER_TYPES = useContext(contexto);
+  const { usuario } = useContext(contexto);
   if (
-    usuario.CURRENT_USER === usuario.NORMAL_USER ||
-    usuario.CURRENT_USER === usuario.ADMIN_USER
+    usuario === USER_TYPES.MODERATOR_USER ||
+    usuario === USER_TYPES.ADMIN_USER
   ) {
     return <div>UserPAGE</div>;
   } else {

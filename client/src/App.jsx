@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Homepage from "./components/Homepage.jsx";
 import Userpage from "./components/Userpage.jsx";
@@ -9,6 +9,7 @@ import UserElement from "./components/routes/UserElement.jsx";
 import ContextProvider from "./context/ContextProvider.jsx";
 import AdminElement from "./components/routes/AdminElement.jsx";
 import Navbar from "./components/Navbar.jsx";
+import Login from "./components/pages/Login.jsx";
 
 const App = () => {
   return (
@@ -19,8 +20,16 @@ const App = () => {
           path="/"
           element={
             <PublicElement>
-              <Homepage />
+              <Login />
             </PublicElement>
+          }
+        />
+        <Route
+          path="/home"
+          element={
+            <UserElement>
+              <Homepage />
+            </UserElement>
           }
         />
         <Route

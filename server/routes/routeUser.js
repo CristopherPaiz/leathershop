@@ -29,27 +29,28 @@ router.get("/user/getbyid/:id", async (req, res) => {
 });
 
 // ======= obtener un usuario por su username =======
-router.get("/user/getbyid/:id", async (req, res) => {
+router.post("/user/getbyusername", async (req, res) => {
   try {
-    const data = await User.findById(req.params.id);
-    res.status(200).json(data);
-  } catch (error) {
-    res.status(500).json({
-      messageDev: "No se pudo obtener al usuario por el id: " + req.params.id,
-      messageSys: error.message,
-    });
-  }
-});
+    const { username, password } = req.body;
 
-// ======= obtener un usuario por su username =======
-router.get("/user/getbyusername/:username", async (req, res) => {
-  try {
-    const data = await User.findOne({ username: req.params.username });
-    res.status(200).json(data);
+    // Buscar al usuario por el nombre de usuario en la base de datos
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(403).json({ message: "El usuario no existe" });
+    }
+
+    // Verificar si la contraseña coincide con la almacenada en la base de datos
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Contraseña inválida" });
+    }
+
+    // Usuario y contraseña son válidos, devolver solo los campos requeridos
+    const { nombre, imagen, rol } = user;
+    res.status(200).json({ nombre, imagen, rol, username });
   } catch (error) {
     res.status(500).json({
-      messageDev:
-        "No se pudo obtener al usuario por el username: " + req.params.username,
+      messageDev: "No se pudo obtener al usuario por el username",
       messageSys: error.message,
     });
   }
