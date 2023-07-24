@@ -50,6 +50,7 @@ router.post("/cliente/add", async (req, res) => {
       descripcion,
       colores,
       tallas,
+      estado,
     } = req.body;
 
     // Crear un nuevo objeto para cada imagen que incluya el nombre y la URL
@@ -76,6 +77,7 @@ router.post("/cliente/add", async (req, res) => {
       descripcion,
       colores,
       tallas,
+      estado,
     });
 
     // Guardar el objeto cliente en la base de datos u otras operaciones necesarias
@@ -106,6 +108,95 @@ router.put("/cliente/update/:id", async (req, res) => {
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo actualizar al cliente",
+      messageSys: error.message,
+    });
+  }
+});
+
+// Ruta para obtener clientes cuyas fechas de entrega estén dentro de un rango específico y con estado=true
+router.post("/cliente/getbyfecha", async (req, res) => {
+  try {
+    const { fechaRecibo, fechaEntrega } = req.body;
+
+    const data = await Cliente.find({
+      $and: [
+        {
+          fechaRecibo: {
+            $gte: new Date(fechaRecibo),
+            $lte: new Date(fechaEntrega),
+          },
+        },
+        {
+          estado: false,
+        },
+      ],
+    }).sort({ fechaEntrega: 1 }); // Ordenar por fecha de entrega en orden ascendente (el más antiguo primero)
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev:
+        "No se pudo obtener los clientes por fecha de entrega y estado",
+      messageSys: error.message,
+    });
+  }
+});
+
+// Ruta para obtener clientes cuyas fechas de entrega estén dentro de un rango específico y con estado=true
+router.post("/cliente/getbyfechafin", async (req, res) => {
+  try {
+    const { fechaRecibo, fechaEntrega } = req.body;
+
+    const data = await Cliente.find({
+      $and: [
+        {
+          fechaRecibo: {
+            $gte: new Date(fechaRecibo),
+            $lte: new Date(fechaEntrega),
+          },
+        },
+        {
+          estado: true,
+        },
+      ],
+    }); // Ordenar por fecha de entrega en orden ascendente (el más antiguo primero)
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev:
+        "No se pudo obtener los clientes por fecha de entrega y estado",
+      messageSys: error.message,
+    });
+  }
+});
+
+// Ruta para filtrar clientes por nombre, apellido o numeroTel y ordenar alfabéticamente
+router.post("/cliente/filtrar", async (req, res) => {
+  try {
+    const { nombre, apellido, numeroTel } = req.body;
+
+    // Creamos un objeto de filtro vacío
+    const filter = {};
+
+    // Agregamos condiciones al objeto de filtro si los datos están presentes en el body
+    if (nombre) {
+      filter.nombre = { $regex: new RegExp(nombre, "i") }; // La opción "i" hace que la búsqueda sea insensible a mayúsculas y minúsculas
+    }
+    if (apellido) {
+      filter.apellido = { $regex: new RegExp(apellido, "i") };
+    }
+    if (numeroTel) {
+      filter.numeroTel = { $regex: new RegExp(numeroTel, "i") };
+    }
+
+    // Realizamos la búsqueda con el filtro y ordenamos los resultados alfabéticamente por nombre
+    const data = await Cliente.find(filter).sort({ nombre: 1 });
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev: "No se pudo filtrar a los clientes",
       messageSys: error.message,
     });
   }

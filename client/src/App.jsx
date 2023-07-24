@@ -10,6 +10,7 @@ import ContextProvider from "./context/ContextProvider.jsx";
 import AdminElement from "./components/routes/AdminElement.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Login from "./components/pages/Login.jsx";
+import VerCliente from "./adminComponents/VerCliente.jsx";
 
 const App = () => {
   return (
@@ -19,17 +20,17 @@ const App = () => {
         <Route
           path="/"
           element={
-            <PublicElement>
-              <Login />
-            </PublicElement>
-          }
-        />
-        <Route
-          path="/home"
-          element={
             <UserElement>
               <Homepage />
             </UserElement>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicElement>
+              <Login />
+            </PublicElement>
           }
         />
         <Route
@@ -45,6 +46,14 @@ const App = () => {
           element={
             <AdminElement>
               <Adminpage />
+            </AdminElement>
+          }
+        />
+        <Route
+          path="/admin/vercliente/:id"
+          element={
+            <AdminElement>
+              <VerCliente />
             </AdminElement>
           }
         />

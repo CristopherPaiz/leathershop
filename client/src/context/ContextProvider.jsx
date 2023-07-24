@@ -1,14 +1,13 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useState } from "react";
 import API_URL from "../config.js";
-import toast from "react-hot-toast";
 
 export const contexto = createContext();
 
 const ContextProvider = ({ children }) => {
-  const [usuario, setUsuario] = useState(); //setear el tipo de usuario activo
+  const [usuario, setUsuario] = useState(null); // setear el tipo de usuario activo
+  const [loggedIn, setLoggedIn] = useState(false); // indicar si el usuario ha iniciado sesión
 
   const fetchUser = async (username, password) => {
-    console.log(username, password);
     try {
       const response = await fetch(`${API_URL}/user/getbyusername`, {
         method: "POST",
@@ -20,22 +19,25 @@ const ContextProvider = ({ children }) => {
 
       if (!response.ok) {
         // Si la respuesta no es exitosa, obtenemos el mensaje de error del servidor
+        setUsuario({ rol: "Public" });
+        setLoggedIn(false);
         const errorData = await response.json();
         return errorData.message;
-      }
-
-      const user = await response.json();
-
-      if (!user) {
-        setUsuario("Public");
-        return null;
       } else {
-        setUsuario(user.rol);
-        return null;
+        const user = await response.json();
+
+        if (!user) {
+          setUsuario({ rol: "Public" });
+          setLoggedIn(false);
+          return "Public";
+        } else {
+          setLoggedIn(true);
+          setUsuario(user);
+          return user.rol;
+        }
       }
     } catch (error) {
       console.log("Error en la solicitud:", error.message);
-      return null;
     }
   };
 
@@ -46,7 +48,16 @@ const ContextProvider = ({ children }) => {
   };
 
   return (
-    <contexto.Provider value={{ ...USER_TYPES, usuario, fetchUser }}>
+    <contexto.Provider
+      value={{
+        ...USER_TYPES,
+        usuario,
+        fetchUser,
+        loggedIn,
+        setLoggedIn,
+        setUsuario,
+      }}
+    >
       {children}
     </contexto.Provider>
   );

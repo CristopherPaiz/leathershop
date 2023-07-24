@@ -1,36 +1,71 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Menu } from "semantic-ui-react";
 import { contexto } from "../context/ContextProvider";
 
 const Navbar = () => {
   const USER_TYPES = useContext(contexto);
-  const { usuario } = useContext(contexto);
+  const { usuario, setUsuario, loggedIn, setLoggedIn } = useContext(contexto);
+  const navigate = useNavigate();
 
-  if (usuario === undefined) {
-    return null;
-  }
+  useEffect(() => {
+    console.log(usuario);
+  }, [usuario]);
 
-  return usuario === USER_TYPES.PUBLIC ? null : (
-    <>
+  const logout = async () => {
+    if (loggedIn) {
+      setLoggedIn(false);
+      setUsuario(null);
+      navigate("/");
+    }
+  };
+
+  if (usuario === null) {
+    return (
       <Menu>
-        {/* Condicional para ocultar la pestaña de usuario */}
-        {usuario === USER_TYPES.MODERATOR_USER ||
-        usuario === USER_TYPES.ADMIN_USER ? (
-          <>
-            <Menu.Item as={Link} to="/home" name="home" />
-            <Menu.Item as={Link} position="right" to="/user" name="User" />
-          </>
-        ) : null}
-
-        {/* Condicional para ocultar la pestaña de admin */}
-        {usuario === USER_TYPES.ADMIN_USER ? (
-          <Menu.Item as={Link} to="/admin" name="Admin" />
-        ) : null}
+        <Menu.Item
+          as={Link}
+          position="right"
+          to="/login"
+          name="Iniciar Sesión"
+        />
       </Menu>
-    </>
-  );
-  // }
+    );
+  } else {
+    return usuario.rol === USER_TYPES.PUBLIC ? (
+      <Menu>
+        <Menu.Item
+          as={Link}
+          position="right"
+          to="/login"
+          name="Iniciar Sesión"
+        />
+      </Menu>
+    ) : (
+      <>
+        <Menu>
+          {/* Condicional para ocultar la pestaña de usuario */}
+          {usuario.rol === USER_TYPES.MODERATOR_USER ? (
+            <>
+              <Menu.Item as={Link} to="/" name="home" />
+              <Menu.Item as={Link} position="right" to="/user" name="User" />
+              <Menu.Item as="a" onClick={logout} name="Salir" />
+            </>
+          ) : null}
+
+          {/* Condicional para ocultar la pestaña de admin */}
+          {usuario.rol === USER_TYPES.ADMIN_USER ? (
+            <>
+              <Menu.Item as={Link} to="/" name="home" />
+              <Menu.Item as={Link} position="right" to="/user" name="User" />
+              <Menu.Item as={Link} to="/admin" name="Admin" />
+              <Menu.Item as="a" onClick={logout} name="Salir" />
+            </>
+          ) : null}
+        </Menu>
+      </>
+    );
+  }
 };
 
 export default Navbar;

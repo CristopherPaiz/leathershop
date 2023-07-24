@@ -64,6 +64,9 @@ const clienteSchema = new Schema({
   especificaciones: {
     type: String,
   },
+  estado: {
+    type: Boolean,
+  },
 });
 
 module.exports = mongoose.model("Cliente", clienteSchema);
