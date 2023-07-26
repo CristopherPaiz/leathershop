@@ -113,34 +113,48 @@ router.put("/cliente/update/:id", async (req, res) => {
   }
 });
 
-// Ruta para obtener clientes cuyas fechas de entrega estén dentro de un rango específico y con estado=true
-router.post("/cliente/getbyfecha", async (req, res) => {
-  try {
-    const { fechaRecibo, fechaEntrega } = req.body;
+router.post(
+  "/cliente/getbyfecha",
+  async (req, res, next) => {
+    const token = req.cookies.token;
+    console.log(token);
+    try {
+      const ValidPayload = jwt.verify(token, process.env.JWT_SECRET);
 
-    const data = await Cliente.find({
-      $and: [
-        {
-          fechaRecibo: {
-            $gte: new Date(fechaRecibo),
-            $lte: new Date(fechaEntrega),
+      // Llamar a next solo si el token es válido
+      next();
+    } catch (error) {
+      res.status(401).json({ message: "No autorizado" });
+    }
+  },
+  async (req, res) => {
+    try {
+      const { fechaRecibo, fechaEntrega } = req.body;
+
+      const data = await Cliente.find({
+        $and: [
+          {
+            fechaRecibo: {
+              $gte: new Date(fechaRecibo),
+              $lte: new Date(fechaEntrega),
+            },
           },
-        },
-        {
-          estado: false,
-        },
-      ],
-    }).sort({ fechaEntrega: 1 }); // Ordenar por fecha de entrega en orden ascendente (el más antiguo primero)
+          {
+            estado: false,
+          },
+        ],
+      }).sort({ fechaEntrega: 1 }); // Ordenar por fecha de entrega en orden ascendente (el más antiguo primero)
 
-    res.status(200).json(data);
-  } catch (error) {
-    res.status(500).json({
-      messageDev:
-        "No se pudo obtener los clientes por fecha de entrega y estado",
-      messageSys: error.message,
-    });
+      res.status(200).json(data);
+    } catch (error) {
+      res.status(500).json({
+        messageDev:
+          "No se pudo obtener los clientes por fecha de entrega y estado",
+        messageSys: error.message,
+      });
+    }
   }
-});
+);
 
 // Ruta para obtener clientes cuyas fechas de entrega estén dentro de un rango específico y con estado=true
 router.post("/cliente/getbyfechafin", async (req, res) => {

@@ -80,9 +80,6 @@ const Entregados = () => {
     return `${day}/${month}/${year}`;
   };
 
-  //cargar los datos de una vez al cargar la página
-  handleSubmit();
-
   return (
     <div style={{ margin: "0 auto", textAlign: "center" }}>
       <div style={{ margin: "15px" }}>
