@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 
 // ======= ruta para obtener todos las entradas de los usuarios usando el metodo GET =======
 router.get("/user/getall", async (req, res) => {
@@ -45,8 +46,20 @@ router.post("/user/getbyusername", async (req, res) => {
       return res.status(401).json({ message: "Contraseña inválida" });
     }
 
-    // Usuario y contraseña son válidos, devolver solo los campos requeridos
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "15d",
+    });
+
     const { nombre, imagen, rol } = user;
+
+    //devolver una cookie para guardar el token con una duración de 15 días y que sea solo accesible por HTTP y no por JS
+    res.cookie("token", token, {
+      sameSite: "none",
+      secure: true,
+      maxAge: 1000 * 60 * 60 * 24 * 15,
+    });
+
+    // Usuario y contraseña son válidos, devolver solo los campos requeridos
     res.status(200).json({ nombre, imagen, rol, username });
   } catch (error) {
     res.status(500).json({

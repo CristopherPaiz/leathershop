@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 const Entregados = () => {
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
-  const [resultados, setResultados] = useState([]);
+  const [resultados, setResultados] = useState([""]);
 
   useEffect(() => {
     // Función para obtener la fecha actual
@@ -113,54 +113,53 @@ const Entregados = () => {
           </Button>
         </Container>
       </form>
-
-      {resultados.length > 0 ? (
-        <Card
-          key={resultados._id}
-          style={{
-            margin: "10px auto 30px auto ",
-            width: "90vw",
-            textAlign: "left",
-          }}
-        >
-          {resultados.map((cliente) => {
-            return (
-              <>
-                <Card.Content
-                  key={cliente._id}
-                  style={{
-                    backgroundColor: "#b6d7a8",
-                  }}
-                >
-                  <Button
-                    as={Link}
-                    icon="eye"
-                    secondary
-                    inverted
-                    floated="right"
-                    to={`/admin/vercliente/${cliente._id}`}
-                    state={{ cliente }}
-                  />
-                  <Card.Header>
-                    {cliente?.nombre ?? ""} {cliente?.apellido ?? ""}
-                  </Card.Header>
-                  <Card.Meta>Producto: {cliente?.producto ?? ""}</Card.Meta>
-                  <Card.Description>
-                    <strong>Fecha recibido:</strong>{" "}
-                    {formatDate(cliente.fechaRecibo)}
-                  </Card.Description>
-                  <Card.Description>
-                    <strong>Fecha Entrega:</strong>{" "}
-                    {formatDate(cliente.fechaEntrega)}
-                  </Card.Description>
-                </Card.Content>
-              </>
-            );
-          })}
-        </Card>
-      ) : (
-        <p>No hay resultados</p>
-      )}
+      <Card
+        style={{
+          margin: "10px auto 30px auto ",
+          width: "90vw",
+          textAlign: "left",
+        }}
+      >
+        {resultados.length > 0 ? (
+          <>
+            {resultados.map((cliente, idx) => {
+              return (
+                <React.Fragment key={idx}>
+                  <Card.Content
+                    style={{
+                      backgroundColor: "#b6d7a8",
+                    }}
+                  >
+                    <Button
+                      as={Link}
+                      icon="eye"
+                      secondary
+                      inverted
+                      floated="right"
+                      to={`/admin/vercliente/${cliente._id}`}
+                      state={{ cliente }}
+                    />
+                    <Card.Header>
+                      {cliente?.nombre ?? ""} {cliente?.apellido ?? ""}
+                    </Card.Header>
+                    <Card.Meta>Producto: {cliente?.producto ?? ""}</Card.Meta>
+                    <Card.Description>
+                      <strong>Fecha recibido:</strong>{" "}
+                      {formatDate(cliente.fechaRecibo)}
+                    </Card.Description>
+                    <Card.Description>
+                      <strong>Fecha Entrega:</strong>{" "}
+                      {formatDate(cliente.fechaEntrega)}
+                    </Card.Description>
+                  </Card.Content>
+                </React.Fragment>
+              );
+            })}
+          </>
+        ) : (
+          <p>No hay resultados</p>
+        )}
+      </Card>
     </div>
   );
 };

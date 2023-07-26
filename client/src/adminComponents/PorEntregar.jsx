@@ -89,8 +89,8 @@ const PorEntregar = () => {
     return `${day}/${month}/${year}`;
   };
 
-  //cargar los datos de una vez al cargar la página
-  handleSubmit();
+  // //cargar los datos de una vez al cargar la página
+  // handleSubmit();
 
   return (
     <div style={{ margin: "0 auto", textAlign: "center" }}>
@@ -122,65 +122,65 @@ const PorEntregar = () => {
           </Button>
         </Container>
       </form>
+      <Card
+        style={{
+          margin: "10px auto 30px auto ",
+          width: "90vw",
+          textAlign: "left",
+        }}
+      >
+        {resultados.length > 0 ? (
+          <>
+            {resultados.map((cliente) => {
+              const daysDifference = getDaysDifference(cliente.fechaEntrega);
 
-      {resultados.length > 0 ? (
-        <Card
-          key={resultados._id}
-          style={{
-            margin: "10px auto 30px auto ",
-            width: "90vw",
-            textAlign: "left",
-          }}
-        >
-          {resultados.map((cliente) => {
-            const daysDifference = getDaysDifference(cliente.fechaEntrega);
+              let backgroundColor;
+              if (daysDifference <= 3) {
+                backgroundColor = "#ea9999"; // 3 días o menos para entregar
+              } else if (daysDifference <= 5) {
+                backgroundColor = "#ffe599"; // 5 días o menos para entregar
+              } else {
+                backgroundColor = "#9fc5e8"; // Más de 7 días para entregar
+              }
 
-            let backgroundColor;
-            if (daysDifference <= 3) {
-              backgroundColor = "#ea9999"; // 3 días o menos para entregar
-            } else if (daysDifference <= 5) {
-              backgroundColor = "#ffe599"; // 5 días o menos para entregar
-            } else {
-              backgroundColor = "#9fc5e8"; // Más de 7 días para entregar
-            }
-
-            return (
-              <>
-                <Card.Content
-                  key={cliente._id}
-                  style={{
-                    backgroundColor: backgroundColor,
-                  }}
-                >
-                  <Button
-                    as={Link}
-                    icon="eye"
-                    secondary
-                    inverted
-                    floated="right"
-                    to={`/admin/vercliente/${cliente._id}`}
-                    state={{ cliente }}
-                  />
-                  <Card.Header>
-                    {cliente?.nombre ?? ""} {cliente?.apellido ?? ""}
-                  </Card.Header>
-                  <Card.Meta>Producto: {cliente?.producto ?? ""}</Card.Meta>
-                  <Card.Description>
-                    <strong>Fecha recibido:</strong>{" "}
-                    {formatDate(cliente?.fechaRecibo)}
-                  </Card.Description>
-                  <Card.Description>
-                    <strong>Fecha Entrega:</strong>{" "}
-                    {formatDate(cliente.fechaEntrega)}
-                  </Card.Description>
-                </Card.Content>
-              </>
-            );
-          })}
-        </Card>
-      ) : (
-        <p>No hay resultados</p>
-      )}
+              return (
+                <React.Fragment key={cliente._id}>
+                  <Card.Content
+                    key={cliente._id}
+                    style={{
+                      backgroundColor: backgroundColor,
+                    }}
+                  >
+                    <Button
+                      as={Link}
+                      icon="eye"
+                      secondary
+                      inverted
+                      floated="right"
+                      to={`/admin/vercliente/${cliente._id}`}
+                      state={{ cliente }}
+                    />
+                    <Card.Header>
+                      {cliente?.nombre ?? ""} {cliente?.apellido ?? ""}
+                    </Card.Header>
+                    <Card.Meta>Producto: {cliente?.producto ?? ""}</Card.Meta>
+                    <Card.Description>
+                      <strong>Fecha recibido:</strong>{" "}
+                      {formatDate(cliente?.fechaRecibo)}
+                    </Card.Description>
+                    <Card.Description>
+                      <strong>Fecha Entrega:</strong>{" "}
+                      {formatDate(cliente.fechaEntrega)}
+                    </Card.Description>
+                  </Card.Content>
+                </React.Fragment>
+              );
+            })}
+          </>
+        ) : (
+          <p>No hay resultados</p>
+        )}
+      </Card>
     </div>
   );
 };

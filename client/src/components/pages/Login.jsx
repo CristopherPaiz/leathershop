@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Button, Form, Grid, Header, Image, Segment } from "semantic-ui-react";
 import { contexto } from "../../context/ContextProvider";
 import toast, { Toaster } from "react-hot-toast";

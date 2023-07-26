@@ -11,6 +11,7 @@ import AdminElement from "./components/routes/AdminElement.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Login from "./components/pages/Login.jsx";
 import VerCliente from "./adminComponents/VerCliente.jsx";
+import AddCliente from "./adminComponents/AddCliente.jsx";
 
 const App = () => {
   return (
@@ -54,6 +55,14 @@ const App = () => {
           element={
             <AdminElement>
               <VerCliente />
+            </AdminElement>
+          }
+        />
+        <Route
+          path="/admin/addcliente"
+          element={
+            <AdminElement>
+              <AddCliente />
             </AdminElement>
           }
         />

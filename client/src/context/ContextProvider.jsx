@@ -1,5 +1,6 @@
 import React, { createContext, useState } from "react";
 import API_URL from "../config.js";
+import md5 from "md5";
 
 export const contexto = createContext();
 
@@ -15,6 +16,7 @@ const ContextProvider = ({ children }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
+        credentials: "include", // Asegúrate de incluir esta opción
       });
 
       if (!response.ok) {

@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { contexto } from "../context/ContextProvider";
-import { Navigate } from "react-router-dom";
-import { Header, Image, Button, Container, Icon } from "semantic-ui-react";
+import { Navigate, Link } from "react-router-dom";
+import { Header, Image, Button, Icon } from "semantic-ui-react";
 import PorEntregar from "../adminComponents/PorEntregar";
 import Entregados from "../adminComponents/Entregados";
 import BuscarCliente from "../adminComponents/BuscarCliente";
@@ -12,6 +12,7 @@ const Adminpage = () => {
 
   useEffect(() => {
     const storedPestanaActiva = localStorage.getItem("pestanaActiva");
+
     if (storedPestanaActiva) {
       setPestanaActiva(parseInt(storedPestanaActiva));
     }
@@ -39,8 +40,6 @@ const Adminpage = () => {
       { numero: 1, texto: "Por entregar", icono: "calendar alternate" },
       { numero: 2, texto: "Entregados", icono: "handshake" },
       { numero: 3, texto: "Buscar cliente", icono: "address book" },
-      { numero: 4, texto: "Añadir cliente", icono: "add user" },
-      { numero: 5, texto: "Añadir producto", icono: "add square" },
     ];
 
     return (
@@ -61,16 +60,34 @@ const Adminpage = () => {
               {boton.texto}
             </Button>
           ))}
+          <Button
+            key={4}
+            as={Link}
+            toggle
+            style={{ margin: "3px", width: "170px" }}
+            to={`/admin/addcliente`}
+          >
+            <Icon name="add user" />
+            Añadir cliente
+          </Button>
+          <Button
+            key={5}
+            as={Link}
+            toggle
+            style={{ margin: "3px", width: "170px" }}
+            to={`/admin/addcliente`}
+          >
+            <Icon name="add square" />
+            Añadir producto
+          </Button>
         </div>
         {pestanaActiva === 1 ? <PorEntregar /> : null}
         {pestanaActiva === 2 ? <Entregados /> : null}
         {pestanaActiva === 3 ? <BuscarCliente /> : null}
-        {pestanaActiva === 4 ? <h1>Add cliente</h1> : null}
-        {pestanaActiva === 5 ? <h1>Add Producto</h1> : null}
       </div>
     );
   } else {
-    return <Navigate to={"/"} />; // Redirige a la página de inicio
+    return <Navigate to={"/login"} />; // Redirige a la página de inicio
   }
 };
 
