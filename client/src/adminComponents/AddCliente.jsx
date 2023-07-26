@@ -1,41 +1,70 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Header, Icon, Form, Button, Grid, Label } from "semantic-ui-react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
 import { contexto } from "../context/ContextProvider";
 
+const cloudinaryUploadUrl =
+  "https://api.cloudinary.com/v1_1/dbkfiarmr/image/upload";
+
 const AddCliente = () => {
   const { loggedIn, usuario } = useContext(contexto);
   const [datosCliente, setDatosCliente] = useState({});
+  const [imagenes, setImagenes] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleFormSubmit = async () => {
-    console.log(datosCliente);
+  const uploadImageToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "ml_default");
+
     try {
-      // Ajustar el formato de las fechas
+      const response = await fetch(cloudinaryUploadUrl, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image to Cloudinary");
+      }
+
+      const data = await response.json();
+      return data.secure_url;
+    } catch (error) {
+      console.error("Error uploading image to Cloudinary:", error);
+      throw error;
+    }
+  };
+
+  const handleFormSubmit = async () => {
+    try {
+      // Upload each image to Cloudinary and get the URLs
+      const uploadedImages = await Promise.all(
+        imagenes.map((file) => uploadImageToCloudinary(file))
+      );
+
+      // Format the data including the uploaded image URLs
       const formattedData = {
         ...datosCliente,
         fechaRecibo: new Date(datosCliente.fechaRecibo),
         fechaEntrega: new Date(datosCliente.fechaEntrega),
+        precio: Number(datosCliente.precio),
+        anticipo: Number(datosCliente.anticipo),
+        saldo: Number(datosCliente.saldo),
+        colores: datosCliente.colores
+          ? datosCliente.colores.split(",").map((color) => color.trim())
+          : [],
+        tallas: datosCliente.tallas
+          ? datosCliente.tallas.split(",").map((talla) => talla.trim())
+          : [],
+        imagen: uploadedImages.map((url) => url), // Adding the uploaded image URLs to the data
       };
-
-      // Ajustar campos enteros
-      formattedData.precio = Number(datosCliente.precio);
-      formattedData.anticipo = Number(datosCliente.anticipo);
-      formattedData.saldo = Number(datosCliente.saldo);
-
-      // Convertir los campos "colores" y "tallas" de string a array
-      formattedData.colores = datosCliente.colores
-        ? datosCliente.colores.split(",").map((color) => color.trim())
-        : [];
-
-      formattedData.tallas = datosCliente.tallas
-        ? datosCliente.tallas.split(",").map((talla) => talla.trim())
-        : [];
 
       const response = await fetch(`${API_URL}/cliente/add`, {
         method: "POST",
@@ -43,19 +72,24 @@ const AddCliente = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formattedData),
-        credentials: "include", // Asegúrate de incluir esta opción
+        credentials: "include",
       });
 
-      if (!response.ok) {
-        // Manejar escenarios de error si es necesario
-        console.error("Error al añadir el cliente", response);
-      } else {
-        // Manejar el escenario de éxito si es necesario
-        toast.success("Cliente añadido exitosamente");
-      }
+      // Handle the response from the server here
     } catch (error) {
       console.error("Error al añadir el cliente", error);
     }
+  };
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImagenes([...imagenes, ...files]);
+  };
+
+  const handleRemoveImage = (index) => {
+    const newImages = [...imagenes];
+    newImages.splice(index, 1);
+    setImagenes(newImages);
   };
 
   if (loggedIn && usuario.rol === "Admin") {
@@ -293,6 +327,39 @@ const AddCliente = () => {
                   })
                 }
               />
+
+              <Form.Field>
+                <label>Imágenes</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                />
+              </Form.Field>
+              <div>
+                {imagenes.map((file, index) => (
+                  <div key={index} style={{ marginBottom: "10px" }}>
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt={`Previsualización ${index}`}
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <Button
+                      icon="remove"
+                      color="red"
+                      size="tiny"
+                      onClick={() => handleRemoveImage(index)}
+                      style={{ marginTop: "5px" }}
+                    />
+                  </div>
+                ))}
+              </div>
+
               <Grid>
                 <Grid.Column textAlign="center">
                   <Button type="submit" onClick={handleFormSubmit}>

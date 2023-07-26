@@ -48,14 +48,7 @@ const clienteSchema = new Schema({
   recomendaciones: {
     type: String,
   },
-  imagen: [
-    {
-      url: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
+  imagen: [String],
   descripcion: {
     type: String,
   },

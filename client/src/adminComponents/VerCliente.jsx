@@ -1,13 +1,24 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Header, Icon, Form, Button, Grid, Label } from "semantic-ui-react";
-import { useLocation, Navigate } from "react-router-dom";
+import {
+  Header,
+  Icon,
+  Form,
+  Button,
+  Grid,
+  Label,
+  Modal,
+} from "semantic-ui-react";
+import { useLocation, Navigate, useNavigate } from "react-router-dom";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
 import { contexto } from "../context/ContextProvider";
 
 const VerCliente = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { loggedIn, usuario } = useContext(contexto);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(true);
 
   if (!location.state) {
     return <Navigate to={"/"} />;
@@ -17,6 +28,24 @@ const VerCliente = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
+
+  const handleDeleteConfirm = async () => {
+    handleDeleteCliente();
+    handleModalClose(); // Cerramos el modal después de confirmar.
+  };
+
+  const handleDeleteCancel = () => {
+    setConfirmDelete(false);
+    handleModalClose(); // Cerramos el modal después de cancelar.
+  };
 
   // Paso 1: Agregar estado para seguir los datos actualizados del cliente
   const [datosClienteActualizados, setDatosClienteActualizados] = useState({
@@ -55,9 +84,52 @@ const VerCliente = () => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
+  const handleDeleteCliente = async () => {
+    setConfirmDelete(true);
+    if (confirmDelete) {
+      try {
+        const response = await fetch(
+          `${API_URL}/cliente/delete/${cliente._id}`,
+          {
+            method: "DELETE",
+            credentials: "include",
+          }
+        );
+
+        if (!response.ok) {
+          console.error("Error al eliminar el cliente");
+        } else {
+          // Manejar el escenario de éxito si es necesario
+          toast.success("Cliente eliminado exitosamente");
+
+          // Esperar 2 segundos utilizando setTimeout
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          handleModalClose();
+          navigate("/admin");
+        }
+      } catch (error) {
+        console.error("Error al eliminar el cliente", error);
+      }
+    }
+  };
+
   if (loggedIn && usuario.rol === "Admin") {
     return (
       <>
+        <Modal open={modalOpen} onClose={handleModalClose} size="small">
+          <Modal.Header>Confirmar Eliminación</Modal.Header>
+          <Modal.Content>
+            <p>¿Está seguro de que desea eliminar al cliente?</p>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button negative onClick={handleDeleteCliente}>
+              Sí, eliminar
+            </Button>
+            <Button onClick={handleDeleteCancel}>No, cancelar</Button>
+          </Modal.Actions>
+        </Modal>
         <Toaster />{" "}
         <Header as="h2" icon textAlign="center">
           <Icon name="user" circular />
@@ -318,8 +390,16 @@ const VerCliente = () => {
               />
               <Grid>
                 <Grid.Column textAlign="center">
-                  <Button type="submit" onClick={handleFormSubmit}>
+                  <br />
+                  <Button
+                    type="submit"
+                    color="green"
+                    onClick={handleFormSubmit}
+                  >
                     Actualizar Datos
+                  </Button>
+                  <Button type="button" color="red" onClick={handleModalOpen}>
+                    Eliminar Cliente
                   </Button>
                 </Grid.Column>
               </Grid>

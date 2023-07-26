@@ -31,6 +31,7 @@ router.get("/cliente/getbyid/:id", async (req, res) => {
 
 //======= crear un nuevo cliente =======
 router.post("/cliente/add", async (req, res) => {
+  console.log(req.body);
   try {
     const {
       nombre,
@@ -54,10 +55,8 @@ router.post("/cliente/add", async (req, res) => {
       estado,
     } = req.body;
 
-    // Crear un nuevo objeto para cada imagen que incluya el nombre y la URL
-    const imagenes = imagen?.map((img) => ({
-      url: img.url,
-    }));
+    // Obtener un array de strings con las URLs de las imágenes
+    const imagenes = await imagen;
 
     const cliente = new Cliente({
       nombre,
@@ -85,10 +84,12 @@ router.post("/cliente/add", async (req, res) => {
     const resultado = await cliente.save();
 
     //mandamos estado 200 de OK y el resultado de la operacion
+    console.log(resultado);
     res
       .status(200)
       .json({ message: "Cliente añadido correctamente", resultado });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       messageDev: "No se pudo añadir al cliente",
       messageSys: error.message,
