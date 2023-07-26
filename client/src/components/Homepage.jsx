@@ -7,6 +7,20 @@ const Homepage = () => {
   const [post, setPost] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const { setLoggedIn, setUsuario } = useContext(contexto);
+
+  useEffect(() => {
+    const usuarioLS = localStorage.getItem("usuarioLS");
+    const loggedLS = localStorage.getItem("loggedLS");
+    if (usuarioLS && loggedLS) {
+      setLoggedIn(true);
+      setUsuario(JSON.parse(usuarioLS));
+    } else {
+      null;
+    }
+    console.log(usuarioLS, loggedLS);
+  }, []);
+
   useEffect(() => {
     const posts = async () => {
       try {

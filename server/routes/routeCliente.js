@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Cliente = require("../models/clienteModel");
+const jwt = require("jsonwebtoken");
 
 // ======= ruta para obtener todos los clientes usando el metodo GET =======
 router.get("/cliente/getall", async (req, res) => {
@@ -115,12 +116,12 @@ router.put("/cliente/update/:id", async (req, res) => {
 
 router.post(
   "/cliente/getbyfecha",
-  async (req, res, next) => {
+  (req, res, next) => {
     const token = req.cookies.token;
-    console.log(token);
     try {
       const ValidPayload = jwt.verify(token, process.env.JWT_SECRET);
 
+      console.log(ValidPayload);
       // Llamar a next solo si el token es válido
       next();
     } catch (error) {

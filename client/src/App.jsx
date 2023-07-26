@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import Homepage from "./components/Homepage.jsx";
 import Userpage from "./components/Userpage.jsx";
@@ -6,7 +6,7 @@ import NotFoundpage from "./components/NotFoundpage.jsx";
 import Adminpage from "./components/Adminpage.jsx";
 import PublicElement from "./components/routes/PublicElement.jsx";
 import UserElement from "./components/routes/UserElement.jsx";
-import ContextProvider from "./context/ContextProvider.jsx";
+import ContextProvider, { contexto } from "./context/ContextProvider.jsx";
 import AdminElement from "./components/routes/AdminElement.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Login from "./components/pages/Login.jsx";

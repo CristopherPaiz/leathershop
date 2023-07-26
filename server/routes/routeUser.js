@@ -54,8 +54,6 @@ router.post("/user/getbyusername", async (req, res) => {
 
     //devolver una cookie para guardar el token con una duración de 15 días y que sea solo accesible por HTTP y no por JS
     res.cookie("token", token, {
-      sameSite: "none",
-      secure: true,
       maxAge: 1000 * 60 * 60 * 24 * 15,
     });
 

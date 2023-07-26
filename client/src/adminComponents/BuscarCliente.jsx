@@ -37,6 +37,7 @@ const BuscarCliente = () => {
           apellido,
           numeroTel,
         }),
+        credentials: "include", // Asegúrate de incluir esta opción
       });
 
       if (!response.ok) {
@@ -49,7 +50,6 @@ const BuscarCliente = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       // localStorage.setItem("busquedaActual", JSON.stringify(data));
       setResultados(data);
 

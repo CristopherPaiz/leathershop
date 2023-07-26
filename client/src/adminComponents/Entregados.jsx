@@ -59,6 +59,7 @@ const Entregados = () => {
           fechaRecibo: fechaInicioISO,
           fechaEntrega: fechaFinISO,
         }),
+        credentials: "include", // Asegúrate de incluir esta opción
       });
 
       if (!response.ok) {

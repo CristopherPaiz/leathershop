@@ -29,10 +29,15 @@ const ContextProvider = ({ children }) => {
         const user = await response.json();
 
         if (!user) {
+          //añadir al localstorage un usuario publico como defaul
+          localStorage.setItem("usuarioLS", JSON.stringify({ rol: "Public" }));
+          //seteamos los useState
           setUsuario({ rol: "Public" });
           setLoggedIn(false);
           return "Public";
         } else {
+          localStorage.setItem("usuarioLS", JSON.stringify({ rol: user.rol }));
+          localStorage.setItem("loggedLS", true);
           setLoggedIn(true);
           setUsuario(user);
           return user.rol;

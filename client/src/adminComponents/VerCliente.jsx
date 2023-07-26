@@ -33,6 +33,7 @@ const VerCliente = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(datosClienteActualizados),
+        credentials: "include", // Asegúrate de incluir esta opción
       });
 
       if (!response.ok) {

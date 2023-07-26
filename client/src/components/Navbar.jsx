@@ -16,6 +16,8 @@ const Navbar = () => {
     if (loggedIn) {
       setLoggedIn(false);
       setUsuario(null);
+      localStorage.removeItem("usuarioLS");
+      localStorage.removeItem("loggedLS");
       navigate("/");
     }
   };
