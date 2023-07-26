@@ -75,7 +75,17 @@ const AddCliente = () => {
         credentials: "include",
       });
 
-      // Handle the response from the server here
+      if (response.ok) {
+        // Show a success toast if the client was added successfully
+        toast.success("Cliente añadido correctamente");
+
+        //esperamos 2 segundos
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        navigate("/admin");
+      } else {
+        // Show an error toast if there was an issue adding the client
+        toast.error("Error al añadir el cliente");
+      }
     } catch (error) {
       console.error("Error al añadir el cliente", error);
     }
