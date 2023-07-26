@@ -12,13 +12,13 @@ const Homepage = () => {
   useEffect(() => {
     const usuarioLS = localStorage.getItem("usuarioLS");
     const loggedLS = localStorage.getItem("loggedLS");
+    const demasDatosLS = localStorage.getItem("demasdatosLS");
     if (usuarioLS && loggedLS) {
       setLoggedIn(true);
-      setUsuario(JSON.parse(usuarioLS));
+      setUsuario(JSON.parse(demasDatosLS));
     } else {
       null;
     }
-    console.log(usuarioLS, loggedLS);
   }, []);
 
   useEffect(() => {

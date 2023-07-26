@@ -8,9 +8,9 @@ const Navbar = () => {
   const { usuario, setUsuario, loggedIn, setLoggedIn } = useContext(contexto);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log(usuario);
-  }, [usuario]);
+  // useEffect(() => {
+  //   console.log(usuario);
+  // }, [usuario]);
 
   const logout = async () => {
     if (loggedIn) {
@@ -18,6 +18,7 @@ const Navbar = () => {
       setUsuario(null);
       localStorage.removeItem("usuarioLS");
       localStorage.removeItem("loggedLS");
+      localStorage.removeItem("demasdatosLS");
       navigate("/");
     }
   };

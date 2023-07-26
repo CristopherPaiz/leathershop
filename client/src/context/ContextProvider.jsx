@@ -37,6 +37,7 @@ const ContextProvider = ({ children }) => {
           return "Public";
         } else {
           localStorage.setItem("usuarioLS", JSON.stringify({ rol: user.rol }));
+          localStorage.setItem("demasdatosLS", JSON.stringify(user));
           localStorage.setItem("loggedLS", true);
           setLoggedIn(true);
           setUsuario(user);
