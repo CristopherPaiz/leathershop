@@ -38,8 +38,6 @@ const PorEntregar = () => {
     // Establecer las fechas por defecto en el estado
     setFechaInicio(getCurrentDate());
     setFechaFin(getOneWeekAheadDate());
-    // Disparar el evento del fetch al inicio para obtener los resultados iniciales
-    handleSubmit();
   }, []);
 
   const handleSubmit = async (event) => {
@@ -89,9 +87,6 @@ const PorEntregar = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
-
-  // //cargar los datos de una vez al cargar la página
-  // handleSubmit();
 
   return (
     <div style={{ margin: "0 auto", textAlign: "center" }}>
@@ -150,6 +145,7 @@ const PorEntregar = () => {
                     key={cliente._id}
                     style={{
                       backgroundColor: backgroundColor,
+                      marginBottom: "2px",
                     }}
                   >
                     <Button
@@ -182,6 +178,8 @@ const PorEntregar = () => {
           <p>No hay resultados</p>
         )}
       </Card>
+      <br />
+      <br />
     </div>
   );
 };

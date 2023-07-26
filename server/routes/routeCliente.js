@@ -55,7 +55,7 @@ router.post("/cliente/add", async (req, res) => {
     } = req.body;
 
     // Crear un nuevo objeto para cada imagen que incluya el nombre y la URL
-    const imagenes = imagen.map((img) => ({
+    const imagenes = imagen?.map((img) => ({
       url: img.url,
     }));
 

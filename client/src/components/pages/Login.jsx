@@ -7,8 +7,21 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [password, setPassword] = useState("");
-  const { fetchUser, loggedIn } = useContext(contexto);
+  const { fetchUser, loggedIn, setUsuario, setLoggedIn, usuario } =
+    useContext(contexto);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const usuarioLS = localStorage.getItem("usuarioLS");
+    const loggedLS = localStorage.getItem("loggedLS");
+    const demasDatosLS = localStorage.getItem("demasdatosLS");
+    if (usuarioLS && loggedLS) {
+      setLoggedIn(true);
+      setUsuario(JSON.parse(demasDatosLS));
+    } else {
+      null;
+    }
+  }, []);
 
   const obtenerTipoUsuario = async () => {
     const respuesta = await fetchUser(nombreUsuario, password);
@@ -32,7 +45,11 @@ const Login = () => {
   };
 
   if (loggedIn) {
-    navigate("/");
+    if (usuario.rol === "Admin") {
+      navigate("/admin");
+    } else {
+      navigate("/user");
+    }
   } else {
     return (
       <>

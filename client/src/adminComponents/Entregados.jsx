@@ -9,6 +9,7 @@ import {
 } from "semantic-ui-react";
 import API_URL from "../config.js";
 import { Link } from "react-router-dom";
+
 const Entregados = () => {
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
@@ -37,7 +38,6 @@ const Entregados = () => {
     // Establecer las fechas por defecto en el estado
     setFechaInicio(getCurrentDate());
     setFechaFin(getOneWeekAheadDate());
-    // Disparar el evento del fetch al inicio para obtener los resultados iniciales
     handleSubmit();
   }, []);
 
@@ -86,7 +86,7 @@ const Entregados = () => {
       <div style={{ margin: "15px" }}>
         <Header size="tiny" dividing>
           <Icon name="calendar alternate" />
-          <Header.Content>Trabajos pendientes de entregar</Header.Content>
+          <Header.Content>Trabajos Entregados</Header.Content>
         </Header>
       </div>
       <form onSubmit={handleSubmit} style={{ margin: "10px" }}>
@@ -116,16 +116,19 @@ const Entregados = () => {
           margin: "10px auto 30px auto ",
           width: "90vw",
           textAlign: "left",
+          backgroundColor: "transparent",
         }}
       >
-        {resultados.length > 0 ? (
+        {resultados?.length > 0 ? (
           <>
-            {resultados.map((cliente, idx) => {
+            {resultados?.map((cliente) => {
               return (
-                <React.Fragment key={idx}>
+                <React.Fragment key={cliente?._id}>
                   <Card.Content
+                    key={cliente?._id}
                     style={{
                       backgroundColor: "#b6d7a8",
+                      marginBottom: "2px",
                     }}
                   >
                     <Button
@@ -134,7 +137,7 @@ const Entregados = () => {
                       secondary
                       inverted
                       floated="right"
-                      to={`/admin/vercliente/${cliente._id}`}
+                      to={`/admin/vercliente/${cliente?._id}`}
                       state={{ cliente }}
                     />
                     <Card.Header>
@@ -143,11 +146,11 @@ const Entregados = () => {
                     <Card.Meta>Producto: {cliente?.producto ?? ""}</Card.Meta>
                     <Card.Description>
                       <strong>Fecha recibido:</strong>{" "}
-                      {formatDate(cliente.fechaRecibo)}
+                      {formatDate(cliente?.fechaRecibo)}
                     </Card.Description>
                     <Card.Description>
                       <strong>Fecha Entrega:</strong>{" "}
-                      {formatDate(cliente.fechaEntrega)}
+                      {formatDate(cliente?.fechaEntrega ?? "")}
                     </Card.Description>
                   </Card.Content>
                 </React.Fragment>
@@ -158,6 +161,8 @@ const Entregados = () => {
           <p>No hay resultados</p>
         )}
       </Card>
+      <br />
+      <br />
     </div>
   );
 };

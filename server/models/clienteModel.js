@@ -66,6 +66,7 @@ const clienteSchema = new Schema({
   },
   estado: {
     type: Boolean,
+    default: false,
   },
 });
 

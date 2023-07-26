@@ -83,7 +83,6 @@ const VerCliente = () => {
                 <Form.Input
                   label="Apellido"
                   placeholder="Apellido"
-                  required
                   defaultValue={cliente?.apellido ?? ""}
                   onChange={(e) =>
                     setDatosClienteActualizados({
@@ -153,7 +152,6 @@ const VerCliente = () => {
                   label="Precio"
                   type="number"
                   placeholder="0.00"
-                  step="0.01"
                   defaultValue={cliente?.precio ?? ""}
                   autoComplete="nope"
                   required
@@ -173,9 +171,7 @@ const VerCliente = () => {
                   label="Anticipo"
                   type="number"
                   placeholder="0.00"
-                  step="0.01"
                   defaultValue={cliente?.anticipo ?? ""}
-                  required
                   autoComplete="nope"
                   onChange={(e) =>
                     setDatosClienteActualizados({
@@ -194,9 +190,7 @@ const VerCliente = () => {
                 label="Saldo"
                 type="number"
                 placeholder="0.00"
-                step="0.01"
                 defaultValue={cliente?.saldo ?? ""}
-                required
                 autoComplete="nope"
                 onChange={(e) =>
                   setDatosClienteActualizados({
