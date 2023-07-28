@@ -1,6 +1,5 @@
 import React, { createContext, useState } from "react";
 import API_URL from "../config.js";
-import md5 from "md5";
 
 export const contexto = createContext();
 

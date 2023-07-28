@@ -68,6 +68,7 @@ router.post("/cosmeticos/add", async (req, res) => {
       cantidadTotal,
       apartados,
       especificaciones,
+      inactivos,
       estado,
     } = req.body;
 
@@ -84,6 +85,7 @@ router.post("/cosmeticos/add", async (req, res) => {
       cantidadTotal,
       apartados,
       especificaciones,
+      inactivos,
       estado,
     });
 
@@ -164,6 +166,33 @@ router.post("/cosmeticos/categorias", async (req, res) => {
   } catch (error) {
     console.error("Error al crear la categoría:", error.message);
     res.status(500).json({ error: "Error al crear la categoría." });
+  }
+});
+
+// Ruta para filtrar por el campo de nombre o por el campo de descripción o por los dos campos
+router.post("/cosmeticos/filtrar", async (req, res) => {
+  try {
+    const { nombre, especificaciones } = req.body;
+
+    // Creamos un objeto de filtro vacío
+    const filter = {};
+
+    // Agregamos condiciones al objeto de filtro si los datos están presentes en el cuerpo de la solicitud
+    if (nombre) {
+      filter.producto = { $regex: new RegExp(nombre, "i") }; // La opción "i" hace que la búsqueda sea insensible a mayúsculas y minúsculas
+    }
+    if (especificaciones) {
+      filter.especificaciones = { $regex: new RegExp(especificaciones, "i") };
+    }
+
+    // Realizamos la búsqueda con el filtro
+    const data = await Cosmetico.find(filter);
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev: "No se pudo obtener los productos filtrados",
+      messageSys: error.message,
+    });
   }
 });
 

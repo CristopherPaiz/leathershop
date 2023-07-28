@@ -12,6 +12,7 @@ import Navbar from "./components/Navbar.jsx";
 import Login from "./components/pages/Login.jsx";
 import VerCliente from "./adminComponents/VerCliente.jsx";
 import AddCliente from "./adminComponents/AddCliente.jsx";
+import VerProducto from "./userComponents/VerProducto.jsx";
 
 const App = () => {
   return (
@@ -43,6 +44,14 @@ const App = () => {
           }
         />
         <Route
+          path="/user/verProducto/:id"
+          element={
+            <UserElement>
+              <VerProducto />
+            </UserElement>
+          }
+        />
+        <Route
           path="/admin"
           element={
             <AdminElement>
@@ -66,6 +75,7 @@ const App = () => {
             </AdminElement>
           }
         />
+
         <Route path="*" element={<NotFoundpage />} />
       </Routes>
     </ContextProvider>

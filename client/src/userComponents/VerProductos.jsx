@@ -48,7 +48,7 @@ const VerProductos = () => {
   const containerStyle = {
     display: "flex",
     alignItems: "center",
-    margin: "10px",
+    margin: "15px",
     padding: "10px",
     border: "1px solid #ccc",
     borderRadius: "5px",
@@ -91,28 +91,32 @@ const VerProductos = () => {
             <Header.Content>Todos los productos disponibles</Header.Content>
           </Header>
         </div>
-        {cosmeticos.length > 0 ? (
+        {cosmeticos?.length > 0 ? (
           <>
-            {cosmeticos.map((cosmetico) => (
+            {cosmeticos?.map((cosmetico) => (
               <Link
                 style={containerStyle}
                 to={`/user/verProducto/${cosmetico._id}`}
+                state={{ cosmetico }}
               >
                 <img
-                  src={cosmetico.imagen[0]} // Reemplaza "URL_DE_LA_IMAGEN" con la URL de tu imagen
-                  alt={cosmetico.producto}
+                  src={
+                    cosmetico?.imagen[0] ??
+                    "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"
+                  }
+                  alt={cosmetico?.producto ?? ""}
                   style={imageStyle}
                 />
                 <div style={{ textAlign: "left" }}>
-                  <div style={titleStyle}>{cosmetico.producto}</div>
-                  <div>{cosmetico.especificaciones}</div>
+                  <div style={titleStyle}>{cosmetico?.producto ?? ""}</div>
+                  <div>{cosmetico?.especificaciones ?? ""}</div>
                   <span style={spanStyle}>
                     <strong>Disponibles: </strong>
-                    {cosmetico.cantidadTotal}
+                    {cosmetico?.cantidadTotal ?? ""}
                   </span>
                   <span style={spanStyle}>
                     <strong>Apartados: </strong>
-                    {cosmetico.apartados}
+                    {cosmetico?.apartados ?? ""}
                   </span>
                 </div>
               </Link>

@@ -1,14 +1,22 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { contexto } from "../context/ContextProvider";
 import { Navigate, Link } from "react-router-dom";
 import { Header, Image, Button, Icon } from "semantic-ui-react";
 import VerProductos from "../userComponents/VerProductos";
 import CategoriaProductos from "../userComponents/CategoriaProductos";
+import FiltrarProducto from "../userComponents/FiltrarProducto";
 
 const Userpage = () => {
   const { loggedIn, usuario } = useContext(contexto);
   const [pestanaActivaUser, setPestanaActivaUser] = useState(1);
 
+  useEffect(() => {
+    const storedPestanaActiva = localStorage.getItem("pestanaActivauser");
+
+    if (storedPestanaActiva) {
+      setPestanaActivaUser(parseInt(storedPestanaActiva));
+    }
+  }, []);
   //saludar
   const getSaludo = (nombre) => {
     const hora = new Date().getHours();
@@ -55,10 +63,20 @@ const Userpage = () => {
               {boton.texto}
             </Button>
           ))}
+          <Button
+            key={4}
+            as={Link}
+            toggle
+            style={{ margin: "3px", width: "170px" }}
+            to={`/admin/addcliente`}
+          >
+            <Icon name="add" />
+            Añadir Producto
+          </Button>
         </div>
         {pestanaActivaUser === 1 ? <VerProductos /> : null}
         {pestanaActivaUser === 2 ? <CategoriaProductos /> : null}
-        {pestanaActivaUser === 3 ? <h1>Pestaña3</h1> : null}
+        {pestanaActivaUser === 3 ? <FiltrarProducto /> : null}
       </div>
     );
   } else {

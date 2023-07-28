@@ -24,6 +24,9 @@ const cosmeticoSchema = new Schema({
   estado: {
     type: Boolean,
   },
+  inactivos: {
+    type: Number,
+  },
   imagen: [String],
 });
 

@@ -10,10 +10,12 @@ const CategoriaProductos = () => {
   const [cosmeticos, setCosmeticos] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [mensaje, setMensaje] = useState("");
   const productsPerPage = 10;
 
   useEffect(() => {
     getCategoria();
+    setMensaje("Primero selecciona una categoría...");
   }, []); // Solo cargamos las categorías al inicio
 
   const getCategoria = async () => {
@@ -86,6 +88,7 @@ const CategoriaProductos = () => {
       const data = await response.json();
       setTotalPages(data.totalPages);
       setCosmeticos(data.data);
+      setMensaje("Parece que no hay productos disponibles =(");
     } catch (error) {
       toast.error("Error al obtener la lista de productos");
       console.error("Error al obtener la lista de productos:", error);
@@ -95,7 +98,7 @@ const CategoriaProductos = () => {
   const containerStyle = {
     display: "flex",
     alignItems: "center",
-    margin: "10px",
+    margin: "15px",
     padding: "10px",
     border: "1px solid #ccc",
     borderRadius: "5px",
@@ -154,20 +157,23 @@ const CategoriaProductos = () => {
                 to={`/user/verProducto/${cosmetico._id}`}
               >
                 <img
-                  src={cosmetico.imagen[0]} // Reemplaza "URL_DE_LA_IMAGEN" con la URL de tu imagen
-                  alt={cosmetico.producto}
+                  src={
+                    cosmetico?.imagen[0] ??
+                    "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"
+                  }
+                  alt={cosmetico?.producto ?? ""}
                   style={imageStyle}
                 />
                 <div style={{ textAlign: "left" }}>
-                  <div style={titleStyle}>{cosmetico.producto}</div>
-                  <div>{cosmetico.especificaciones}</div>
+                  <div style={titleStyle}>{cosmetico?.producto ?? ""}</div>
+                  <div>{cosmetico?.especificaciones ?? ""}</div>
                   <span style={spanStyle}>
                     <strong>Disponibles: </strong>
-                    {cosmetico.cantidadTotal}
+                    {cosmetico?.cantidadTotal ?? ""}
                   </span>
                   <span style={spanStyle}>
                     <strong>Apartados: </strong>
-                    {cosmetico.apartados}
+                    {cosmetico?.apartados ?? ""}
                   </span>
                 </div>
               </Link>
@@ -184,7 +190,7 @@ const CategoriaProductos = () => {
             />
           </>
         ) : (
-          <h3>Primero seleccione una categoría...</h3>
+          <h3>{mensaje}</h3>
         )}
       </div>
     </>
