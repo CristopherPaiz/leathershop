@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { Cosmetico, CompraCosmetico } = require("../models/cosmeticoModel");
+const {
+  Cosmetico,
+  CompraCosmetico,
+  CosmeticoCategoria,
+} = require("../models/cosmeticoModel");
 
 // ======= ruta para obtener todos los cosmeticos usando el metodo GET =======
 router.get("/cosmeticos/getall", async (req, res) => {
@@ -28,7 +32,7 @@ router.get("/cosmeticos/getbyid/:id", async (req, res) => {
   }
 });
 
-//======= crear un cosmetico =======
+// Ruta para crear un cosmético
 router.post("/cosmeticos/add", async (req, res) => {
   try {
     const {
@@ -38,25 +42,15 @@ router.post("/cosmeticos/add", async (req, res) => {
       apartados,
       especificaciones,
       estado,
-      imagen,
-      cantidadIngreso,
-      costoUnitario,
-      costoTotal,
-      costoDeVenta,
-      utilidad,
-      cantidadIngresoPorMayor,
-      costoUnitarioPorMayor,
-      costoTotalPorMayor,
-      costoDeVentaPorMayor,
-      utilidadPorMayor,
-      observaciones,
     } = req.body;
 
-    // Crear un nuevo objeto para cada imagen que incluya el nombre y la URL
-    const imagenes = imagen.map((img) => ({
-      url: img.url,
-    }));
+    // Verificar si la categoría existe antes de crear el cosmético
+    const categoriaExistente = await CosmeticoCategoria.findById(categoria);
+    if (!categoriaExistente) {
+      return res.status(400).json({ error: "La categoría no existe." });
+    }
 
+    // Crear un nuevo cosmético
     const cosmetico = new Cosmetico({
       producto,
       categoria,
@@ -64,33 +58,15 @@ router.post("/cosmeticos/add", async (req, res) => {
       apartados,
       especificaciones,
       estado,
-      imagen: imagenes,
     });
 
-    // Guardar el objeto cosmetico en la base de datos u otras operaciones necesarias
-    const resultado = await cosmetico.save().then((productoGuardado) => {
-      // Creación de una nueva compra de producto
-      const compraCosmetico = new CompraCosmetico({
-        idProducto: productoGuardado._id, // Establecer la referencia al producto
-        cantidadIngreso,
-        costoUnitario,
-        costoTotal,
-        costoDeVenta,
-        utilidad,
-        cantidadIngresoPorMayor,
-        costoUnitarioPorMayor,
-        costoTotalPorMayor,
-        costoDeVentaPorMayor,
-        utilidadPorMayor,
-        observaciones,
-      });
+    // Guardar el cosmético en la base de datos
+    const resultado = await cosmetico.save();
 
-      return compraCosmetico.save(); // Guardar la compra de producto en la base de datos
+    res.status(200).json({
+      message: "Cosmético añadido correctamente",
+      resultado,
     });
-    //mandamos estado 200 de OK y el resultado de la operacion
-    res
-      .status(200)
-      .json({ message: "Cosmético añadido correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo añadir el cosmético",
@@ -132,6 +108,48 @@ router.put("/cosmeticos/delete/:id", async (req, res) => {
       messageDev: "No se pudo deshabilitar el cosmético",
       messageSys: error.message,
     });
+  }
+});
+
+// Ruta para crear una categoría de cosméticos
+router.post("/cosmeticos/categorias", async (req, res) => {
+  const { nombre, descripcion } = req.body;
+
+  try {
+    // Verificar si la categoría ya existe
+    const categoriaExistente = await CosmeticoCategoria.findOne({ nombre });
+
+    if (categoriaExistente) {
+      return res.status(400).json({ error: "La categoría ya existe." });
+    }
+
+    // Crear la nueva categoría
+    const nuevaCategoria = new CosmeticoCategoria({
+      nombre,
+      descripcion,
+    });
+
+    // Guardar la nueva categoría en la base de datos
+    const categoriaGuardada = await nuevaCategoria.save();
+
+    console.log("Categoría creada con éxito:", categoriaGuardada);
+    res.status(201).json(categoriaGuardada);
+  } catch (error) {
+    console.error("Error al crear la categoría:", error.message);
+    res.status(500).json({ error: "Error al crear la categoría." });
+  }
+});
+
+// Ruta para obtener todas las categorías de cosméticos
+router.get("/cosmeticos/categorias", async (req, res) => {
+  try {
+    // Obtener todas las categorías de la base de datos
+    const categorias = await CosmeticoCategoria.find();
+
+    res.status(200).json(categorias);
+  } catch (error) {
+    console.error("Error al obtener las categorías:", error.message);
+    res.status(500).json({ error: "Error al obtener las categorías." });
   }
 });
 

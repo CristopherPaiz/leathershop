@@ -7,7 +7,8 @@ const cosmeticoSchema = new Schema({
     required: true,
   },
   categoria: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "CosmeticoCategoria",
     required: true,
   },
   cantidadTotal: {
@@ -23,14 +24,7 @@ const cosmeticoSchema = new Schema({
   estado: {
     type: Boolean,
   },
-  imagen: [
-    {
-      url: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
+  imagen: [String],
 });
 
 const Cosmetico = mongoose.model("Cosmetico", cosmeticoSchema);
@@ -80,7 +74,25 @@ const CompraCosmetico = mongoose.model(
   cosmeticoDetalleSchema
 );
 
+const cosmeticoCategoriaSchema = new mongoose.Schema({
+  nombre: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  descripcion: {
+    type: String,
+    required: true,
+  },
+});
+
+const CosmeticoCategoria = mongoose.model(
+  "CosmeticoCategoria",
+  cosmeticoCategoriaSchema
+);
+
 module.exports = {
   Cosmetico,
   CompraCosmetico,
+  CosmeticoCategoria,
 };
