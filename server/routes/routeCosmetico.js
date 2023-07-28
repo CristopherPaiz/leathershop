@@ -6,11 +6,38 @@ const {
   CosmeticoCategoria,
 } = require("../models/cosmeticoModel");
 
-// ======= ruta para obtener todos los cosmeticos usando el metodo GET =======
+// Ruta para obtener todas las categorías de cosméticos
+router.get("/cosmeticos/categorias", async (req, res) => {
+  try {
+    // Obtener todas las categorías de la base de datos
+    const categorias = await CosmeticoCategoria.find().sort({ nombre: 1 });
+    res.status(200).json(categorias);
+  } catch (error) {
+    console.error("Error al obtener las categorías:", error.message);
+    res.status(500).json({ error: "Error al obtener las categorías." });
+  }
+});
+
 router.get("/cosmeticos/getall", async (req, res) => {
   try {
-    const data = await Cosmetico.find({});
-    res.status(200).json(data);
+    const page = parseInt(req.query.page) || 1;
+    const productsPerPage = parseInt(req.query.limit) || 1;
+    const categoria = req.query.categoria; // Obtener el parámetro de la URL
+
+    let query = {};
+    if (categoria) {
+      query = { categoria }; // Si se proporciona una categoría, usarla para filtrar
+    }
+
+    const totalProducts = await Cosmetico.countDocuments(query);
+    const totalPages = Math.ceil(totalProducts / productsPerPage);
+
+    const data = await Cosmetico.find(query)
+      .sort({ producto: 1 })
+      .skip((page - 1) * productsPerPage)
+      .limit(productsPerPage);
+
+    res.status(200).json({ data, totalPages });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo obtener los cosmeticos",
@@ -137,19 +164,6 @@ router.post("/cosmeticos/categorias", async (req, res) => {
   } catch (error) {
     console.error("Error al crear la categoría:", error.message);
     res.status(500).json({ error: "Error al crear la categoría." });
-  }
-});
-
-// Ruta para obtener todas las categorías de cosméticos
-router.get("/cosmeticos/categorias", async (req, res) => {
-  try {
-    // Obtener todas las categorías de la base de datos
-    const categorias = await CosmeticoCategoria.find();
-
-    res.status(200).json(categorias);
-  } catch (error) {
-    console.error("Error al obtener las categorías:", error.message);
-    res.status(500).json({ error: "Error al obtener las categorías." });
   }
 });
 
