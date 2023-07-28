@@ -1,6 +1,6 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu } from "semantic-ui-react";
+import { Menu, Button } from "semantic-ui-react";
 import { contexto } from "../context/ContextProvider";
 
 const Navbar = () => {
@@ -25,44 +25,67 @@ const Navbar = () => {
 
   if (usuario === null) {
     return (
-      <Menu>
-        <Menu.Item
+      <>
+        <Button
+          floated="right"
+          icon="user"
           as={Link}
-          position="right"
           to="/login"
-          name="Iniciar Sesión"
+          style={{ backgroundColor: "transparent" }}
         />
-      </Menu>
+        <br />
+        <br />
+      </>
     );
   } else {
     return usuario.rol === USER_TYPES.PUBLIC ? (
-      <Menu>
-        <Menu.Item
+      <>
+        <Button
+          floated="right"
+          icon="user"
           as={Link}
-          position="right"
           to="/login"
-          name="Iniciar Sesión"
+          style={{ backgroundColor: "transparent" }}
         />
-      </Menu>
+        <br />
+        <br />
+      </>
     ) : (
       <>
         <Menu>
           {/* Condicional para ocultar la pestaña de usuario */}
           {usuario.rol === USER_TYPES.MODERATOR_USER ? (
             <>
-              <Menu.Item as={Link} to="/" name="home" />
-              <Menu.Item as={Link} position="right" to="/user" name="User" />
-              <Menu.Item as="a" onClick={logout} name="Salir" />
+              <Menu.Item as={Link} to="/" icon="home" />
+              <Menu.Item
+                as={Link}
+                position="right"
+                to="/user"
+                name="Cosméticos"
+                icon="user"
+              />
+              <Menu.Item as="a" onClick={logout} icon="sign-out" />
             </>
           ) : null}
 
           {/* Condicional para ocultar la pestaña de admin */}
           {usuario.rol === USER_TYPES.ADMIN_USER ? (
             <>
-              <Menu.Item as={Link} to="/" name="home" />
-              <Menu.Item as={Link} position="right" to="/user" name="User" />
-              <Menu.Item as={Link} to="/admin" name="Admin" />
-              <Menu.Item as="a" onClick={logout} name="Salir" />
+              <Menu.Item as={Link} to="/" icon="home" />
+              <Menu.Item
+                as={Link}
+                position="right"
+                to="/user"
+                icon="user"
+                name="Cosméticos"
+              />
+              <Menu.Item
+                as={Link}
+                to="/admin"
+                name="Leathershop"
+                icon="settings"
+              />
+              <Menu.Item as="a" onClick={logout} icon="sign-out" />
             </>
           ) : null}
         </Menu>

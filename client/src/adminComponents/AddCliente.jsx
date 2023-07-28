@@ -12,12 +12,10 @@ const AddCliente = () => {
   const { loggedIn, usuario } = useContext(contexto);
   const [datosCliente, setDatosCliente] = useState({});
   const [imagenes, setImagenes] = useState([]);
+  const [loadingImages, setLoadingImages] = useState(false);
+  const [showLoadingToast, setShowLoadingToast] = useState(false);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   const uploadImageToCloudinary = async (file) => {
     const formData = new FormData();
@@ -44,11 +42,12 @@ const AddCliente = () => {
 
   const handleFormSubmit = async () => {
     try {
+      setLoadingImages(true);
+      setShowLoadingToast(true);
       // Upload each image to Cloudinary and get the URLs
       const uploadedImages = await Promise.all(
         imagenes.map((file) => uploadImageToCloudinary(file))
       );
-
       // Format the data including the uploaded image URLs
       const formattedData = {
         ...datosCliente,
@@ -76,6 +75,9 @@ const AddCliente = () => {
       });
 
       if (response.ok) {
+        setLoadingImages(false);
+        setShowLoadingToast(false);
+
         // Show a success toast if the client was added successfully
         toast.success("Cliente añadido correctamente");
 
@@ -84,10 +86,14 @@ const AddCliente = () => {
         navigate("/admin");
       } else {
         // Show an error toast if there was an issue adding the client
+        setLoadingImages(false);
+        setShowLoadingToast(false);
         toast.error("Error al añadir el cliente");
       }
     } catch (error) {
-      console.error("Error al añadir el cliente", error);
+      setLoadingImages(false);
+      setShowLoadingToast(false);
+      toast.error("Error al añadir el cliente", error);
     }
   };
 
@@ -102,6 +108,16 @@ const AddCliente = () => {
     setImagenes(newImages);
   };
 
+  useEffect(() => {
+    // Muestra el toast "Cargando imágenes" cuando se están subiendo las imágenes
+    if (showLoadingToast) {
+      toast.loading("Cargando imágenes...", {
+        duration: 2000, // Duración del toast en milisegundos
+        onClose: () => setShowLoadingToast(false), // Se ejecutará cuando el toast se cierre
+      });
+    }
+  }, [showLoadingToast]);
+
   if (loggedIn && usuario.rol === "Admin") {
     return (
       <>
@@ -111,7 +127,7 @@ const AddCliente = () => {
           <Header.Content>Detalle del cliente</Header.Content>
         </Header>
         <Grid centered style={{ width: "100vw", margin: "0 auto" }}>
-          <Grid.Column mobile={14} tablet={8} computer={6}>
+          <Grid.Column mobile={15} tablet={8} computer={6}>
             <Form>
               <Form.Group widths="equal">
                 <Form.Input
@@ -347,32 +363,57 @@ const AddCliente = () => {
                   onChange={handleImageChange}
                 />
               </Form.Field>
-              <div>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  flexDirection: "row",
+                }}
+              >
                 {imagenes.map((file, index) => (
-                  <div key={index} style={{ marginBottom: "10px" }}>
-                    <img
-                      src={URL.createObjectURL(file)}
-                      alt={`Previsualización ${index}`}
+                  <div key={index}>
+                    <div
                       style={{
-                        width: "100px",
-                        height: "100px",
-                        objectFit: "cover",
+                        marginBottom: "10px",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                       }}
-                    />
-                    <Button
-                      icon="remove"
-                      color="red"
-                      size="tiny"
-                      onClick={() => handleRemoveImage(index)}
-                      style={{ marginTop: "5px" }}
-                    />
+                    >
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`Previsualización ${index}`}
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          objectFit: "cover",
+                          margin: "2px",
+                        }}
+                      />
+                      <Button
+                        icon="remove"
+                        color="red"
+                        size="tiny"
+                        onClick={() => handleRemoveImage(index)}
+                        style={{
+                          marginTop: "5px",
+                          width: "70px",
+                          textAlign: "center",
+                        }}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
 
               <Grid>
                 <Grid.Column textAlign="center">
-                  <Button type="submit" onClick={handleFormSubmit}>
+                  <Button
+                    type="submit"
+                    color="green"
+                    fluid
+                    onClick={handleFormSubmit}
+                  >
                     Añadir cliente
                   </Button>
                 </Grid.Column>

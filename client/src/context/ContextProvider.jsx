@@ -37,7 +37,7 @@ const ContextProvider = ({ children }) => {
           return "Public";
         } else {
           localStorage.setItem("usuarioLS", JSON.stringify({ rol: user.rol }));
-          localStorage.setItem("demasdatosLS", JSON.stringify(...user));
+          localStorage.setItem("demasdatosLS", JSON.stringify(user));
           localStorage.setItem("loggedLS", true);
           setLoggedIn(true);
           setUsuario(user);
@@ -45,7 +45,7 @@ const ContextProvider = ({ children }) => {
         }
       }
     } catch (error) {
-      console.log("Error en la solicitud:", error.message);
+      console.log(error.message);
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import {
   Header,
   Icon,
@@ -12,6 +12,7 @@ import { useLocation, Navigate, useNavigate } from "react-router-dom";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
 import { contexto } from "../context/ContextProvider";
+import ImageViewer from "react-simple-image-viewer";
 
 const VerCliente = () => {
   const navigate = useNavigate();
@@ -19,6 +20,8 @@ const VerCliente = () => {
   const { loggedIn, usuario } = useContext(contexto);
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(true);
+  const [currentImage, setCurrentImage] = useState(0);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   if (!location.state) {
     return <Navigate to={"/"} />;
@@ -103,16 +106,26 @@ const VerCliente = () => {
           // Manejar el escenario de éxito si es necesario
           toast.success("Cliente eliminado exitosamente");
 
-          // Esperar 2 segundos utilizando setTimeout
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-
           handleModalClose();
+          // Esperar 2 segundos utilizando setTimeout
+          await new Promise((resolve) => setTimeout(resolve, 10));
+
           navigate("/admin");
         }
       } catch (error) {
         console.error("Error al eliminar el cliente", error);
       }
     }
+  };
+
+  const openImageViewer = useCallback((index) => {
+    setCurrentImage(index);
+    setIsViewerOpen(true);
+  }, []);
+
+  const closeImageViewer = () => {
+    setCurrentImage(0);
+    setIsViewerOpen(false);
   };
 
   if (loggedIn && usuario.rol === "Admin") {
@@ -388,6 +401,31 @@ const VerCliente = () => {
                   })
                 }
               />
+              <div>
+                {cliente?.imagen?.map((src, index) => (
+                  <img
+                    src={src}
+                    onClick={() => openImageViewer(index)}
+                    width="100"
+                    key={index}
+                    style={{
+                      margin: "2px",
+                      border: "1px solid #000",
+                    }}
+                    alt=""
+                  />
+                ))}
+
+                {isViewerOpen && (
+                  <ImageViewer
+                    src={cliente?.imagen}
+                    currentIndex={currentImage}
+                    disableScroll={false}
+                    closeOnClickOutside={true}
+                    onClose={closeImageViewer}
+                  />
+                )}
+              </div>
               <Grid>
                 <Grid.Column textAlign="center">
                   <br />
