@@ -31,7 +31,6 @@ router.get("/cliente/getbyid/:id", async (req, res) => {
 
 //======= crear un nuevo cliente =======
 router.post("/cliente/add", async (req, res) => {
-  console.log(req.body);
   try {
     const {
       nombre,
@@ -84,12 +83,10 @@ router.post("/cliente/add", async (req, res) => {
     const resultado = await cliente.save();
 
     //mandamos estado 200 de OK y el resultado de la operacion
-    console.log(resultado);
     res
       .status(200)
       .json({ message: "Cliente añadido correctamente", resultado });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       messageDev: "No se pudo añadir al cliente",
       messageSys: error.message,
@@ -121,8 +118,6 @@ router.post(
     const token = req.cookies.token;
     try {
       const ValidPayload = jwt.verify(token, process.env.JWT_SECRET);
-
-      console.log(ValidPayload);
       // Llamar a next solo si el token es válido
       next();
     } catch (error) {

@@ -98,7 +98,7 @@ const CategoriaProductos = () => {
   const containerStyle = {
     display: "flex",
     alignItems: "center",
-    margin: "15px",
+    margin: "15px auto",
     padding: "10px",
     border: "1px solid #ccc",
     borderRadius: "5px",
@@ -150,11 +150,12 @@ const CategoriaProductos = () => {
           onChange={handleCategoriaChange}
         />
         {cosmeticos?.length > 0 ? (
-          <>
+          <div style={{ padding: "10px" }}>
             {cosmeticos?.map((cosmetico) => (
               <Link
                 style={containerStyle}
                 to={`/user/verProducto/${cosmetico._id}`}
+                state={{ cosmetico }}
               >
                 <img
                   src={
@@ -188,7 +189,7 @@ const CategoriaProductos = () => {
               totalPages={totalPages}
               onPageChange={handlePaginationChange}
             />
-          </>
+          </div>
         ) : (
           <h3>{mensaje}</h3>
         )}

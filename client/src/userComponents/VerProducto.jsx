@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import {
   Header,
-  Icon,
   Form,
   Button,
   Grid,
   Label,
   Modal,
+  Image,
 } from "semantic-ui-react";
 import { useLocation, Navigate, useNavigate } from "react-router-dom";
 import API_URL from "../config.js";
@@ -20,6 +20,7 @@ const VerProducto = () => {
   const { loggedIn, usuario } = useContext(contexto);
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(true);
+  const [categorias, setCategorias] = useState([]);
   const [currentImage, setCurrentImage] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
@@ -27,10 +28,83 @@ const VerProducto = () => {
     return <Navigate to={"/"} />;
   }
   const { cosmetico } = location.state;
+  const [apartados, setApartados] = useState(cosmetico?.apartados);
+
+  // Paso 1: Agregar estado para seguir los datos actualizados del cliente
+  const [datosCosmeticoActualizados, setDatosCosmeticoActualizados] = useState({
+    ...cosmetico,
+  });
+
+  // Step 1: Remove the second argument from setApartados
+  const handleApartadosChange = (newValue) => {
+    setApartados(newValue);
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    getCategoria();
+    // Step 2: Move the side effect code here
+    setDatosCosmeticoActualizados((prevData) => ({
+      ...prevData,
+      apartados: apartados,
+      cantidadTotal: cosmetico.cantidadTotal,
+    }));
+  }, [apartados, cosmetico.cantidadTotal]);
+
+  // Paso 2: Función para manejar el envío del formulario y actualizar los datos
+  const handleFormSubmit = async () => {
+    try {
+      const response = await fetch(
+        `${API_URL}/cosmeticos/update/${cosmetico._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...datosCosmeticoActualizados,
+            categoria: selectedCategoriaId, // Usamos el ID de la categoría seleccionada
+          }),
+          credentials: "include", // Asegúrate de incluir esta opción
+        }
+      );
+
+      if (!response.ok) {
+        // Manejar escenarios de error si es necesario
+        console.error("Error al actualizar los datos del cosmetico");
+      } else {
+        // Manejar el escenario de éxito si es necesario
+        toast.success("Datos del cosmetico actualizados exitosamente", {
+          position: "bottom-center",
+        });
+      }
+    } catch (error) {
+      console.error("Error al actualizar los datos del cosmetico", error);
+    }
+  };
+
+  const getCategoria = async () => {
+    try {
+      const response = await fetch(`${API_URL}/cosmeticos/categorias`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        toast.error("Error al obtener la lista de categorías");
+        throw new Error("Error al obtener la lista de categorías");
+      }
+
+      const data = await response.json();
+      setCategorias(data);
+    } catch (error) {
+      toast.error("Error al obtener la lista de categorías");
+      console.error("Error al obtener la lista de categorías:", error);
+    }
+  };
 
   const handleModalOpen = () => {
     setModalOpen(true);
@@ -45,37 +119,7 @@ const VerProducto = () => {
     handleModalClose(); // Cerramos el modal después de cancelar.
   };
 
-  // Paso 1: Agregar estado para seguir los datos actualizados del cliente
-  const [datosCosmeticoActualizados, setDatosCosmeticoActualizados] = useState({
-    ...cosmetico,
-  });
-
-  // Paso 2: Función para manejar el envío del formulario y actualizar los datos
-  const handleFormSubmit = async () => {
-    console.log(datosCosmeticoActualizados);
-    try {
-      const response = await fetch(`${API_URL}/cliente/update/${cliente._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(datosClienteActualizados),
-        credentials: "include", // Asegúrate de incluir esta opción
-      });
-
-      if (!response.ok) {
-        // Manejar escenarios de error si es necesario
-        console.error("Error al actualizar los datos del cliente");
-      } else {
-        // Manejar el escenario de éxito si es necesario
-        toast.success("Datos del cliente actualizados exitosamente");
-      }
-    } catch (error) {
-      console.error("Error al actualizar los datos del cliente", error);
-    }
-  };
-
-  const handleDeleteCliente = async () => {
+  const handleDeleteCosmetico = async () => {
     setConfirmDelete(true);
     if (confirmDelete) {
       try {
@@ -115,6 +159,22 @@ const VerProducto = () => {
     setIsViewerOpen(false);
   };
 
+  // Paso 3: Crear estado para manejar la categoría seleccionada por su ID
+  const [selectedCategoriaId, setSelectedCategoriaId] = useState(
+    cosmetico?.categoria
+  );
+
+  // Paso 4: Crear una función para manejar el cambio de la categoría en el Dropdown
+  const handleCategoriaChange = (e, { value }) => {
+    setSelectedCategoriaId(value);
+  };
+
+  const listaCategorias = categorias?.map((categoria) => ({
+    key: categoria._id,
+    text: categoria.nombre,
+    value: categoria._id, // Usamos el _id como valor del Dropdown para filtrar por categoría
+  }));
+
   if (
     (loggedIn && usuario.rol === "Admin") ||
     (loggedIn && usuario.rol === "Moderator")
@@ -127,7 +187,7 @@ const VerProducto = () => {
             <p>¿Está seguro de que desea eliminar al producto?</p>
           </Modal.Content>
           <Modal.Actions>
-            <Button negative onClick={handleDeleteCliente}>
+            <Button negative onClick={handleDeleteCosmetico}>
               Sí, eliminar
             </Button>
             <Button onClick={handleDeleteCancel}>No, cancelar</Button>
@@ -135,272 +195,133 @@ const VerProducto = () => {
         </Modal>
         <Toaster />{" "}
         <Header as="h2" icon textAlign="center">
-          <Icon name="user" circular />
-          <Header.Content>Detalle del Producto</Header.Content>
+          <Image src={cosmetico.imagen[0]} size="massive" circular />
+          <Header.Content>{cosmetico?.producto}</Header.Content>
+        </Header>
+        <Header as="h2" icon textAlign="center">
+          <Header.Content
+            style={{
+              padding: "5px",
+              borderRadius: "5px",
+              backgroundColor: "#d0e0e3",
+              width: "250px",
+              margin: "4px auto",
+            }}
+          >
+            Disponible: {cosmetico?.cantidadTotal - apartados}
+          </Header.Content>
+          <Header.Content
+            style={{
+              padding: "5px",
+              borderRadius: "5px",
+              backgroundColor: "#ffe599",
+              width: "250px",
+              margin: "4px auto",
+            }}
+          >
+            Apartados: {apartados}
+          </Header.Content>
+        </Header>
+        <Header
+          style={{
+            width: "300px",
+            display: "block",
+            margin: "0 auto",
+            borderRadius: "10px",
+            border: "1px solid #b6d7a8",
+            backgroundColor: "#d9ead3",
+          }}
+        >
+          <Grid centered style={{ margin: "1px", padding: "10px" }}>
+            <span style={{ marginBottom: "10px" }}>Apartar producto</span>
+            <Button.Group>
+              <Button
+                icon="minus"
+                color="red"
+                onClick={() =>
+                  apartados < 1
+                    ? handleApartadosChange(0)
+                    : handleApartadosChange(apartados - 1)
+                }
+              />
+              <Label
+                basic
+                style={{
+                  margin: "0 3px",
+                  padding: "10PX",
+                  fontSize: "30px",
+                  backgroundColor: "snow",
+                }}
+              >
+                {apartados}
+              </Label>
+              <Button
+                icon="plus"
+                color="green"
+                onClick={() =>
+                  apartados > cosmetico?.cantidadTotal - 1
+                    ? handleApartadosChange(cosmetico?.cantidadTotal)
+                    : handleApartadosChange(apartados + 1)
+                }
+              />
+            </Button.Group>
+          </Grid>
         </Header>
         <Grid centered style={{ width: "100vw", margin: "0 auto" }}>
           <Grid.Column mobile={14} tablet={8} computer={6}>
             <Form>
               <Form.Group widths="equal">
                 <Form.Input
-                  label="Nombre"
-                  placeholder="Nombre"
+                  label="Nombre del producto"
+                  placeholder="Nombre del producto"
                   required
-                  defaultValue={cliente?.nombre ?? ""}
+                  // defaultValue={cosmetico?.producto ?? ""}
+                  defaultValue={cosmetico?.producto} // Asigna el valor del estado al input
                   onChange={(e) =>
-                    setDatosClienteActualizados({
-                      ...datosClienteActualizados,
-                      nombre: e.target.value,
+                    setDatosCosmeticoActualizados({
+                      ...datosCosmeticoActualizados,
+                      producto: e.target.value,
                     })
                   }
                   autoComplete="nope"
                 />
-                <Form.Input
-                  label="Apellido"
-                  placeholder="Apellido"
-                  defaultValue={cliente?.apellido ?? ""}
+                <Form.TextArea
+                  label="Especificaciones"
+                  placeholder="Especificaciones del producto"
+                  // defaultValue={cosmetico?.especificaciones ?? ""}
+                  defaultValue={cosmetico?.especificaciones} // Asigna el valor del estado al input
                   onChange={(e) =>
-                    setDatosClienteActualizados({
-                      ...datosClienteActualizados,
-                      apellido: e.target.value,
+                    setDatosCosmeticoActualizados({
+                      ...datosCosmeticoActualizados,
+                      especificaciones: e.target.value,
                     })
-                  }
+                  } // Maneja el cambio del input
                   autoComplete="nope"
-                />
-              </Form.Group>
-              <Form.Group widths="equal">
-                <Form.Input
-                  label="Fecha de Recibo"
-                  type="date"
-                  required
-                  defaultValue={formatfecha(cliente?.fechaRecibo ?? "")}
-                  autoComplete="nope"
-                  onChange={(e) =>
-                    setDatosClienteActualizados({
-                      ...datosClienteActualizados,
-                      fechaRecibo: e.target.value,
-                    })
-                  }
-                />
-                <Form.Input
-                  label="Fecha de Entrega"
-                  type="date"
-                  required
-                  defaultValue={formatfecha(cliente?.fechaEntrega ?? "")}
-                  autoComplete="nope"
-                  onChange={(e) =>
-                    setDatosClienteActualizados({
-                      ...datosClienteActualizados,
-                      fechaEntrega: e.target.value,
-                    })
-                  }
                 />
               </Form.Group>
-              <Form.Input
-                label="Número de Teléfono"
-                type="tel"
-                required
-                defaultValue={cliente?.numeroTel ?? ""}
-                autoComplete="nope"
-                onChange={(e) =>
-                  setDatosClienteActualizados({
-                    ...datosClienteActualizados,
-                    numeroTel: e.target.value,
-                  })
-                }
-              />
-              <Form.Input
-                label="Producto"
-                placeholder="Producto"
-                required
-                defaultValue={cliente?.producto ?? ""}
-                autoComplete="nope"
-                onChange={(e) =>
-                  setDatosClienteActualizados({
-                    ...datosClienteActualizados,
-                    producto: e.target.value,
-                  })
-                }
-              />
-              <Form.Group widths="equal">
-                <Form.Input
-                  label="Precio"
-                  type="number"
-                  placeholder="0.00"
-                  defaultValue={cliente?.precio ?? ""}
-                  autoComplete="nope"
-                  required
-                  onChange={(e) =>
-                    setDatosClienteActualizados({
-                      ...datosClienteActualizados,
-                      precio: e.target.value,
-                    })
-                  }
-                >
-                  <Label basic size="big">
-                    Q
-                  </Label>
-                  <input />
-                </Form.Input>
-                <Form.Input
-                  label="Anticipo"
-                  type="number"
-                  placeholder="0.00"
-                  defaultValue={cliente?.anticipo ?? ""}
-                  autoComplete="nope"
-                  onChange={(e) =>
-                    setDatosClienteActualizados({
-                      ...datosClienteActualizados,
-                      anticipo: e.target.value,
-                    })
-                  }
-                >
-                  <Label basic size="big">
-                    Q
-                  </Label>
-                  <input />
-                </Form.Input>
-              </Form.Group>
-              <Form.Input
-                label="Saldo"
-                type="number"
-                placeholder="0.00"
-                defaultValue={cliente?.saldo ?? ""}
-                autoComplete="nope"
-                onChange={(e) =>
-                  setDatosClienteActualizados({
-                    ...datosClienteActualizados,
-                    saldo: e.target.value,
-                  })
-                }
-              >
-                <Label basic size="big">
-                  Q
-                </Label>
-                <input />
-              </Form.Input>
-              <Form.TextArea
-                label="Especificaciones"
-                placeholder="Especificaciones"
-                defaultValue={cliente?.especificaciones ?? ""}
-                autoComplete="nope"
-                onChange={(e) =>
-                  setDatosClienteActualizados({
-                    ...datosClienteActualizados,
-                    especificaciones: e.target.value,
-                  })
-                }
-              />
-              <Form.TextArea
-                label="Medidas"
-                placeholder="Medidas"
-                defaultValue={cliente?.medidas ?? ""}
-                onChange={(e) =>
-                  setDatosClienteActualizados({
-                    ...datosClienteActualizados,
-                    medidas: e.target.value,
-                  })
-                }
-              />
-              <Form.Input
-                label="Trabajador"
-                placeholder="Trabajador"
-                defaultValue={cliente?.trabajador ?? ""}
-                autoComplete="nope"
-                onChange={(e) =>
-                  setDatosClienteActualizados({
-                    ...datosClienteActualizados,
-                    trabajador: e.target.value,
-                  })
-                }
-              />
-              <Form.TextArea
-                label="Descripción"
-                placeholder="Descripción"
-                defaultValue={cliente?.descripcion ?? ""}
-                autoComplete="nope"
-                onChange={(e) =>
-                  setDatosClienteActualizados({
-                    ...datosClienteActualizados,
-                    descripcion: e.target.value,
-                  })
-                }
-              />
-              <Form.TextArea
-                label="Observaciones"
-                placeholder="Observaciones"
-                defaultValue={cliente?.observaciones ?? ""}
-                autoComplete="nope"
-                onChange={(e) =>
-                  setDatosClienteActualizados({
-                    ...datosClienteActualizados,
-                    observaciones: e.target.value,
-                  })
-                }
-              />
-              <Form.TextArea
-                label="Recomendaciones"
-                placeholder="Recomendaciones"
-                defaultValue={cliente?.recomendaciones ?? ""}
-                autoComplete="nope"
-                onChange={(e) =>
-                  setDatosClienteActualizados({
-                    ...datosClienteActualizados,
-                    recomendaciones: e.target.value,
-                  })
-                }
-              />
-              <Form.Input
-                label="Colores"
-                placeholder="Colores"
-                defaultValue={cliente?.colores[0] ?? ""}
-                autoComplete="nope"
-                onChange={(e) =>
-                  setDatosClienteActualizados({
-                    ...datosClienteActualizados,
-                    colores: [e.target.value],
-                  })
-                }
-              />
-              <Form.Input
-                label="Tallas"
-                placeholder="Tallas ej: S, M, L"
-                defaultValue={cliente?.tallas[0] ?? ""}
-                autoComplete="nope"
-                onChange={(e) =>
-                  setDatosClienteActualizados({
-                    ...datosClienteActualizados,
-                    tallas: [e.target.value],
-                  })
-                }
-              />
+
               <Form.Select
-                label="Estado"
-                options={[
-                  { key: "false", text: "Pendiente", value: false },
-                  { key: "true", text: "Entregado", value: true },
-                ]}
+                label="Categoría"
+                options={listaCategorias}
                 placeholder="Seleccionar estado"
                 required
-                defaultValue={cliente?.estado ?? ""}
+                // defaultValue={cosmetico?.categoria ?? ""}
+                defaultValue={selectedCategoriaId}
+                onChange={handleCategoriaChange}
                 autoComplete="nope"
-                onChange={(e, { value }) =>
-                  setDatosClienteActualizados({
-                    ...datosClienteActualizados,
-                    estado: value,
-                  })
-                }
               />
               <div>
-                {cliente?.imagen?.map((src, index) => (
+                {cosmetico?.imagen?.map((src, index) => (
                   <img
                     src={src}
                     onClick={() => openImageViewer(index)}
-                    width="100"
+                    width="100px"
+                    height="100px"
                     key={index}
                     style={{
                       margin: "2px",
                       border: "1px solid #000",
+                      objectFit: "contain",
                     }}
                     alt=""
                   />
@@ -408,7 +329,7 @@ const VerProducto = () => {
 
                 {isViewerOpen && (
                   <ImageViewer
-                    src={cliente?.imagen}
+                    src={cosmetico?.imagen}
                     currentIndex={currentImage}
                     disableScroll={false}
                     closeOnClickOutside={true}
@@ -424,10 +345,10 @@ const VerProducto = () => {
                     color="green"
                     onClick={handleFormSubmit}
                   >
-                    Actualizar Datos
+                    Actualizar
                   </Button>
                   <Button type="button" color="red" onClick={handleModalOpen}>
-                    Eliminar Cliente
+                    Eliminar Producto
                   </Button>
                 </Grid.Column>
               </Grid>

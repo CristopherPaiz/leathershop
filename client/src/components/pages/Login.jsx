@@ -57,7 +57,7 @@ const Login = () => {
 
         <Grid
           textAlign="center"
-          style={{ height: "85vh" }}
+          style={{ height: "85vh", margin: "0 auto" }}
           verticalAlign="middle"
         >
           <Grid.Column

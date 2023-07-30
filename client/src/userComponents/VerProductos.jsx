@@ -48,7 +48,7 @@ const VerProductos = () => {
   const containerStyle = {
     display: "flex",
     alignItems: "center",
-    margin: "15px",
+    margin: "15px auto",
     padding: "10px",
     border: "1px solid #ccc",
     borderRadius: "5px",
@@ -92,7 +92,7 @@ const VerProductos = () => {
           </Header>
         </div>
         {cosmeticos?.length > 0 ? (
-          <>
+          <div style={{ padding: "10px" }}>
             {cosmeticos?.map((cosmetico) => (
               <Link
                 style={containerStyle}
@@ -112,7 +112,7 @@ const VerProductos = () => {
                   <div>{cosmetico?.especificaciones ?? ""}</div>
                   <span style={spanStyle}>
                     <strong>Disponibles: </strong>
-                    {cosmetico?.cantidadTotal ?? ""}
+                    {cosmetico?.cantidadTotal - cosmetico?.apartados ?? ""}
                   </span>
                   <span style={spanStyle}>
                     <strong>Apartados: </strong>
@@ -131,7 +131,7 @@ const VerProductos = () => {
               totalPages={totalPages}
               onPageChange={handlePaginationChange}
             />
-          </>
+          </div>
         ) : (
           <h3>No hay resultados...</h3>
         )}

@@ -75,7 +75,7 @@ const FiltrarProducto = () => {
     border: "1px solid #ccc",
     borderRadius: "5px",
     flexDirection: "row",
-    margin: "15px",
+    margin: "10px auto",
     maxWidth: "600px",
     minWidth: "300px",
     boxShadow:
@@ -112,7 +112,11 @@ const FiltrarProducto = () => {
           textAlign: "center",
         }}
       >
-        <Header size="tiny" dividing style={{ padding: "20px" }}>
+        <Header
+          size="tiny"
+          dividing
+          style={{ width: "80vw", margin: "20px auto" }}
+        >
           <Icon name="th" />
           <Header.Content>
             Combina uno o ambos campos para filtrar los productos
@@ -156,16 +160,17 @@ const FiltrarProducto = () => {
             </Form>
           </Grid.Column>
         </Grid>
-        <div style={{ margin: "0px" }}>
+        <div style={{ margin: "5px 10px", overflow: "hidden" }}>
           <Header size="tiny" dividing>
             Resultados de la búsqueda:
           </Header>
           {cosmeticos?.length > 0 ? (
-            <>
+            <div>
               {cosmeticos?.map((cosmetico) => (
                 <Link
                   style={containerStyle}
-                  to={`/user/verProducto/${cosmetico?._id}`}
+                  to={`/user/verProducto/${cosmetico._id}`}
+                  state={{ cosmetico }}
                 >
                   <img
                     src={
@@ -189,7 +194,7 @@ const FiltrarProducto = () => {
                   </div>
                 </Link>
               ))}
-            </>
+            </div>
           ) : (
             <p>No hay resultados</p>
           )}
