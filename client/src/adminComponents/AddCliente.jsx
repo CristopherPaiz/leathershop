@@ -124,7 +124,7 @@ const AddCliente = () => {
         <Toaster />{" "}
         <Header as="h2" icon textAlign="center">
           <Icon name="user" circular />
-          <Header.Content>Detalle del cliente</Header.Content>
+          <Header.Content>Añadir cliente</Header.Content>
         </Header>
         <Grid centered style={{ width: "100vw", margin: "0 auto" }}>
           <Grid.Column mobile={15} tablet={8} computer={6}>

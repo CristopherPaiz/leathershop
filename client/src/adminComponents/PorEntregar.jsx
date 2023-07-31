@@ -6,6 +6,7 @@ import {
   Input,
   Button,
   Card,
+  Image,
 } from "semantic-ui-react";
 import API_URL from "../config.js";
 import { Link } from "react-router-dom";
@@ -14,6 +15,7 @@ const PorEntregar = () => {
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
   const [resultados, setResultados] = useState([]);
+  const [loaded, setLoaded] = useState(false); // Bandera de control
 
   useEffect(() => {
     // Función para obtener la fecha actual
@@ -38,6 +40,7 @@ const PorEntregar = () => {
     // Establecer las fechas por defecto en el estado
     setFechaInicio(getCurrentDate());
     setFechaFin(getOneWeekAheadDate());
+    setLoaded(true);
   }, []);
 
   const handleSubmit = async (event) => {
@@ -47,7 +50,9 @@ const PorEntregar = () => {
 
     try {
       const fechaInicioISO = new Date(fechaInicio);
+      fechaInicioISO.setDate(fechaInicioISO.getDate() + 1);
       const fechaFinISO = new Date(fechaFin);
+      fechaFinISO.setDate(fechaFinISO.getDate() + 1);
 
       const response = await fetch(`${API_URL}/cliente/getbyfecha`, {
         method: "POST",
@@ -87,6 +92,12 @@ const PorEntregar = () => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
+
+  useEffect(() => {
+    if (loaded) {
+      handleSubmit();
+    }
+  }, [fechaInicio, fechaFin, loaded]);
 
   return (
     <div style={{ margin: "0 auto", textAlign: "center" }}>
@@ -147,7 +158,24 @@ const PorEntregar = () => {
                       backgroundColor: backgroundColor,
                       marginBottom: "2px",
                     }}
+                    as={Link}
+                    to={`/admin/vercliente/${cliente._id}`}
+                    state={{ cliente }}
                   >
+                    <Image
+                      src={
+                        cliente?.imagen[0] ??
+                        "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"
+                      }
+                      size="tiny"
+                      floated="left"
+                      verticalAlign="middle"
+                      style={{
+                        objectFit: "cover",
+                        width: "100px",
+                        height: "100px",
+                      }}
+                    />
                     <Button
                       as={Link}
                       icon="eye"
@@ -160,14 +188,21 @@ const PorEntregar = () => {
                     <Card.Header>
                       {cliente?.nombre ?? ""} {cliente?.apellido ?? ""}
                     </Card.Header>
-                    <Card.Meta>Producto: {cliente?.producto ?? ""}</Card.Meta>
-                    <Card.Description>
+                    <Card.Meta>
+                      <strong>Producto: </strong> {cliente?.producto ?? ""}
+                    </Card.Meta>
+
+                    <Card.Meta>
                       <strong>Fecha recibido:</strong>{" "}
                       {formatDate(cliente?.fechaRecibo)}
-                    </Card.Description>
-                    <Card.Description>
+                    </Card.Meta>
+                    <Card.Meta>
                       <strong>Fecha Entrega:</strong>{" "}
                       {formatDate(cliente.fechaEntrega)}
+                    </Card.Meta>
+                    <Card.Description>
+                      <strong>Especificaciones: </strong>
+                      {cliente?.especificaciones ?? ""}
                     </Card.Description>
                   </Card.Content>
                 </React.Fragment>

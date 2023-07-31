@@ -10,7 +10,23 @@ const Adminpage = () => {
   const { loggedIn, usuario } = useContext(contexto);
   const [pestanaActiva, setPestanaActiva] = useState(1);
 
+  const verificarExpiracionToken = () => {
+    const expirationDate = localStorage.getItem("miTokenExpiration");
+    if (expirationDate) {
+      const now = new Date();
+      const expired = now >= new Date(expirationDate);
+      if (expired) {
+        // El token ha expirado, borrarlo del LocalStorage
+        localStorage.removeItem("usuarioLS");
+        localStorage.removeItem("loggedLS");
+        localStorage.removeItem("demasdatosLS");
+        localStorage.removeItem("miTokenExpiration");
+      }
+    }
+  };
+
   useEffect(() => {
+    verificarExpiracionToken();
     const storedPestanaActiva = localStorage.getItem("pestanaActiva");
 
     if (storedPestanaActiva) {

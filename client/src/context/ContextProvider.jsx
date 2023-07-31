@@ -38,6 +38,14 @@ const ContextProvider = ({ children }) => {
           localStorage.setItem("usuarioLS", JSON.stringify({ rol: user.rol }));
           localStorage.setItem("demasdatosLS", JSON.stringify(user));
           localStorage.setItem("loggedLS", true);
+          // Obtener la fecha y hora de expiración (30 minutos a partir del momento actual)
+          const expirationDate = new Date(
+            Date.now() + 1000 * 60 * 60 * 24 * 15
+          ); // 15 días
+          localStorage.setItem(
+            "miTokenExpiration",
+            expirationDate.toISOString()
+          );
           setLoggedIn(true);
           setUsuario(user);
           return user.rol;

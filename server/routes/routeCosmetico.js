@@ -61,6 +61,7 @@ router.get("/cosmeticos/getbyid/:id", async (req, res) => {
 
 // Ruta para crear un cosmético
 router.post("/cosmeticos/add", async (req, res) => {
+  console.log(req.body);
   try {
     const {
       producto,
@@ -68,10 +69,13 @@ router.post("/cosmeticos/add", async (req, res) => {
       cantidadTotal,
       apartados,
       especificaciones,
+      imagen,
       inactivos,
       estado,
     } = req.body;
 
+    // Obtener un array de strings con las URLs de las imágenes
+    const imagenes = await imagen;
     // Verificar si la categoría existe antes de crear el cosmético
     const categoriaExistente = await CosmeticoCategoria.findById(categoria);
     if (!categoriaExistente) {
@@ -85,6 +89,7 @@ router.post("/cosmeticos/add", async (req, res) => {
       cantidadTotal,
       apartados,
       especificaciones,
+      imagen: imagenes,
       inactivos,
       estado,
     });

@@ -10,7 +10,23 @@ const Userpage = () => {
   const { loggedIn, usuario } = useContext(contexto);
   const [pestanaActivaUser, setPestanaActivaUser] = useState(1);
 
+  const verificarExpiracionToken = () => {
+    const expirationDate = localStorage.getItem("miTokenExpiration");
+    if (expirationDate) {
+      const now = new Date();
+      const expired = now >= new Date(expirationDate);
+      if (expired) {
+        // El token ha expirado, borrarlo del LocalStorage
+        localStorage.removeItem("usuarioLS");
+        localStorage.removeItem("loggedLS");
+        localStorage.removeItem("demasdatosLS");
+        localStorage.removeItem("miTokenExpiration");
+      }
+    }
+  };
+
   useEffect(() => {
+    verificarExpiracionToken();
     const storedPestanaActiva = localStorage.getItem("pestanaActivauser");
 
     if (storedPestanaActiva) {
@@ -68,7 +84,7 @@ const Userpage = () => {
             as={Link}
             toggle
             style={{ margin: "3px", width: "170px" }}
-            to={`/admin/addcliente`}
+            to={`/user/addProducto`}
           >
             <Icon name="add" />
             Añadir Producto

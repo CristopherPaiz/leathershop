@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Icon, Button, Header, Grid, Form, Card } from "semantic-ui-react";
+import {
+  Icon,
+  Button,
+  Header,
+  Grid,
+  Form,
+  Card,
+  Image,
+} from "semantic-ui-react";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -155,7 +163,24 @@ const BuscarCliente = () => {
                       backgroundColor: cliente.estado ? "#d0e3d6" : "#f9eee4", // Fondo blanco (snow) para índices pares
                       marginBottom: "2px",
                     }}
+                    as={Link}
+                    to={`/admin/vercliente/${cliente._id}`}
+                    state={{ cliente }}
                   >
+                    <Image
+                      src={
+                        cliente?.imagen[0] ??
+                        "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"
+                      }
+                      size="tiny"
+                      floated="left"
+                      verticalAlign="middle"
+                      style={{
+                        objectFit: "cover",
+                        width: "100px",
+                        height: "100px",
+                      }}
+                    />
                     <Button
                       as={Link}
                       icon="eye"

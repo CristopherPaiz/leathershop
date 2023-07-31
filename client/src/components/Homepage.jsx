@@ -9,7 +9,23 @@ const Homepage = () => {
 
   const { setLoggedIn, setUsuario } = useContext(contexto);
 
+  const verificarExpiracionToken = () => {
+    const expirationDate = localStorage.getItem("miTokenExpiration");
+    if (expirationDate) {
+      const now = new Date();
+      const expired = now >= new Date(expirationDate);
+      if (expired) {
+        // El token ha expirado, borrarlo del LocalStorage
+        localStorage.removeItem("usuarioLS");
+        localStorage.removeItem("loggedLS");
+        localStorage.removeItem("demasdatosLS");
+        localStorage.removeItem("miTokenExpiration");
+      }
+    }
+  };
+
   useEffect(() => {
+    verificarExpiracionToken();
     const usuarioLS = localStorage.getItem("usuarioLS");
     const loggedLS = localStorage.getItem("loggedLS");
     const demasDatosLS = localStorage.getItem("demasdatosLS");

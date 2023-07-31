@@ -13,6 +13,7 @@ import Login from "./components/pages/Login.jsx";
 import VerCliente from "./adminComponents/VerCliente.jsx";
 import AddCliente from "./adminComponents/AddCliente.jsx";
 import VerProducto from "./userComponents/VerProducto.jsx";
+import AddProducto from "./userComponents/AddProducto.jsx";
 
 const App = () => {
   return (
@@ -48,6 +49,14 @@ const App = () => {
           element={
             <UserElement>
               <VerProducto />
+            </UserElement>
+          }
+        />
+        <Route
+          path="/user/addProducto"
+          element={
+            <UserElement>
+              <AddProducto />
             </UserElement>
           }
         />
