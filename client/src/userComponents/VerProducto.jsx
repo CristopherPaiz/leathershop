@@ -124,7 +124,7 @@ const VerProducto = () => {
     if (confirmDelete) {
       try {
         const response = await fetch(
-          `${API_URL}/cliente/delete/${cliente._id}`,
+          `${API_URL}/cliente/delete/${cosmetico._id}`,
           {
             method: "DELETE",
             credentials: "include",

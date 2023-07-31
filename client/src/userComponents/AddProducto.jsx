@@ -83,7 +83,7 @@ const AddProducto = () => {
         apartados: Number(datosCosmetico.apartados),
         especificaciones: datosCosmetico.especificaciones,
         producto: datosCosmetico.producto,
-        estado: datosCosmetico.estado,
+        estado: true,
         categoria: selectedCategoriaId,
         imagen: uploadedImages.map((url) => url), // Adding the uploaded image URLs to the data
       };

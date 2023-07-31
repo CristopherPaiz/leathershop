@@ -24,9 +24,9 @@ router.get("/cosmeticos/getall", async (req, res) => {
     const productsPerPage = parseInt(req.query.limit) || 1;
     const categoria = req.query.categoria; // Obtener el parámetro de la URL
 
-    let query = {};
+    let query = { estado: true }; // Agregar filtro por estado: true
     if (categoria) {
-      query = { categoria }; // Si se proporciona una categoría, usarla para filtrar
+      query.categoria = categoria; // Si se proporciona una categoría, usarla para filtrar
     }
 
     const totalProducts = await Cosmetico.countDocuments(query);
@@ -40,7 +40,7 @@ router.get("/cosmeticos/getall", async (req, res) => {
     res.status(200).json({ data, totalPages });
   } catch (error) {
     res.status(500).json({
-      messageDev: "No se pudo obtener los cosmeticos",
+      messageDev: "No se pudo obtener los cosméticos",
       messageSys: error.message,
     });
   }
@@ -174,13 +174,13 @@ router.post("/cosmeticos/categorias", async (req, res) => {
   }
 });
 
-// Ruta para filtrar por el campo de nombre o por el campo de descripción o por los dos campos
+// Ruta para filtrar por el campo de nombre o por el campo de descripción o por los dos campos, y por estado: true
 router.post("/cosmeticos/filtrar", async (req, res) => {
   try {
     const { nombre, especificaciones } = req.body;
 
-    // Creamos un objeto de filtro vacío
-    const filter = {};
+    // Creamos un objeto de filtro con la condición de estado: true
+    const filter = { estado: true };
 
     // Agregamos condiciones al objeto de filtro si los datos están presentes en el cuerpo de la solicitud
     if (nombre) {
