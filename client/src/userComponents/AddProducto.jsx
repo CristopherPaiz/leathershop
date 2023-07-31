@@ -4,7 +4,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
 import { contexto } from "../context/ContextProvider";
-import { fromBlob, blobToURL } from "image-resize-compress";
+import { fromBlob } from "image-resize-compress";
 
 const cloudinaryUploadUrl =
   "https://api.cloudinary.com/v1_1/dbkfiarmr/image/upload";
