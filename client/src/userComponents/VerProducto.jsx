@@ -124,27 +124,34 @@ const VerProducto = () => {
     if (confirmDelete) {
       try {
         const response = await fetch(
-          `${API_URL}/cliente/delete/${cosmetico._id}`,
+          `${API_URL}/cosmeticos/update/${cosmetico._id}`,
           {
-            method: "DELETE",
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...cosmetico,
+              estado: false, // Cambiar el estado a false
+            }),
             credentials: "include",
           }
         );
 
         if (!response.ok) {
-          console.error("Error al eliminar el cliente");
+          console.error("Error al cambiar el estado del producto");
         } else {
           // Manejar el escenario de éxito si es necesario
-          toast.success("Cliente eliminado exitosamente");
+          toast.success("Producto desactivado exitosamente");
 
           handleModalClose();
           // Esperar 2 segundos utilizando setTimeout
-          await new Promise((resolve) => setTimeout(resolve, 10));
+          await new Promise((resolve) => setTimeout(resolve, 2000));
 
           navigate("/admin");
         }
       } catch (error) {
-        console.error("Error al eliminar el cliente", error);
+        console.error("Error al cambiar el estado del producto", error);
       }
     }
   };
