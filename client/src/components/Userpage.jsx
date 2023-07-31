@@ -73,7 +73,7 @@ const Userpage = () => {
               active={pestanaActivaUser === boton.numero}
               toggle
               onClick={() => cambiarPestanauser(boton.numero)}
-              style={{ margin: "3px", width: "170px" }}
+              style={{ margin: "3px", width: "180px" }}
             >
               <Icon name={boton.icono} />
               {boton.texto}
@@ -83,12 +83,34 @@ const Userpage = () => {
             key={4}
             as={Link}
             toggle
-            style={{ margin: "3px", width: "170px" }}
+            style={{ margin: "3px", width: "180px" }}
             to={`/user/addProducto`}
           >
             <Icon name="add" />
             Añadir Producto
           </Button>
+          <Button
+            key={5}
+            as={Link}
+            toggle
+            style={{ margin: "3px", width: "180px" }}
+            to={`/user/addProductoDetalle`}
+          >
+            <Icon name="add square" />
+            Compra Producto
+          </Button>
+          {usuario.rol === "Admin" ? (
+            <Button
+              key={6}
+              as={Link}
+              toggle
+              style={{ margin: "3px", width: "180px" }}
+              to={`/user/productosEstadisticas`}
+            >
+              <Icon name="line graph" />
+              Estadísticas
+            </Button>
+          ) : null}
         </div>
         {pestanaActivaUser === 1 ? <VerProductos /> : null}
         {pestanaActivaUser === 2 ? <CategoriaProductos /> : null}

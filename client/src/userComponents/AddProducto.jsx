@@ -4,9 +4,11 @@ import { Navigate, useNavigate } from "react-router-dom";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
 import { contexto } from "../context/ContextProvider";
+import { fromBlob, blobToURL } from "image-resize-compress";
 
 const cloudinaryUploadUrl =
   "https://api.cloudinary.com/v1_1/dbkfiarmr/image/upload";
+
 const AddProducto = () => {
   const { loggedIn, usuario } = useContext(contexto);
   const [datosCosmetico, setDatosCosmetico] = useState({
@@ -20,6 +22,28 @@ const AddProducto = () => {
   const [valorInicial, setValorInicial] = useState(0);
 
   const navigate = useNavigate();
+
+  const handleImageChange = async (e) => {
+    const files = Array.from(e.target.files);
+
+    // Create an array to store the compressed images
+    const compressedImages = [];
+
+    for (const file of files) {
+      // Compress the image using image-resize-compress library
+      try {
+        const compressedImage = await fromBlob(file, 80, 0, 0, "webp"); // Comprimir la imagen con calidad 80 y formato webp
+        compressedImages.push(compressedImage);
+      } catch (error) {
+        console.error("Error compressing image:", error);
+        // If there's an error in compression, add the original image
+        compressedImages.push(file);
+      }
+    }
+
+    // Set the compressed images to the state
+    setImagenes([...imagenes, ...compressedImages]);
+  };
 
   const uploadImageToCloudinary = async (file) => {
     const formData = new FormData();
@@ -94,11 +118,6 @@ const AddProducto = () => {
       setShowLoadingToast(false);
       toast.error("Error al añadir el Cosmetico", error);
     }
-  };
-
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    setImagenes([...imagenes, ...files]);
   };
 
   const handleRemoveImage = (index) => {
