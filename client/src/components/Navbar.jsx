@@ -8,10 +8,6 @@ const Navbar = () => {
   const { usuario, setUsuario, loggedIn, setLoggedIn } = useContext(contexto);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   console.log(usuario);
-  // }, [usuario]);
-
   const logout = async () => {
     if (loggedIn) {
       setLoggedIn(false);

@@ -13,6 +13,10 @@ import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
 import { contexto } from "../context/ContextProvider";
 import ImageViewer from "react-simple-image-viewer";
+import { fromBlob } from "image-resize-compress";
+
+const cloudinaryUploadUrl =
+  "https://api.cloudinary.com/v1_1/dbkfiarmr/image/upload";
 
 const VerProducto = () => {
   const navigate = useNavigate();
@@ -23,6 +27,9 @@ const VerProducto = () => {
   const [categorias, setCategorias] = useState([]);
   const [currentImage, setCurrentImage] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const [loadingImages, setLoadingImages] = useState(false);
+  const [showLoadingToast, setShowLoadingToast] = useState(false);
+  const [imagenes, setImagenes] = useState([]);
 
   if (!location.state) {
     return <Navigate to={"/"} />;
@@ -34,6 +41,51 @@ const VerProducto = () => {
   const [datosCosmeticoActualizados, setDatosCosmeticoActualizados] = useState({
     ...cosmetico,
   });
+
+  const handleImageChange = async (e) => {
+    const files = Array.from(e.target.files);
+
+    // Create an array to store the compressed images
+    const compressedImages = [];
+
+    for (const file of files) {
+      // Compress the image using image-resize-compress library
+      try {
+        const compressedImage = await fromBlob(file, 80, 0, 0, "webp"); // Comprimir la imagen con calidad 80 y formato webp
+        compressedImages.push(compressedImage);
+      } catch (error) {
+        console.error("Error compressing image:", error);
+        // If there's an error in compression, add the original image
+        compressedImages.push(file);
+      }
+    }
+
+    // Set the compressed images to the state
+    setImagenes([...imagenes, ...compressedImages]);
+  };
+
+  const uploadImageToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "ml_default");
+
+    try {
+      const response = await fetch(cloudinaryUploadUrl, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image to Cloudinary");
+      }
+
+      const data = await response.json();
+      return data.secure_url;
+    } catch (error) {
+      console.error("Error uploading image to Cloudinary:", error);
+      throw error;
+    }
+  };
 
   // Step 1: Remove the second argument from setApartados
   const handleApartadosChange = (newValue) => {
@@ -53,7 +105,28 @@ const VerProducto = () => {
 
   // Paso 2: Función para manejar el envío del formulario y actualizar los datos
   const handleFormSubmit = async () => {
+    setLoadingImages(true);
+    setShowLoadingToast(true);
+    // Upload each image to Cloudinary and get the URLs
+    const uploadedImages = await Promise.all(
+      imagenes.map((file) => uploadImageToCloudinary(file))
+    );
+
+    const imagenesv2 = uploadedImages.map((url) => url);
+
+    const formattedData = {
+      ...cosmetico,
+      cantidadTotal: Number(cosmetico.cantidadTotal),
+      apartados: Number(cosmetico.apartados),
+      especificaciones: cosmetico.especificaciones,
+      producto: cosmetico.producto,
+      estado: true,
+      categoria: selectedCategoriaId,
+      imagen: [...cosmetico.imagen, ...imagenesv2], // Adding the uploaded image URLs to the data
+    };
+
     try {
+      console.log(formattedData);
       const response = await fetch(
         `${API_URL}/cosmeticos/update/${cosmetico._id}`,
         {
@@ -61,26 +134,37 @@ const VerProducto = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            ...datosCosmeticoActualizados,
-            categoria: selectedCategoriaId, // Usamos el ID de la categoría seleccionada
-          }),
+          body: JSON.stringify(formattedData),
           credentials: "include", // Asegúrate de incluir esta opción
         }
       );
 
       if (!response.ok) {
         // Manejar escenarios de error si es necesario
+        setLoadingImages(false);
+        setShowLoadingToast(false);
         console.error("Error al actualizar los datos del cosmetico");
       } else {
+        setLoadingImages(false);
+        setShowLoadingToast(false);
         // Manejar el escenario de éxito si es necesario
         toast.success("Datos del cosmetico actualizados exitosamente", {
           position: "bottom-center",
         });
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        navigate("/user");
       }
     } catch (error) {
+      setLoadingImages(false);
+      setShowLoadingToast(false);
       console.error("Error al actualizar los datos del cosmetico", error);
     }
+  };
+
+  const handleRemoveImage = (index) => {
+    const newImages = [...imagenes];
+    newImages.splice(index, 1);
+    setImagenes(newImages);
   };
 
   const getCategoria = async () => {
@@ -343,6 +427,57 @@ const VerProducto = () => {
                     onClose={closeImageViewer}
                   />
                 )}
+              </div>
+              <Form.Field>
+                <label>Imágenes</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                />
+              </Form.Field>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  flexDirection: "row",
+                }}
+              >
+                {imagenes.map((file, index) => (
+                  <div key={index}>
+                    <div
+                      style={{
+                        marginBottom: "10px",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`Previsualización ${index}`}
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          objectFit: "cover",
+                          margin: "2px",
+                        }}
+                      />
+                      <Button
+                        icon="remove"
+                        color="red"
+                        size="tiny"
+                        onClick={() => handleRemoveImage(index)}
+                        style={{
+                          marginTop: "5px",
+                          width: "70px",
+                          textAlign: "center",
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
               <Grid>
                 <Grid.Column textAlign="center">

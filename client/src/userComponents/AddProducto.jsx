@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Header, Icon, Form, Button, Grid, Label } from "semantic-ui-react";
+import { Header, Icon, Form, Button, Grid } from "semantic-ui-react";
 import { Navigate, useNavigate } from "react-router-dom";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
