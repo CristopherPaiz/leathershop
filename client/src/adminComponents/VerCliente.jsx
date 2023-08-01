@@ -120,22 +120,27 @@ const VerCliente = () => {
     // Format the data including the uploaded image URLs
 
     const formattedData = {
-      ...cliente,
-      fechaRecibo: new Date(cliente.fechaRecibo),
-      fechaEntrega: new Date(cliente.fechaEntrega),
-      precio: Number(cliente.precio),
-      anticipo: Number(cliente.anticipo),
-      saldo: Number(cliente.saldo),
+      ...datosClienteActualizados,
+      fechaRecibo: new Date(datosClienteActualizados.fechaRecibo),
+      fechaEntrega: new Date(datosClienteActualizados.fechaEntrega),
+      precio: Number(datosClienteActualizados.precio),
+      anticipo: Number(datosClienteActualizados.anticipo),
+      saldo: Number(datosClienteActualizados.saldo),
       colores:
-        cliente?.colores > 0
-          ? cliente.colores.split(",").map((color) => color.trim())
+        typeof datosClienteActualizados.colores === "string"
+          ? datosClienteActualizados.colores
+              .split(",")
+              .map((color) => color.trim())
           : [],
       tallas:
-        cliente?.tallas > 0
-          ? cliente.tallas.split(",").map((talla) => talla.trim())
+        typeof datosClienteActualizados.tallas === "string"
+          ? datosClienteActualizados.tallas
+              .split(",")
+              .map((talla) => talla.trim())
           : [],
       imagen: [...cliente.imagen, ...imagenesv2],
     };
+
     try {
       const response = await fetch(`${API_URL}/cliente/update/${cliente._id}`, {
         method: "PUT",
@@ -441,24 +446,24 @@ const VerCliente = () => {
               <Form.Input
                 label="Colores"
                 placeholder="Colores"
-                defaultValue={cliente?.colores[0] ?? ""}
+                defaultValue={cliente?.colores.join(",") ?? ""}
                 autoComplete="nope"
                 onChange={(e) =>
                   setDatosClienteActualizados({
                     ...datosClienteActualizados,
-                    colores: [e.target.value],
+                    colores: e.target.value,
                   })
                 }
               />
               <Form.Input
                 label="Tallas"
                 placeholder="Tallas ej: S, M, L"
-                defaultValue={cliente?.tallas[0] ?? ""}
+                defaultValue={cliente?.tallas.join(",") ?? ""}
                 autoComplete="nope"
                 onChange={(e) =>
                   setDatosClienteActualizados({
                     ...datosClienteActualizados,
-                    tallas: [e.target.value],
+                    tallas: e.target.value,
                   })
                 }
               />

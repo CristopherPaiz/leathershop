@@ -122,6 +122,8 @@ const VerProducto = () => {
       producto: cosmetico.producto,
       estado: true,
       categoria: selectedCategoriaId,
+      apartados: apartados,
+      cantidadTotal: cosmetico.cantidadTotal,
       imagen: [...cosmetico.imagen, ...imagenesv2], // Adding the uploaded image URLs to the data
     };
 
