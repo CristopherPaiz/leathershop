@@ -58,7 +58,7 @@ const Navbar = () => {
                 position="right"
                 to="/user"
                 name="Cosméticos"
-                icon="user"
+                icon="diamond"
               />
               <Menu.Item as="a" onClick={logout} icon="sign-out" />
             </>
@@ -72,14 +72,15 @@ const Navbar = () => {
                 as={Link}
                 position="right"
                 to="/user"
-                icon="user"
+                icon="diamond"
                 name="Cosméticos"
+                
               />
               <Menu.Item
                 as={Link}
                 to="/admin"
                 name="Leathershop"
-                icon="settings"
+                icon="warehouse"
               />
               <Menu.Item as="a" onClick={logout} icon="sign-out" />
             </>

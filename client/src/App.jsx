@@ -14,6 +14,7 @@ import VerCliente from "./adminComponents/VerCliente.jsx";
 import AddCliente from "./adminComponents/AddCliente.jsx";
 import VerProducto from "./userComponents/VerProducto.jsx";
 import AddProducto from "./userComponents/AddProducto.jsx";
+import AddProductoCompra from "./userComponents/AddProductoCompra.jsx";
 
 const App = () => {
   return (
@@ -81,6 +82,14 @@ const App = () => {
           element={
             <AdminElement>
               <AddCliente />
+            </AdminElement>
+          }
+        />
+        <Route
+          path="/user/addProductoCompra"
+          element={
+            <AdminElement>
+              <AddProductoCompra />
             </AdminElement>
           }
         />

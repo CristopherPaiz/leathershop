@@ -172,6 +172,21 @@ router.post("/cosmeticos/categorias", async (req, res) => {
   }
 });
 
+//ruta para buscar todos los cosméticos y solo retornar el nombre y el id
+router.get("/cosmeticos/nombres", async (req, res) => {
+  try {
+    const data = await Cosmetico.find({}, { producto: 1 }).sort({
+      producto: 1,
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev: "No se pudo obtener los cosméticos",
+      messageSys: error.message,
+    });
+  }
+});
+
 // Ruta para filtrar por el campo de nombre o por el campo de descripción o por los dos campos, y por estado: true
 router.post("/cosmeticos/filtrar", async (req, res) => {
   try {

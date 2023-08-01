@@ -89,27 +89,40 @@ const Userpage = () => {
             <Icon name="add" />
             Añadir Producto
           </Button>
-          <Button
-            key={5}
-            as={Link}
-            toggle
-            style={{ margin: "3px", width: "180px" }}
-            to={`/user/addProductoDetalle`}
-          >
-            <Icon name="add square" />
-            Compra Producto
-          </Button>
+
           {usuario.rol === "Admin" ? (
-            <Button
-              key={6}
-              as={Link}
-              toggle
-              style={{ margin: "3px", width: "180px" }}
-              to={`/user/productosEstadisticas`}
-            >
-              <Icon name="line graph" />
-              Estadísticas
-            </Button>
+            <>
+              <Button
+                key={5}
+                as={Link}
+                toggle
+                style={{ margin: "3px", width: "180px" }}
+                to={`/user/addProductoCompra`}
+              >
+                <Icon name="add square" />
+                Compra Producto
+              </Button>
+              <Button
+                key={6}
+                as={Link}
+                toggle
+                style={{ margin: "3px", width: "180px" }}
+                to={`/user/productosEstadisticas`}
+              >
+                <Icon name="line graph" />
+                Historial compras
+              </Button>
+              <Button
+                key={7}
+                as={Link}
+                toggle
+                style={{ margin: "3px", width: "180px" }}
+                to={`/user/productosEstadisticas`}
+              >
+                <Icon name="line graph" />
+                Reportes
+              </Button>
+            </>
           ) : null}
         </div>
         {pestanaActivaUser === 1 ? <VerProductos /> : null}
