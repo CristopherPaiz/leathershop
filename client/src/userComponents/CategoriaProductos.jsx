@@ -153,6 +153,7 @@ const CategoriaProductos = () => {
           <div style={{ padding: "10px" }}>
             {cosmeticos?.map((cosmetico) => (
               <Link
+                key={cosmetico._id}
                 style={containerStyle}
                 to={`/user/verProducto/${cosmetico._id}`}
                 state={{ cosmetico }}

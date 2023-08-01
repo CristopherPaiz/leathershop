@@ -132,6 +132,7 @@ const Entregados = () => {
               return (
                 <React.Fragment key={idx}>
                   <Card.Content
+                    key={idx}
                     style={{
                       backgroundColor: "#b6d7a8",
                     }}

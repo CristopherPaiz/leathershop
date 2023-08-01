@@ -159,6 +159,7 @@ const BuscarCliente = () => {
               {resultados?.map((cliente, idx) => (
                 <React.Fragment key={idx}>
                   <Card.Content
+                    key={idx}
                     style={{
                       backgroundColor: cliente.estado ? "#d0e3d6" : "#f9eee4", // Fondo blanco (snow) para índices pares
                       marginBottom: "2px",

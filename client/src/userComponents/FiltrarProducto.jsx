@@ -168,6 +168,7 @@ const FiltrarProducto = () => {
             <div>
               {cosmeticos?.map((cosmetico) => (
                 <Link
+                  key={cosmetico._id}
                   style={containerStyle}
                   to={`/user/verProducto/${cosmetico._id}`}
                   state={{ cosmetico }}
