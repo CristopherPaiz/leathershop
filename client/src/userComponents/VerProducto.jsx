@@ -126,7 +126,6 @@ const VerProducto = () => {
     };
 
     try {
-      console.log(formattedData);
       const response = await fetch(
         `${API_URL}/cosmeticos/update/${cosmetico._id}`,
         {

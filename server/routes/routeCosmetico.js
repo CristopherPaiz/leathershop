@@ -61,7 +61,6 @@ router.get("/cosmeticos/getbyid/:id", async (req, res) => {
 
 // Ruta para crear un cosmético
 router.post("/cosmeticos/add", async (req, res) => {
-  console.log(req.body);
   try {
     const {
       producto,
@@ -166,7 +165,6 @@ router.post("/cosmeticos/categorias", async (req, res) => {
     // Guardar la nueva categoría en la base de datos
     const categoriaGuardada = await nuevaCategoria.save();
 
-    console.log("Categoría creada con éxito:", categoriaGuardada);
     res.status(201).json(categoriaGuardada);
   } catch (error) {
     console.error("Error al crear la categoría:", error.message);
