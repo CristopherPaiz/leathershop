@@ -181,15 +181,7 @@ const BuscarCliente = () => {
                         height: "100px",
                       }}
                     />
-                    <Button
-                      as={Link}
-                      icon="eye"
-                      secondary
-                      inverted
-                      floated="right"
-                      to={`/admin/vercliente/${cliente._id}`}
-                      state={{ cliente }}
-                    />
+
                     <Card.Header>
                       {cliente?.nombre ?? ""} {cliente?.apellido ?? ""}
                     </Card.Header>
