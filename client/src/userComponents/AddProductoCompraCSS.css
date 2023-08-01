@@ -1,0 +1,8 @@
+.ui.dropdown .menu > .item > .image,
+.ui.dropdown .menu > .item > img,
+.ui.dropdown > .text > .image,
+.ui.dropdown > .text > img {
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: contain !important;
+}

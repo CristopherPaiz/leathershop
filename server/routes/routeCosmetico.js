@@ -172,10 +172,12 @@ router.post("/cosmeticos/categorias", async (req, res) => {
   }
 });
 
-//ruta para buscar todos los cosméticos y solo retornar el nombre y el id
 router.get("/cosmeticos/nombres", async (req, res) => {
   try {
-    const data = await Cosmetico.find({}, { producto: 1 }).sort({
+    const data = await Cosmetico.find(
+      {},
+      { producto: 1, imagen: { $slice: 1 } }
+    ).sort({
       producto: 1,
     });
     res.status(200).json(data);
