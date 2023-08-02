@@ -16,6 +16,7 @@ import VerProducto from "./userComponents/VerProducto.jsx";
 import AddProducto from "./userComponents/AddProducto.jsx";
 import AddProductoCompra from "./userComponents/AddProductoCompra.jsx";
 import ProductoHistorial from "./userComponents/ProductoHistorial.jsx";
+import ReporteProducto from "./userComponents/ReporteProducto.jsx";
 
 const App = () => {
   return (
@@ -106,7 +107,7 @@ const App = () => {
           path="/user/ProductoReporte"
           element={
             <AdminElement>
-              <ProductoHistorial />
+              <ReporteProducto />
             </AdminElement>
           }
         />

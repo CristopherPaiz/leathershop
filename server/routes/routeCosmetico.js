@@ -46,6 +46,38 @@ router.get("/cosmeticos/getall", async (req, res) => {
   }
 });
 
+//obtener todos los cosmeticos por disponibilidad
+router.get("/cosmeticos/getalldisponibility", async (req, res) => {
+  try {
+    const categoria = req.query.categoria; // Obtener el parámetro de la URL
+
+    let query = { estado: true }; // Agregar filtro por estado: true
+    if (categoria) {
+      query.categoria = categoria; // Si se proporciona una categoría, usarla para filtrar
+    }
+
+    const data = await Cosmetico.find(query);
+
+    // Crear un nuevo array con los datos deseados (nombre del producto y Disponible)
+    const result = data.map((item) => {
+      return {
+        producto: item.producto,
+        Disponible: item.cantidadTotal - item.apartados,
+      };
+    });
+
+    // Ordenar por el campo "Disponible" de menor a mayor
+    result.sort((a, b) => a.Disponible - b.Disponible);
+
+    res.status(200).json({ data: result });
+  } catch (error) {
+    res.status(500).json({
+      messageDev: "No se pudo obtener los cosméticos",
+      messageSys: error.message,
+    });
+  }
+});
+
 // ======= obtener un cosmetico por su id =======
 router.get("/cosmeticos/getbyid/:id", async (req, res) => {
   try {

@@ -73,7 +73,7 @@ const Userpage = () => {
               active={pestanaActivaUser === boton.numero}
               toggle
               onClick={() => cambiarPestanauser(boton.numero)}
-              style={{ margin: "3px", width: "180px" }}
+              style={{ margin: "3px", width: "175px" }}
             >
               <Icon name={boton.icono} />
               {boton.texto}
@@ -83,7 +83,7 @@ const Userpage = () => {
             key={4}
             as={Link}
             toggle
-            style={{ margin: "3px", width: "180px" }}
+            style={{ margin: "3px", width: "175px" }}
             to={`/user/addProducto`}
           >
             <Icon name="add" />
@@ -96,7 +96,7 @@ const Userpage = () => {
                 key={5}
                 as={Link}
                 toggle
-                style={{ margin: "3px", width: "180px" }}
+                style={{ margin: "3px", width: "175px" }}
                 to={`/user/addProductoCompra`}
               >
                 <Icon name="add square" />
@@ -106,7 +106,7 @@ const Userpage = () => {
                 key={6}
                 as={Link}
                 toggle
-                style={{ margin: "3px", width: "180px" }}
+                style={{ margin: "3px", width: "175px" }}
                 to={`/user/productoHistorial`}
               >
                 <Icon name="line graph" />
@@ -116,7 +116,7 @@ const Userpage = () => {
                 key={7}
                 as={Link}
                 toggle
-                style={{ margin: "3px", width: "180px" }}
+                style={{ margin: "3px", width: "175px" }}
                 to={`/user/ProductoReporte`}
               >
                 <Icon name="line graph" />
