@@ -15,6 +15,7 @@ import AddCliente from "./adminComponents/AddCliente.jsx";
 import VerProducto from "./userComponents/VerProducto.jsx";
 import AddProducto from "./userComponents/AddProducto.jsx";
 import AddProductoCompra from "./userComponents/AddProductoCompra.jsx";
+import ProductoHistorial from "./userComponents/ProductoHistorial.jsx";
 
 const App = () => {
   return (
@@ -90,6 +91,14 @@ const App = () => {
           element={
             <AdminElement>
               <AddProductoCompra />
+            </AdminElement>
+          }
+        />
+        <Route
+          path="/user/ProductoHistorial"
+          element={
+            <AdminElement>
+              <ProductoHistorial />
             </AdminElement>
           }
         />

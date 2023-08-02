@@ -1,6 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Header, Icon, Form, Button, Grid, Dropdown } from "semantic-ui-react";
-import { Navigate } from "react-router-dom";
+import {
+  Header,
+  Icon,
+  Form,
+  Button,
+  Grid,
+  Dropdown,
+  Radio,
+} from "semantic-ui-react";
+import { Navigate, useNavigate } from "react-router-dom";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
 import { contexto } from "../context/ContextProvider";
@@ -10,6 +18,76 @@ const AddProductoCompra = () => {
   const { loggedIn, usuario } = useContext(contexto);
   const [productos, setProductos] = useState([]);
   const [selectedProductoId, setSelectedProductoId] = useState(null);
+  const [value, setValue] = useState("menor");
+
+  // useStates para todos los campos del formulario
+  const [cantidadIngreso, setCantidadIngreso] = useState();
+  const [costoUnitario, setCostoUnitario] = useState();
+  const [costoTotal, setCostoTotal] = useState();
+  const [precioVenta, setPrecioVenta] = useState();
+  const [utilidadGenerada, setUtilidadGenerada] = useState();
+
+  // useStates para todos los campos del formulario por mayoreo
+  const [cantidadIngresoM, setCantidadIngresoM] = useState();
+  const [costoUnitarioM, setCostoUnitarioM] = useState();
+  const [costoTotalM, setCostoTotalM] = useState();
+  const [precioVentaM, setPrecioVentaM] = useState();
+  const [utilidadGeneradaM, setUtilidadGeneradaM] = useState();
+
+  //useState para observaciones
+  const [observaciones, setObservaciones] = useState("");
+
+  const navigate = useNavigate();
+
+  //##################### USEEFFECTS DE PRECIO UNIDAD ##################################
+  //####################################################################################
+  //useEffect de costo total
+  useEffect(() => {
+    setCostoUnitario(Number(costoTotal / cantidadIngreso));
+  }, [costoTotal]);
+
+  //useEffect de costo unitario
+  useEffect(() => {
+    setCostoTotal(Number(costoUnitario * cantidadIngreso));
+  }, [costoUnitario]);
+
+  //useEffect para controlar ventas y setear un valor a utilidad generada
+  useEffect(() => {
+    if (cantidadIngreso > 0 && (costoUnitario > 0 || costoTotal > 0)) {
+      setUtilidadGenerada(Number(precioVenta * cantidadIngreso - costoTotal));
+    } else {
+      setUtilidadGenerada(0);
+    }
+  }, [precioVenta, costoTotal, costoUnitario, cantidadIngreso]);
+
+  //##################### USEEFFECTS DE PRECIO MAYOREO #################################
+  //####################################################################################
+  //useEffect de costo total
+  useEffect(() => {
+    setCostoUnitarioM(Number(costoTotalM / cantidadIngresoM));
+  }, [costoTotalM]);
+
+  //useEffect de costo unitario
+  useEffect(() => {
+    setCostoTotalM(Number(costoUnitarioM * cantidadIngresoM));
+  }, [costoUnitarioM]);
+
+  //useEffect para controlar ventas y setear un valor a utilidad generada
+  useEffect(() => {
+    if (cantidadIngresoM > 0 && (costoUnitarioM > 0 || costoTotalM > 0)) {
+      setUtilidadGeneradaM(
+        Number(precioVentaM * cantidadIngresoM - costoTotalM)
+      );
+    } else {
+      setUtilidadGeneradaM(0);
+    }
+  }, [precioVentaM, costoTotalM, costoUnitarioM, cantidadIngresoM]);
+
+  // ###################################################################################3
+
+  const handleChangeState = (event, data) => {
+    setValue(data.value);
+  };
 
   useEffect(() => {
     obtenerProductos();
@@ -46,7 +124,127 @@ const AddProductoCompra = () => {
     setSelectedProductoId(data.value);
   };
 
-  if (loggedIn && (usuario.rol === "Admin" || usuario.rol === "Moderator")) {
+  const handleFormSubmit = async () => {
+    try {
+      if (value === "menor") {
+        const cantidadIngresoNumber = Number(cantidadIngreso);
+        const costoUnitarioNumber = Number(costoUnitario);
+        const costoTotalNumber = Number(costoTotal);
+        const precioVentaNumber = Number(precioVenta);
+        const utilidadGeneradaNumber = Number(utilidadGenerada);
+
+        if (
+          !selectedProductoId ||
+          isNaN(cantidadIngresoNumber) ||
+          isNaN(costoUnitarioNumber) ||
+          isNaN(costoTotalNumber) ||
+          isNaN(precioVentaNumber) ||
+          isNaN(utilidadGeneradaNumber) ||
+          cantidadIngresoNumber <= 0 ||
+          costoUnitarioNumber <= 0 ||
+          costoTotalNumber <= 0 ||
+          precioVentaNumber <= 0 ||
+          utilidadGeneradaNumber <= 0
+        ) {
+          toast.error("Por favor, complete todos los campos de unidad.");
+          return;
+        }
+
+        const formattedData = {
+          idProducto: selectedProductoId,
+          cantidadIngreso: cantidadIngresoNumber,
+          costoUnitario: costoUnitarioNumber,
+          costoTotal: costoTotalNumber,
+          costoDeVenta: precioVentaNumber,
+          utilidad: utilidadGeneradaNumber,
+          cantidadIngresoPorMayor: 0,
+          costoUnitarioPorMayor: 0,
+          costoTotalPorMayor: 0,
+          costoDeVentaPorMayor: 0,
+          utilidadPorMayor: 0,
+          observaciones: observaciones,
+        };
+
+        const response = await fetch(`${API_URL}/CompraCosmetico/add`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formattedData),
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          toast.success("Compra del producto añadido correctamente");
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          navigate("/user");
+        } else {
+          toast.error("Error al añadir Compra del producto cero");
+        }
+      } else if (value === "mayor") {
+        const cantidadIngresoMNumber = Number(cantidadIngresoM);
+        const costoUnitarioMNumber = Number(costoUnitarioM);
+        const costoTotalMNumber = Number(costoTotalM);
+        const precioVentaMNumber = Number(precioVentaM);
+        const utilidadGeneradaMNumber = Number(utilidadGeneradaM);
+
+        if (
+          !selectedProductoId ||
+          isNaN(cantidadIngresoMNumber) ||
+          isNaN(costoUnitarioMNumber) ||
+          isNaN(costoTotalMNumber) ||
+          isNaN(precioVentaMNumber) ||
+          isNaN(utilidadGeneradaMNumber) ||
+          cantidadIngresoMNumber <= 0 ||
+          costoUnitarioMNumber <= 0 ||
+          costoTotalMNumber <= 0 ||
+          precioVentaMNumber <= 0 ||
+          utilidadGeneradaMNumber <= 0
+        ) {
+          toast.error("Por favor, complete todos los campos de mayoreo.");
+          return;
+        }
+
+        const formattedData = {
+          idProducto: selectedProductoId,
+          cantidadIngreso: 0,
+          costoUnitario: 0,
+          costoTotal: 0,
+          costoDeVenta: 0,
+          utilidad: 0,
+          cantidadIngresoPorMayor: cantidadIngresoMNumber,
+          costoUnitarioPorMayor: costoUnitarioMNumber,
+          costoTotalPorMayor: costoTotalMNumber,
+          costoDeVentaPorMayor: precioVentaMNumber,
+          utilidadPorMayor: utilidadGeneradaMNumber,
+          observaciones: observaciones,
+        };
+
+        const response = await fetch(`${API_URL}/CompraCosmetico/add`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formattedData),
+          credentials: "include",
+        });
+
+        if (response.ok) {
+          toast.success("Compra del producto añadido correctamente");
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          navigate("/user");
+        } else {
+          toast.error("Error al añadir Compra del producto aqui primer");
+        }
+      } else {
+        toast.error("Error al añadir Compra del producto aqui segundo");
+      }
+    } catch (error) {
+      toast.error("Error al añadir Compra del producto aqui catch" + error);
+    }
+  };
+
+  if (loggedIn && usuario.rol === "Admin") {
     return (
       <>
         <Toaster />
@@ -71,7 +269,27 @@ const AddProductoCompra = () => {
           </Grid.Column>
           {selectedProductoId && (
             <>
-              <Header as="h4" style={{ margin: "0px 0px 20px 0px" }}>
+              <Form>
+                <Form.Field>
+                  <Radio
+                    label="Por Unidad"
+                    name="radioGroup"
+                    value="menor"
+                    checked={value === "menor"}
+                    onChange={handleChangeState}
+                  />
+                  <span style={{ color: "transparent" }}>espacio</span>
+                  <Radio
+                    label="Por Mayoreo"
+                    name="radioGroup"
+                    value="mayor"
+                    checked={value === "mayor"}
+                    onChange={handleChangeState}
+                  />
+                </Form.Field>
+              </Form>
+
+              <Header as="h4" style={{ margin: "30px 0px 20px 0px" }}>
                 <Header.Content>
                   ID del producto
                   <Header.Subheader>{selectedProductoId}</Header.Subheader>
@@ -83,6 +301,7 @@ const AddProductoCompra = () => {
                     fontWeight: "1000",
                     fontSize: "20px",
                     margin: "5px",
+                    color: value === "menor" ? "black" : "#eee",
                   }}
                 >
                   POR UNIDAD
@@ -92,43 +311,84 @@ const AddProductoCompra = () => {
                     label="Cantidad Ingreso"
                     placeholder="Cantidad Ingreso"
                     type="number"
-                    required
+                    required={value === "menor"}
                     defaultValue="0"
+                    value={cantidadIngreso === 0 ? "" : cantidadIngreso}
                     width={8}
+                    disabled={value === "mayor"}
+                    onChange={(e) => {
+                      setCantidadIngreso(Number(e.target.value));
+                    }}
                   />
                   <Form.Input
                     label="Costo Unitario"
                     placeholder="Costo Unitario"
                     type="number"
-                    required
+                    required={value === "menor"}
                     defaultValue="0"
+                    value={
+                      costoUnitario === 0
+                        ? ""
+                        : parseFloat(costoUnitario) % 1 === 0
+                        ? costoUnitario
+                        : parseFloat(costoUnitario)
+                            .toFixed(2)
+                            .replace(/\.?0+$/, "")
+                    }
                     style={{ marginBottom: "10px" }}
                     width={8}
+                    disabled={value === "mayor"}
+                    onChange={(e) => {
+                      setCostoUnitario(Number(e.target.value));
+                    }}
                   />
                   <Form.Input
                     label="Costo Total"
                     placeholder="Costo Total"
                     type="number"
-                    required
+                    required={value === "menor"}
                     defaultValue="0"
+                    value={
+                      costoTotal === 0
+                        ? ""
+                        : parseFloat(costoTotal) % 1 === 0
+                        ? costoTotal
+                        : parseFloat(costoTotal)
+                            .toFixed(2)
+                            .replace(/\.?0+$/, "")
+                    }
                     width={8}
+                    disabled={value === "mayor"}
+                    onChange={(e) => {
+                      setCostoTotal(Number(e.target.value));
+                    }}
                   />
                   <Form.Input
                     label="Precio de Venta"
                     placeholder="Precio de Venta"
-                    required
-                    defaultValue="0"
+                    required={value === "menor"}
+                    value={precioVenta === 0 ? "" : precioVenta}
                     style={{ marginBottom: "10px" }}
+                    defaultValue="0"
                     width={8}
+                    disabled={value === "mayor"}
+                    onChange={(e) => {
+                      setPrecioVenta(Number(e.target.value));
+                    }}
                   />
                   <Form.Input
                     label="Utilidad Generada"
                     placeholder="Utilidad"
-                    required
+                    required={value === "menor"}
                     readOnly
+                    value={utilidadGenerada === 0 ? "" : utilidadGenerada}
                     defaultValue="0"
                     style={{ marginBottom: "25px" }}
                     width={16}
+                    disabled={value === "mayor"}
+                    onChange={(e) => {
+                      setUtilidadGenerada(Number(e.target.value));
+                    }}
                   />
                 </Form.Group>
                 <label
@@ -136,65 +396,109 @@ const AddProductoCompra = () => {
                     fontWeight: "1000",
                     fontSize: "20px",
                     margin: "25px",
+                    color: value === "mayor" ? "black" : "#eee",
                   }}
                 >
                   POR MAYOREO
                 </label>
-                <Form.Group widths={2}>
+                <Form.Group>
                   <Form.Input
                     label="Cantidad Ingreso"
                     placeholder="Cantidad Ingreso"
                     type="number"
+                    required={value === "mayor"}
                     defaultValue="0"
-                    required
+                    value={cantidadIngresoM === 0 ? "" : cantidadIngresoM}
                     width={8}
+                    disabled={value === "menor"}
+                    onChange={(e) => {
+                      setCantidadIngresoM(Number(e.target.value));
+                    }}
                   />
                   <Form.Input
                     label="Costo Unitario"
                     placeholder="Costo Unitario"
                     type="number"
+                    required={value === "mayor"}
                     defaultValue="0"
-                    required
-                    width={8}
+                    value={
+                      costoUnitarioM === 0
+                        ? ""
+                        : parseFloat(costoUnitarioM) % 1 === 0
+                        ? costoUnitarioM
+                        : parseFloat(costoUnitarioM)
+                            .toFixed(2)
+                            .replace(/\.?0+$/, "")
+                    }
                     style={{ marginBottom: "10px" }}
+                    width={8}
+                    disabled={value === "menor"}
+                    onChange={(e) => {
+                      setCostoUnitarioM(Number(e.target.value));
+                    }}
                   />
                   <Form.Input
                     label="Costo Total"
                     placeholder="Costo Total"
                     type="number"
+                    required={value === "mayor"}
                     defaultValue="0"
-                    required
+                    value={
+                      costoTotalM === 0
+                        ? ""
+                        : parseFloat(costoTotalM) % 1 === 0
+                        ? costoTotalM
+                        : parseFloat(costoTotalM)
+                            .toFixed(2)
+                            .replace(/\.?0+$/, "")
+                    }
                     width={8}
+                    disabled={value === "menor"}
+                    onChange={(e) => {
+                      setCostoTotalM(Number(e.target.value));
+                    }}
                   />
                   <Form.Input
                     label="Precio de Venta"
                     placeholder="Precio de Venta"
-                    defaultValue="0"
-                    type="number"
-                    required
-                    width={8}
+                    required={value === "mayor"}
+                    value={precioVentaM === 0 ? "" : precioVentaM}
                     style={{ marginBottom: "10px" }}
+                    defaultValue="0"
+                    width={8}
+                    disabled={value === "menor"}
+                    onChange={(e) => {
+                      setPrecioVentaM(Number(e.target.value));
+                    }}
                   />
                   <Form.Input
                     label="Utilidad Generada"
-                    placeholder="Utilidad Generada"
-                    defaultValue="0"
-                    type="number"
-                    required
+                    placeholder="Utilidad"
+                    required={value === "mayor"}
                     readOnly
+                    value={utilidadGeneradaM === 0 ? "" : utilidadGeneradaM}
+                    defaultValue="0"
+                    style={{ marginBottom: "25px" }}
                     width={16}
-                    style={{ marginBottom: "50px" }}
+                    disabled={value === "menor"}
+                    onChange={(e) => {
+                      setUtilidadGeneradaM(Number(e.target.value));
+                    }}
                   />
                 </Form.Group>
                 <Form.TextArea
                   label="Observaciones del producto"
+                  defaultValue={observaciones}
                   placeholder="Observaciones del Producto"
                   type="text"
+                  onChange={(e) => {
+                    setObservaciones(e.target.value);
+                  }}
                   width={16}
                 />
                 <br />
 
-                <Button type="submit" color="green">
+                <Button type="submit" color="green" onClick={handleFormSubmit}>
                   Añadir compra
                 </Button>
                 <br />

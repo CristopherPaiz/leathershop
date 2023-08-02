@@ -107,7 +107,7 @@ const Userpage = () => {
                 as={Link}
                 toggle
                 style={{ margin: "3px", width: "180px" }}
-                to={`/user/productosEstadisticas`}
+                to={`/user/productoHistorial`}
               >
                 <Icon name="line graph" />
                 Historial compras

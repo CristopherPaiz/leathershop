@@ -117,13 +117,11 @@ const VerProducto = () => {
     const formattedData = {
       ...cosmetico,
       cantidadTotal: Number(cosmetico.cantidadTotal),
-      apartados: Number(cosmetico.apartados),
+      apartados: Number(apartados),
       especificaciones: cosmetico.especificaciones,
       producto: cosmetico.producto,
       estado: true,
       categoria: selectedCategoriaId,
-      apartados: apartados,
-      cantidadTotal: cosmetico.cantidadTotal,
       imagen: [...cosmetico.imagen, ...imagenesv2], // Adding the uploaded image URLs to the data
     };
 

@@ -32,45 +32,50 @@ const cosmeticoSchema = new Schema({
 
 const Cosmetico = mongoose.model("Cosmetico", cosmeticoSchema);
 
-const cosmeticoDetalleSchema = new Schema({
-  idProducto: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Cosmetico",
+const cosmeticoDetalleSchema = new Schema(
+  {
+    idProducto: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Cosmetico",
+    },
+    cantidadIngreso: {
+      type: Number,
+    },
+    costoUnitario: {
+      type: Number,
+    },
+    costoTotal: {
+      type: Number,
+    },
+    costoDeVenta: {
+      type: Number,
+    },
+    utilidad: {
+      type: Number,
+    },
+    cantidadIngresoPorMayor: {
+      type: Number,
+    },
+    costoUnitarioPorMayor: {
+      type: Number,
+    },
+    costoTotalPorMayor: {
+      type: Number,
+    },
+    costoDeVentaPorMayor: {
+      type: Number,
+    },
+    utilidadPorMayor: {
+      type: Number,
+    },
+    observaciones: {
+      type: String,
+    },
   },
-  cantidadIngreso: {
-    type: Number,
-  },
-  costoUnitario: {
-    type: Number,
-  },
-  costoTotal: {
-    type: Number,
-  },
-  costoDeVenta: {
-    type: Number,
-  },
-  utilidad: {
-    type: Number,
-  },
-  cantidadIngresoPorMayor: {
-    type: Number,
-  },
-  costoUnitarioPorMayor: {
-    type: Number,
-  },
-  costoTotalPorMayor: {
-    type: Number,
-  },
-  costoDeVentaPorMayor: {
-    type: Number,
-  },
-  utilidadPorMayor: {
-    type: Number,
-  },
-  observaciones: {
-    type: String,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 const CompraCosmetico = mongoose.model(
   "CompraCosmetico",
