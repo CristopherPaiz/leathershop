@@ -127,7 +127,7 @@ const ReporteProducto = () => {
                 </Header>
                 <Table celled unstackable>
                   <Table.Header>
-                    <Table.Row>
+                    <Table.Row textAlign="center">
                       <Table.HeaderCell>Producto</Table.HeaderCell>
                       <Table.HeaderCell>Disponibilidad</Table.HeaderCell>
                     </Table.Row>
@@ -141,7 +141,9 @@ const ReporteProducto = () => {
                         positive={cosmetico?.Disponible > 0}
                       >
                         <Table.Cell>{cosmetico?.producto}</Table.Cell>
-                        <Table.Cell>{cosmetico?.Disponible}</Table.Cell>
+                        <Table.Cell textAlign="center">
+                          {cosmetico?.Disponible}
+                        </Table.Cell>
                       </Table.Row>
                     ))}
                   </Table.Body>
