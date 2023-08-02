@@ -223,11 +223,78 @@ router.post("/cosmeticos/filtrar", async (req, res) => {
 //############################################################################################################
 //############################################################################################################
 
-// ======= ruta para obtener todos los detalles de los cosmeticos usando el metodo GET =======
+const formatDate = (date) => {
+  const dateObject = new Date(date);
+  const day = String(dateObject.getDate()).padStart(2, "0");
+  const month = String(dateObject.getMonth() + 1).padStart(2, "0");
+  const year = dateObject.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 router.get("/CompraCosmetico/getall", async (req, res) => {
   try {
-    const data = await CompraCosmetico.find({}).sort({ _id: -1 }); //ordenar de mayor a menor
-    res.status(200).json(data);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const count = await CompraCosmetico.countDocuments();
+    const totalPages = Math.ceil(count / limit);
+
+    if (page < 1 || page > totalPages) {
+      return res.status(400).json({ message: "Página inválida" });
+    }
+
+    const skip = (page - 1) * limit;
+
+    const data = await CompraCosmetico.find({})
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // Obtener los nombres de productos asociados a los IDs
+    const productoIds = data.map((item) => item.idProducto);
+    const productos = await obtenerNombresProductos(productoIds);
+
+    // Función para obtener los campos específicos según las condiciones
+    const getCamposSegunCondicion = (item) => {
+      if (item.utilidad === 0) {
+        return {
+          Tipo: "Mayoreo",
+          idProductoR: item.idProducto,
+          cantidadIngresoR: item.cantidadIngresoPorMayor,
+          costoUnitarioR: item.costoUnitarioPorMayor,
+          costoTotalR: item.costoTotalPorMayor,
+          costoDeVentaR: item.costoDeVentaPorMayor,
+          utilidadR: item.utilidadPorMayor,
+          observacionesR: item.observaciones,
+        };
+      } else if (item.utilidadPorMayor === 0) {
+        return {
+          Tipo: "Por Unidad",
+          idProductoR: item.idProducto,
+          cantidadIngresoR: item.cantidadIngreso,
+          costoUnitarioR: item.costoUnitario,
+          costoTotalR: item.costoTotal,
+          costoDeVentaR: item.costoDeVenta,
+          utilidadR: item.utilidad,
+          observacionesR: item.observaciones,
+        };
+      }
+    };
+
+    // Combinar los datos de compras con los nombres de productos y aplicar la función de filtrado
+    const dataWithProductos = data.map((item) => {
+      const nombreProducto = productos.find((prod) =>
+        prod._id.equals(item.idProducto)
+      )?.producto;
+      const createdAtFormatted = formatDate(item.createdAt);
+      return {
+        ...getCamposSegunCondicion(item),
+        nombreProducto,
+        createdAtFormatted,
+      };
+    });
+
+    res.status(200).json({ data: dataWithProductos, totalPages });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo obtener los detalles de compra de los cosmeticos",
@@ -235,6 +302,139 @@ router.get("/CompraCosmetico/getall", async (req, res) => {
     });
   }
 });
+
+router.get("/CompraCosmetico/getunidad", async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const count = await CompraCosmetico.countDocuments();
+    const totalPages = Math.ceil(count / limit);
+
+    if (page < 1 || page > totalPages) {
+      return res.status(400).json({ message: "Página inválida" });
+    }
+
+    const skip = (page - 1) * limit;
+
+    // Filtrar los datos que corresponden a compras "Por Unidad"
+    const data = await CompraCosmetico.find({ utilidadPorMayor: 0 })
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // Obtener los nombres de productos asociados a los IDs
+    const productoIds = data.map((item) => item.idProducto);
+    const productos = await obtenerNombresProductos(productoIds);
+
+    // Función para obtener los campos específicos
+    const getCamposPorUnidad = (item) => {
+      return {
+        Tipo: "Por Unidad",
+        idProductoR: item.idProducto,
+        cantidadIngresoR: item.cantidadIngreso,
+        costoUnitarioR: item.costoUnitario,
+        costoTotalR: item.costoTotal,
+        costoDeVentaR: item.costoDeVenta,
+        utilidadR: item.utilidad,
+        observacionesR: item.observaciones,
+      };
+    };
+
+    // Combinar los datos de compras con los nombres de productos y aplicar la función de filtrado
+    const dataWithProductos = data.map((item) => {
+      const nombreProducto = productos.find((prod) =>
+        prod._id.equals(item.idProducto)
+      )?.producto;
+      const createdAtFormatted = formatDate(item.createdAt);
+      return {
+        ...getCamposPorUnidad(item),
+        nombreProducto,
+        createdAtFormatted,
+      };
+    });
+
+    res.status(200).json({ data: dataWithProductos, totalPages });
+  } catch (error) {
+    res.status(500).json({
+      messageDev: "No se pudo obtener los detalles de compra de los cosmeticos",
+      messageSys: error.message,
+    });
+  }
+});
+
+router.get("/CompraCosmetico/getmayoreo", async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const count = await CompraCosmetico.countDocuments();
+    const totalPages = Math.ceil(count / limit);
+
+    if (page < 1 || page > totalPages) {
+      return res.status(400).json({ message: "Página inválida" });
+    }
+
+    const skip = (page - 1) * limit;
+
+    // Filtrar los datos que corresponden a compras "Mayoreo"
+    const data = await CompraCosmetico.find({ utilidad: 0 })
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // Obtener los nombres de productos asociados a los IDs
+    const productoIds = data.map((item) => item.idProducto);
+    const productos = await obtenerNombresProductos(productoIds);
+
+    // Función para obtener los campos específicos
+    const getCamposMayoreo = (item) => {
+      return {
+        Tipo: "Mayoreo",
+        idProductoR: item.idProducto,
+        cantidadIngresoR: item.cantidadIngresoPorMayor,
+        costoUnitarioR: item.costoUnitarioPorMayor,
+        costoTotalR: item.costoTotalPorMayor,
+        costoDeVentaR: item.costoDeVentaPorMayor,
+        utilidadR: item.utilidadPorMayor,
+        observacionesR: item.observaciones,
+      };
+    };
+
+    // Combinar los datos de compras con los nombres de productos y aplicar la función de filtrado
+    const dataWithProductos = data.map((item) => {
+      const nombreProducto = productos.find((prod) =>
+        prod._id.equals(item.idProducto)
+      )?.producto;
+      const createdAtFormatted = formatDate(item.createdAt);
+      return {
+        ...getCamposMayoreo(item),
+        nombreProducto,
+        createdAtFormatted,
+      };
+    });
+
+    res.status(200).json({ data: dataWithProductos, totalPages });
+  } catch (error) {
+    res.status(500).json({
+      messageDev: "No se pudo obtener los detalles de compra de los cosmeticos",
+      messageSys: error.message,
+    });
+  }
+});
+
+// Función para obtener los nombres de productos a partir de sus IDs
+async function obtenerNombresProductos(ids) {
+  try {
+    const productos = await Cosmetico.find(
+      { _id: { $in: ids } },
+      { producto: 1 }
+    );
+    return productos;
+  } catch (error) {
+    return [];
+  }
+}
 
 // ======= obtener todos los CompraCosmeticos de un ID de producto =======
 router.get("/CompraCosmetico/getbyproductid/:idProducto", async (req, res) => {

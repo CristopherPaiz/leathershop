@@ -117,7 +117,7 @@ const Userpage = () => {
                 as={Link}
                 toggle
                 style={{ margin: "3px", width: "180px" }}
-                to={`/user/productosEstadisticas`}
+                to={`/user/ProductoReporte`}
               >
                 <Icon name="line graph" />
                 Reportes

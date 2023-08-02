@@ -102,6 +102,14 @@ const App = () => {
             </AdminElement>
           }
         />
+        <Route
+          path="/user/ProductoReporte"
+          element={
+            <AdminElement>
+              <ProductoHistorial />
+            </AdminElement>
+          }
+        />
 
         <Route path="*" element={<NotFoundpage />} />
       </Routes>
