@@ -78,7 +78,7 @@ const ReporteProducto = () => {
   if (loggedIn && usuario.rol === "Admin") {
     const botones = [
       { numero: 1, texto: "Disponibilidad", icono: "sort content descending" },
-      { numero: 2, texto: "Vendidos", icono: "handshake" },
+      { numero: 2, texto: "Apartados", icono: "handshake" },
       { numero: 3, texto: "Utilidad Unidad", icono: "hockey puck" },
       { numero: 4, texto: "Utilidad Mayor", icono: "database" },
       { numero: 5, texto: "Cant. Comprado", icono: "grid layout" },

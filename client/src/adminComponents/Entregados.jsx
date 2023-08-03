@@ -14,7 +14,7 @@ const Entregados = () => {
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
   const [resultados, setResultados] = useState([]);
-  const [loaded, setLoaded] = useState(false); // Bandera de control
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     // Función para obtener la fecha actual

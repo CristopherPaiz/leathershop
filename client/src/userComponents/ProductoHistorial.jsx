@@ -198,16 +198,16 @@ const ProductoHistorial = () => {
                           active={activeIndex === index}
                           index={index}
                           onClick={() => handleClick(index)}
+                          key={index}
                         >
                           <Icon name="dropdown" />
                           {item?.nombreProducto} - {item?.createdAtFormatted}
                         </Accordion.Title>
                         <Accordion.Content active={activeIndex === index}>
                           <p>
-                            Tipo de compra:{" "}
+                            Tipo de compra:
                             <strong style={{ fontSize: "20px" }}>
-                              {" "}
-                              {item.Tipo}{" "}
+                              {item.Tipo}
                             </strong>
                           </p>
                           <p>
