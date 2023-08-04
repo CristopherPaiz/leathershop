@@ -592,3 +592,273 @@ router.put("/CompraCosmetico/delete/:id", async (req, res) => {
 });
 
 module.exports = router;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Nueva ruta para obtener la suma total de utilidad por producto (solo para compras de unidad)
+router.get("/cosmeticos/utilidad-por-unidad", async (req, res) => {
+  try {
+    const data = await CompraCosmetico.aggregate([
+      {
+        $match: { utilidadPorMayor: 0 }, // Filtrar solo las compras de unidad (utilidadPorMayor igual a 0)
+      },
+      {
+        $group: {
+          _id: "$idProducto",
+          utilidadTotal: { $sum: "$utilidad" },
+        },
+      },
+      {
+        $lookup: {
+          from: "cosmeticos",
+          localField: "_id",
+          foreignField: "_id",
+          as: "producto",
+        },
+      },
+      {
+        $unwind: "$producto",
+      },
+      {
+        $project: {
+          _id: 0,
+          producto: "$producto.producto",
+          utilidadTotal: 1,
+        },
+      },
+      {
+        $sort: {
+          utilidadTotal: -1,
+        },
+      },
+    ]);
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev: "No se pudo obtener la suma total de utilidad por producto",
+      messageSys: error.message,
+    });
+  }
+});
+
+// Nueva ruta para obtener la suma total de utilidad por producto (solo para compras por mayor)
+router.get("/cosmeticos/utilidad-por-mayor", async (req, res) => {
+  try {
+    const data = await CompraCosmetico.aggregate([
+      {
+        $match: { utilidadPorMayor: { $ne: 0 } }, // Filtrar solo las compras por mayor (utilidadPorMayor distinta de 0)
+      },
+      {
+        $group: {
+          _id: "$idProducto",
+          utilidadTotal: { $sum: "$utilidadPorMayor" },
+        },
+      },
+      {
+        $lookup: {
+          from: "cosmeticos",
+          localField: "_id",
+          foreignField: "_id",
+          as: "producto",
+        },
+      },
+      {
+        $unwind: "$producto",
+      },
+      {
+        $project: {
+          _id: 0,
+          producto: "$producto.producto",
+          utilidadTotal: 1,
+        },
+      },
+      {
+        $sort: {
+          utilidadTotal: -1,
+        },
+      },
+    ]);
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev: "No se pudo obtener la suma total de utilidad por producto",
+      messageSys: error.message,
+    });
+  }
+});
+
+// Ruta para obtener la suma total de cantidad comprada y monto total de dinero por producto (ordenado de mayor a menor)
+router.get("/cosmeticos/cantidad-y-monto-comprado", async (req, res) => {
+  try {
+    const data = await CompraCosmetico.aggregate([
+      {
+        $group: {
+          _id: "$idProducto",
+          cantidadComprado: { $sum: "$cantidadIngreso" },
+          montoTotalDinero: {
+            $sum: { $add: ["$costoTotal", "$costoTotalPorMayor"] },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "cosmeticos",
+          localField: "_id",
+          foreignField: "_id",
+          as: "producto",
+        },
+      },
+      {
+        $unwind: "$producto",
+      },
+      {
+        $project: {
+          _id: 0,
+          producto: "$producto.producto",
+          cantidadComprado: 1,
+          montoTotalDinero: 1,
+        },
+      },
+      {
+        $sort: {
+          montoTotalDinero: -1,
+        },
+      },
+    ]);
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev:
+        "No se pudo obtener la suma total de cantidad y monto comprado por producto",
+      messageSys: error.message,
+    });
+  }
+});
+
+// Ruta para obtener la suma total de cantidad comprada y monto total de venta por producto (ordenado de mayor a menor)
+router.get("/cosmeticos/cantidad-y-monto-venta", async (req, res) => {
+  try {
+    const data = await CompraCosmetico.aggregate([
+      {
+        $group: {
+          _id: "$idProducto",
+          cantidadComprado: { $sum: "$cantidadIngreso" },
+          montoTotalVenta: {
+            $sum: {
+              $add: [
+                { $multiply: ["$cantidadIngreso", "$costoDeVenta"] },
+                {
+                  $multiply: [
+                    "$cantidadIngresoPorMayor",
+                    "$costoDeVentaPorMayor",
+                  ],
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "cosmeticos",
+          localField: "_id",
+          foreignField: "_id",
+          as: "producto",
+        },
+      },
+      {
+        $unwind: "$producto",
+      },
+      {
+        $project: {
+          _id: 0,
+          producto: "$producto.producto",
+          cantidadComprado: 1,
+          montoTotalVenta: 1,
+        },
+      },
+      {
+        $sort: {
+          cantidadComprado: -1,
+        },
+      },
+    ]);
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev:
+        "No se pudo obtener la suma total de cantidad y monto de venta por producto",
+      messageSys: error.message,
+    });
+  }
+});
+
+// Ruta para obtener la cantidad comprada, monto total de dinero y utilidad generada por producto (ordenado de mayor a menor por utilidad)
+router.get("/cosmeticos/cantidad-monto-utilidad", async (req, res) => {
+  try {
+    const data = await CompraCosmetico.aggregate([
+      {
+        $group: {
+          _id: "$idProducto",
+          cantidadComprado: { $sum: "$cantidadIngreso" },
+          montoTotalDinero: {
+            $sum: { $add: ["$costoTotal", "$costoTotalPorMayor"] },
+          },
+          montoTotalVenta: {
+            $sum: {
+              $add: [
+                { $multiply: ["$cantidadIngreso", "$costoDeVenta"] },
+                {
+                  $multiply: [
+                    "$cantidadIngresoPorMayor",
+                    "$costoDeVentaPorMayor",
+                  ],
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "cosmeticos",
+          localField: "_id",
+          foreignField: "_id",
+          as: "producto",
+        },
+      },
+      {
+        $unwind: "$producto",
+      },
+      {
+        $project: {
+          _id: 0,
+          producto: "$producto.producto",
+          cantidadComprado: 1,
+          montoTotalDinero: 1,
+          montoTotalVenta: 1,
+          utilidad: {
+            $subtract: ["$montoTotalVenta", "$montoTotalDinero"],
+          },
+        },
+      },
+      {
+        $sort: {
+          utilidad: -1,
+        },
+      },
+    ]);
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev:
+        "No se pudo obtener la cantidad, monto y utilidad por producto",
+      messageSys: error.message,
+    });
+  }
+});
