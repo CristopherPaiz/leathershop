@@ -89,11 +89,21 @@ const Userpage = () => {
             <Icon name="add" />
             Añadir Producto
           </Button>
+          <Button
+            key={5}
+            as={Link}
+            toggle
+            style={{ margin: "3px", width: "175px" }}
+            to={`/user/entregar`}
+          >
+            <Icon name="add square" />
+            Entregar Prod.
+          </Button>
 
           {usuario.rol === "Admin" ? (
             <>
               <Button
-                key={5}
+                key={6}
                 as={Link}
                 toggle
                 style={{ margin: "3px", width: "175px" }}
@@ -103,7 +113,7 @@ const Userpage = () => {
                 Compra Producto
               </Button>
               <Button
-                key={6}
+                key={7}
                 as={Link}
                 toggle
                 style={{ margin: "3px", width: "175px" }}
@@ -113,7 +123,7 @@ const Userpage = () => {
                 Historial compras
               </Button>
               <Button
-                key={7}
+                key={8}
                 as={Link}
                 toggle
                 style={{ margin: "3px", width: "175px" }}

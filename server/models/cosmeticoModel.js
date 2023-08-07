@@ -80,10 +80,7 @@ const cosmeticoDetalleSchema = new Schema(
   }
 );
 
-const CompraCosmetico = mongoose.model(
-  "CompraCosmetico",
-  cosmeticoDetalleSchema
-);
+const CompraCosmetico = mongoose.model("CompraCosmetico", cosmeticoDetalleSchema);
 
 const cosmeticoCategoriaSchema = new mongoose.Schema({
   nombre: {
@@ -97,10 +94,7 @@ const cosmeticoCategoriaSchema = new mongoose.Schema({
   },
 });
 
-const CosmeticoCategoria = mongoose.model(
-  "CosmeticoCategoria",
-  cosmeticoCategoriaSchema
-);
+const CosmeticoCategoria = mongoose.model("CosmeticoCategoria", cosmeticoCategoriaSchema);
 
 module.exports = {
   Cosmetico,
