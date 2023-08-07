@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   Image,
+  Pagination,
 } from "semantic-ui-react";
 import API_URL from "../config.js";
 import { Link } from "react-router-dom";
@@ -16,6 +17,9 @@ const PorEntregar = () => {
   const [fechaFin, setFechaFin] = useState("");
   const [resultados, setResultados] = useState([]);
   const [loaded, setLoaded] = useState(false); // Bandera de control
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState();
+  const productsPerPage = 10;
 
   useEffect(() => {
     // Función para obtener la fecha actual
@@ -43,6 +47,14 @@ const PorEntregar = () => {
     setLoaded(true);
   }, []);
 
+  useEffect(() => {
+    handleSubmit();
+  }, [currentPage]);
+
+  const handlePaginationChange = (e, { activePage }) => {
+    setCurrentPage(activePage);
+  };
+
   const handleSubmit = async (event) => {
     if (event) {
       event.preventDefault();
@@ -54,24 +66,28 @@ const PorEntregar = () => {
       const fechaFinISO = new Date(fechaFin);
       fechaFinISO.setDate(fechaFinISO.getDate() + 1);
 
-      const response = await fetch(`${API_URL}/cliente/getbyfecha`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fechaRecibo: fechaInicioISO,
-          fechaEntrega: fechaFinISO,
-        }),
-        credentials: "include", // Asegúrate de incluir esta opción
-      });
+      const response = await fetch(
+        `${API_URL}/cliente/getbyfecha?page=${currentPage}&limit=${productsPerPage}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fechaRecibo: fechaInicioISO,
+            fechaEntrega: fechaFinISO,
+          }),
+          credentials: "include", // Asegúrate de incluir esta opción
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error al obtener los clientes por fecha");
       }
 
       const data = await response.json();
-      setResultados(data);
+      setTotalPages(data.totalPages);
+      setResultados(data.data);
     } catch (error) {
       console.error("Error al obtener los clientes por fecha:", error);
     }
@@ -205,6 +221,18 @@ const PorEntregar = () => {
           <p>No hay resultados</p>
         )}
       </Card>
+      <div style={{ margin: "10px auto", textAlign: "center" }}>
+        <Pagination
+          boundaryRange={0}
+          defaultActivePage={currentPage}
+          ellipsisItem={null}
+          firstItem={totalPages > 3 ? 1 : null}
+          lastItem={totalPages > 3 ? totalPages : null}
+          siblingRange={1}
+          totalPages={totalPages}
+          onPageChange={handlePaginationChange}
+        />
+      </div>
       <br />
       <br />
     </div>

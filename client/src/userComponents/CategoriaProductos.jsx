@@ -184,8 +184,8 @@ const CategoriaProductos = () => {
               boundaryRange={0}
               defaultActivePage={currentPage}
               ellipsisItem={null}
-              firstItem={null}
-              lastItem={null}
+              firstItem={totalPages > 3 ? 1 : null}
+              lastItem={totalPages > 3 ? totalPages : null}
               siblingRange={1}
               totalPages={totalPages}
               onPageChange={handlePaginationChange}

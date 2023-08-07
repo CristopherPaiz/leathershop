@@ -126,7 +126,18 @@ router.post(
   },
   async (req, res) => {
     try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
       const { fechaRecibo, fechaEntrega } = req.body;
+
+      const count = await Cliente.countDocuments();
+      const totalPages = Math.ceil(count / limit);
+
+      if (page < 1 || page > totalPages) {
+        return res.status(400).json({ message: "Página inválida" });
+      }
+
+      const skip = (page - 1) * limit;
 
       const data = await Cliente.find({
         $and: [
@@ -140,9 +151,13 @@ router.post(
             estado: false,
           },
         ],
-      }).sort({ fechaEntrega: 1 }); // Ordenar por fecha de entrega en orden ascendente (el más antiguo primero)
+      })
+        .sort({ fechaEntrega: 1 }) // Ordenar por fecha de entrega en orden ascendente (el más antiguo primero)
+        .skip(skip)
+        .limit(limit);
 
-      res.status(200).json(data);
+      res.status(200).json({ data, totalPages });
+      // res.status(200).json(data);
     } catch (error) {
       res.status(500).json({
         messageDev:
@@ -157,6 +172,17 @@ router.post(
 router.post("/cliente/getbyfechafin", async (req, res) => {
   try {
     const { fechaRecibo, fechaEntrega } = req.body;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const count = await Cliente.countDocuments();
+    const totalPages = Math.ceil(count / limit);
+
+    if (page < 1 || page > totalPages) {
+      return res.status(400).json({ message: "Página inválida" });
+    }
+
+    const skip = (page - 1) * limit;
 
     const data = await Cliente.find({
       $and: [
@@ -170,9 +196,13 @@ router.post("/cliente/getbyfechafin", async (req, res) => {
           estado: true,
         },
       ],
-    }); // Ordenar por fecha de entrega en orden ascendente (el más antiguo primero)
+    })
+      .sort({ fechaEntrega: -1 }) // Ordenar por fecha de entrega en orden ascendente (el más reciente primero)
+      .skip(skip)
+      .limit(limit); // Ordenar por fecha de entrega en orden ascendente (el más antiguo primero)
 
-    res.status(200).json(data);
+    // res.status(200).json(data);
+    res.status(200).json({ data, totalPages });
   } catch (error) {
     res.status(500).json({
       messageDev:

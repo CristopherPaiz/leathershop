@@ -18,6 +18,9 @@ const cosmeticoSchema = new Schema({
   apartados: {
     type: Number,
   },
+  vendidos: {
+    type: Number,
+  },
   especificaciones: {
     type: String,
   },
