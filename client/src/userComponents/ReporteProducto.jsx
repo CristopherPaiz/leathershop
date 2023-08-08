@@ -288,6 +288,8 @@ const ReporteProducto = () => {
                     ))}
                   </Table.Body>
                 </Table>
+                <br />
+                <br />
               </div>
             ) : null}
             {pestanaActiva === 2 ? (
@@ -323,6 +325,8 @@ const ReporteProducto = () => {
                     ))}
                   </Table.Body>
                 </Table>
+                <br />
+                <br />
               </div>
             ) : null}
             {pestanaActiva === 3 ? (
@@ -353,6 +357,8 @@ const ReporteProducto = () => {
                     ))}
                   </Table.Body>
                 </Table>
+                <br />
+                <br />
               </div>
             ) : null}
             {pestanaActiva === 4 ? (
@@ -383,6 +389,8 @@ const ReporteProducto = () => {
                     ))}
                   </Table.Body>
                 </Table>
+                <br />
+                <br />
               </div>
             ) : null}
             {pestanaActiva === 5 ? (
@@ -416,6 +424,8 @@ const ReporteProducto = () => {
                     ))}
                   </Table.Body>
                 </Table>
+                <br />
+                <br />
               </div>
             ) : null}
             {pestanaActiva === 6 ? (
@@ -489,6 +499,8 @@ const ReporteProducto = () => {
                     ))}
                   </Table.Body>
                 </Table>
+                <br />
+                <br />
               </div>
             ) : null}
           </>
