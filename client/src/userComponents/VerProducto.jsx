@@ -28,13 +28,9 @@ const VerProducto = () => {
   const { cosmetico } = location.state;
 
   //valores iniciales
-  const [totalCantidad, setTotalCantidad] = useState(cosmetico?.cantidadTotal - cosmetico?.vendidos);
-  const [totalVendidos, setTotalVendidos] = useState(cosmetico?.vendidos);
-  const [totalApartados, setTotalApartados] = useState(cosmetico?.apartados);
-
-  //valores que van a cambiar
-  const [apartados, setApartados] = useState(cosmetico?.apartados);
-  const [vendidos, setVendidos] = useState(0);
+  const [disponible, SetDisponibles] = useState(cosmetico?.cantidadTotal - cosmetico?.vendidos); //95
+  const [apartados, setApartados] = useState(cosmetico?.apartados); // 5
+  const [vender, setVender] = useState(0); // 0
 
   // Paso 1: Agregar estado para seguir los datos actualizados del cliente
   const [datosCosmeticoActualizados, setDatosCosmeticoActualizados] = useState({
@@ -90,11 +86,8 @@ const VerProducto = () => {
     setApartados(newValue);
   };
 
-  const handleEntregarChange = (newValue) => {
-    setVendidos(newValue);
-    if (vendidos <= apartados) {
-      setApartados(apartados - 1);
-    }
+  const handleVenderChange = (newValue) => {
+    setVender(newValue);
   };
 
   useEffect(() => {
@@ -103,14 +96,10 @@ const VerProducto = () => {
   }, []);
 
   useEffect(() => {
-    if (vendidos > apartados) {
-      setVendidos(apartados);
+    if (setVender > apartados) {
+      setVender(apartados);
     }
-
-    if (vendidos > apartados) {
-      setApartados(apartados);
-    }
-  }, [apartados, vendidos]);
+  }, [apartados, vender]);
 
   // Paso 2: Función para manejar el envío del formulario y actualizar los datos
   const handleFormSubmit = async () => {
@@ -124,14 +113,16 @@ const VerProducto = () => {
     const formattedData = {
       ...cosmetico,
       cantidadTotal: Number(cosmetico.cantidadTotal),
-      apartados: Number(apartados),
-      vendidos: Number(cosmetico?.vendidos + vendidos),
+      apartados: Number(apartados - vender),
+      vendidos: Number(cosmetico?.vendidos + vender),
       especificaciones: cosmetico.especificaciones,
       producto: cosmetico.producto,
       estado: true,
       categoria: selectedCategoriaId,
       imagen: [...cosmetico.imagen, ...imagenesv2], // Adding the uploaded image URLs to the data
     };
+
+    console.log(formattedData);
 
     try {
       const response = await fetch(`${API_URL}/cosmeticos/update/${cosmetico._id}`, {
@@ -295,7 +286,7 @@ const VerProducto = () => {
               margin: "4px auto",
             }}
           >
-            Disponible: {totalCantidad - apartados}
+            Disponible: {disponible - apartados}
           </Header.Content>
           <Header.Content
             style={{
@@ -306,7 +297,7 @@ const VerProducto = () => {
               margin: "4px auto",
             }}
           >
-            Apartados: {apartados}
+            Apartados: {apartados - vender}
           </Header.Content>
         </Header>
         <Header
@@ -336,15 +327,13 @@ const VerProducto = () => {
                   backgroundColor: "snow",
                 }}
               >
-                {apartados}
+                {apartados - vender}
               </Label>
               <Button
                 icon="plus"
                 color="green"
                 onClick={() =>
-                  apartados > cosmetico?.cantidadTotal - 1
-                    ? handleApartadosChange(cosmetico?.cantidadTotal)
-                    : handleApartadosChange(apartados + 1)
+                  apartados > disponible - 1 ? handleApartadosChange(disponible) : handleApartadosChange(apartados + 1)
                 }
               />
             </Button.Group>
@@ -367,7 +356,7 @@ const VerProducto = () => {
               <Button
                 icon="minus"
                 color="red"
-                onClick={() => (vendidos < 1 ? handleEntregarChange(0) : handleEntregarChange(vendidos - 1))}
+                onClick={() => (vender < 1 ? handleVenderChange(0) : handleVenderChange(vender - 1))}
               />
               <Label
                 basic
@@ -378,13 +367,13 @@ const VerProducto = () => {
                   backgroundColor: "snow",
                 }}
               >
-                {vendidos}
+                {vender}
               </Label>
               <Button
                 icon="plus"
                 color="green"
                 onClick={() =>
-                  vendidos > apartados - 1 ? handleEntregarChange(apartados) : handleEntregarChange(vendidos + 1)
+                  vender > apartados - 1 ? handleVenderChange(apartados) : handleVenderChange(vender + 1)
                 }
               />
             </Button.Group>

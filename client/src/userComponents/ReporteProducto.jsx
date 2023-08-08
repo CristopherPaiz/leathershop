@@ -1,17 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import {
-  Header,
-  Icon,
-  Form,
-  Grid,
-  Radio,
-  Pagination,
-  Accordion,
-  Tab,
-  TabPane,
-  Button,
-  Table,
-} from "semantic-ui-react";
+import { Header, Icon, Form, Grid, Radio, Pagination, Accordion, Tab, TabPane, Button, Table } from "semantic-ui-react";
 import { Navigate } from "react-router-dom";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
@@ -33,6 +21,7 @@ const ReporteProducto = () => {
     if (pestanaActiva === 1) {
       getDisponibilidad();
     } else if (pestanaActiva === 2) {
+      getApartados();
     } else if (pestanaActiva === 3) {
       utilidadUnidad();
     } else if (pestanaActiva === 4) {
@@ -49,16 +38,13 @@ const ReporteProducto = () => {
   //Obtener disponibilidad
   const getDisponibilidad = async () => {
     try {
-      const response = await fetch(
-        `${API_URL}/cosmeticos/getalldisponibility`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${API_URL}/cosmeticos/getalldisponibility`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
       if (!response.ok) {
         toast.error("Error al obtener la disponibilidad de los productos");
@@ -70,32 +56,49 @@ const ReporteProducto = () => {
       setLoading(false);
     } catch (error) {
       toast.error("Error al obtener la disponibilidad de los productos");
-      console.error(
-        "Error al obtener la disponibilidad de los productos:",
-        error
-      );
+      console.error("Error al obtener la disponibilidad de los productos:", error);
+    }
+  };
+
+  //Obtener apartados
+  const getApartados = async () => {
+    try {
+      const response = await fetch(`${API_URL}/cosmeticos/getallapartados`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        toast.error("Error al obtener la disponibilidad de los productos");
+        throw new Error("Error al obtener la disponibilidad de los productos");
+      }
+
+      const data = await response.json();
+      setCosmeticos(data.data);
+      setLoading(false);
+    } catch (error) {
+      toast.error("Error al obtener la disponibilidad de los productos");
+      console.error("Error al obtener la disponibilidad de los productos:", error);
     }
   };
 
   //Obtener disponibilidad
   const utilidadUnidad = async () => {
     try {
-      const response = await fetch(
-        `${API_URL}/cosmeticos/utilidad-por-unidad`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${API_URL}/cosmeticos/utilidad-por-unidad`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
       if (!response.ok) {
         toast.error("Error al obtener la utilidad por unidad de los productos");
-        throw new Error(
-          "Error al obtener la utilidad por unidad de los productos"
-        );
+        throw new Error("Error al obtener la utilidad por unidad de los productos");
       }
 
       const data = await response.json();
@@ -103,10 +106,7 @@ const ReporteProducto = () => {
       setLoading(false);
     } catch (error) {
       toast.error("Error al obtener la utilidad por unidad de los productos");
-      console.error(
-        "Error al obtener la utilidad por unidad de los productos:",
-        error
-      );
+      console.error("Error al obtener la utilidad por unidad de los productos:", error);
     }
   };
 
@@ -123,9 +123,7 @@ const ReporteProducto = () => {
 
       if (!response.ok) {
         toast.error("Error al obtener la utilidad por unidad de los productos");
-        throw new Error(
-          "Error al obtener la utilidad por unidad de los productos"
-        );
+        throw new Error("Error al obtener la utilidad por unidad de los productos");
       }
 
       const data = await response.json();
@@ -133,32 +131,24 @@ const ReporteProducto = () => {
       setLoading(false);
     } catch (error) {
       toast.error("Error al obtener la utilidad por unidad de los productos");
-      console.error(
-        "Error al obtener la utilidad por unidad de los productos:",
-        error
-      );
+      console.error("Error al obtener la utilidad por unidad de los productos:", error);
     }
   };
 
   //Obtener disponibilidad
   const cantidadComprado = async () => {
     try {
-      const response = await fetch(
-        `${API_URL}/cosmeticos/cantidad-y-monto-comprado`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${API_URL}/cosmeticos/cantidad-y-monto-comprado`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
       if (!response.ok) {
         toast.error("Error al obtener la utilidad por unidad de los productos");
-        throw new Error(
-          "Error al obtener la utilidad por unidad de los productos"
-        );
+        throw new Error("Error al obtener la utilidad por unidad de los productos");
       }
 
       const data = await response.json();
@@ -166,32 +156,24 @@ const ReporteProducto = () => {
       setLoading(false);
     } catch (error) {
       toast.error("Error al obtener la utilidad por unidad de los productos");
-      console.error(
-        "Error al obtener la utilidad por unidad de los productos:",
-        error
-      );
+      console.error("Error al obtener la utilidad por unidad de los productos:", error);
     }
   };
 
   //Obtener disponibilidad
   const cantidadVendido = async () => {
     try {
-      const response = await fetch(
-        `${API_URL}/cosmeticos/cantidad-y-monto-venta`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${API_URL}/cosmeticos/cantidad-y-monto-venta`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
       if (!response.ok) {
         toast.error("Error al obtener la utilidad por unidad de los productos");
-        throw new Error(
-          "Error al obtener la utilidad por unidad de los productos"
-        );
+        throw new Error("Error al obtener la utilidad por unidad de los productos");
       }
 
       const data = await response.json();
@@ -199,32 +181,24 @@ const ReporteProducto = () => {
       setLoading(false);
     } catch (error) {
       toast.error("Error al obtener la utilidad por unidad de los productos");
-      console.error(
-        "Error al obtener la utilidad por unidad de los productos:",
-        error
-      );
+      console.error("Error al obtener la utilidad por unidad de los productos:", error);
     }
   };
 
   //Obtener disponibilidad
   const utilidadGenerada = async () => {
     try {
-      const response = await fetch(
-        `${API_URL}/cosmeticos/cantidad-monto-utilidad`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${API_URL}/cosmeticos/cantidad-monto-utilidad`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
       if (!response.ok) {
         toast.error("Error al obtener la utilidad por unidad de los productos");
-        throw new Error(
-          "Error al obtener la utilidad por unidad de los productos"
-        );
+        throw new Error("Error al obtener la utilidad por unidad de los productos");
       }
 
       const data = await response.json();
@@ -232,10 +206,7 @@ const ReporteProducto = () => {
       setLoading(false);
     } catch (error) {
       toast.error("Error al obtener la utilidad por unidad de los productos");
-      console.error(
-        "Error al obtener la utilidad por unidad de los productos:",
-        error
-      );
+      console.error("Error al obtener la utilidad por unidad de los productos:", error);
     }
   };
 
@@ -291,9 +262,7 @@ const ReporteProducto = () => {
                 }}
               >
                 <Header as="h3" icon textAlign="center">
-                  <Header.Subheader>
-                    Disponibilidad de un producto siguiendo la fórmula:{" "}
-                  </Header.Subheader>
+                  <Header.Subheader>Disponibilidad de un producto siguiendo la fórmula: </Header.Subheader>
                   <Header.Subheader style={{ color: "red" }}>
                     Producto Total - apartados = disponibilidad
                   </Header.Subheader>
@@ -314,16 +283,48 @@ const ReporteProducto = () => {
                         positive={cosmetico?.Disponible > 3}
                       >
                         <Table.Cell>{cosmetico?.producto}</Table.Cell>
-                        <Table.Cell textAlign="center">
-                          {cosmetico?.Disponible}
-                        </Table.Cell>
+                        <Table.Cell textAlign="center">{cosmetico?.Disponible}</Table.Cell>
                       </Table.Row>
                     ))}
                   </Table.Body>
                 </Table>
               </div>
             ) : null}
-            {pestanaActiva === 2 ? <h1>Hola2</h1> : null}
+            {pestanaActiva === 2 ? (
+              <div
+                style={{
+                  maxWidth: "350px",
+                  width: "350px",
+                  margin: "10px auto",
+                }}
+              >
+                <Header as="h3" icon textAlign="center">
+                  <Header.Subheader>Cantidad de productos apartados: </Header.Subheader>
+                  <Header.Subheader style={{ color: "red" }}></Header.Subheader>
+                </Header>
+                <Table celled unstackable style={{ marginBottom: "40px" }}>
+                  <Table.Header>
+                    <Table.Row textAlign="center">
+                      <Table.HeaderCell>Producto</Table.HeaderCell>
+                      <Table.HeaderCell>Apartados</Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+
+                  <Table.Body>
+                    {cosmeticos.map((cosmetico) => (
+                      <Table.Row
+                        key={cosmetico?.producto}
+                        negative={cosmetico?.apartados <= 2}
+                        positive={cosmetico?.apartados > 3}
+                      >
+                        <Table.Cell>{cosmetico?.producto}</Table.Cell>
+                        <Table.Cell textAlign="center">{cosmetico?.apartados}</Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Table.Body>
+                </Table>
+              </div>
+            ) : null}
             {pestanaActiva === 3 ? (
               <div
                 style={{
@@ -333,9 +334,7 @@ const ReporteProducto = () => {
                 }}
               >
                 <Header as="h3" icon textAlign="center">
-                  <Header.Subheader>
-                    Utilidad de un producto en compras por Unidad:{" "}
-                  </Header.Subheader>
+                  <Header.Subheader>Utilidad de un producto en compras por Unidad: </Header.Subheader>
                 </Header>
                 <Table celled unstackable style={{ marginBottom: "40px" }}>
                   <Table.Header>
@@ -349,9 +348,7 @@ const ReporteProducto = () => {
                     {cosmeticos.map((cosmetico) => (
                       <Table.Row key={cosmetico?.producto}>
                         <Table.Cell>{cosmetico?.producto}</Table.Cell>
-                        <Table.Cell textAlign="center">
-                          Q. {cosmetico?.utilidadTotal}
-                        </Table.Cell>
+                        <Table.Cell textAlign="center">Q. {cosmetico?.utilidadTotal}</Table.Cell>
                       </Table.Row>
                     ))}
                   </Table.Body>
@@ -367,9 +364,7 @@ const ReporteProducto = () => {
                 }}
               >
                 <Header as="h3" icon textAlign="center">
-                  <Header.Subheader>
-                    Utilidad de un producto en compras por Mayoreo:{" "}
-                  </Header.Subheader>
+                  <Header.Subheader>Utilidad de un producto en compras por Mayoreo: </Header.Subheader>
                 </Header>
                 <Table celled unstackable style={{ marginBottom: "40px" }}>
                   <Table.Header>
@@ -383,9 +378,7 @@ const ReporteProducto = () => {
                     {cosmeticos.map((cosmetico) => (
                       <Table.Row key={cosmetico?.producto}>
                         <Table.Cell>{cosmetico?.producto}</Table.Cell>
-                        <Table.Cell textAlign="center">
-                          Q. {cosmetico?.utilidadTotal}
-                        </Table.Cell>
+                        <Table.Cell textAlign="center">Q. {cosmetico?.utilidadTotal}</Table.Cell>
                       </Table.Row>
                     ))}
                   </Table.Body>
@@ -401,20 +394,14 @@ const ReporteProducto = () => {
                 }}
               >
                 <Header as="h3" icon textAlign="center">
-                  <Header.Subheader>
-                    Cantidad de producto comprado a lo largo del tiempo{" "}
-                  </Header.Subheader>
-                  <Header.Subheader>
-                    Y su equivalente en Quetzales
-                  </Header.Subheader>
+                  <Header.Subheader>Cantidad de producto comprado a lo largo del tiempo </Header.Subheader>
+                  <Header.Subheader>Y su equivalente en Quetzales</Header.Subheader>
                 </Header>
                 <Table celled unstackable style={{ marginBottom: "40px" }}>
                   <Table.Header>
                     <Table.Row textAlign="center">
                       <Table.HeaderCell>Producto</Table.HeaderCell>
-                      <Table.HeaderCell>
-                        Cantidad Total Comprada
-                      </Table.HeaderCell>
+                      <Table.HeaderCell>Cantidad Total Comprada</Table.HeaderCell>
                       <Table.HeaderCell>Equivalente en GTQ.</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
@@ -423,12 +410,8 @@ const ReporteProducto = () => {
                     {cosmeticos.map((cosmetico) => (
                       <Table.Row key={cosmetico?.producto}>
                         <Table.Cell>{cosmetico?.producto}</Table.Cell>
-                        <Table.Cell textAlign="center">
-                          {cosmetico?.cantidadComprado} Unid.
-                        </Table.Cell>
-                        <Table.Cell textAlign="center">
-                          Q. {cosmetico?.montoTotalDinero}
-                        </Table.Cell>
+                        <Table.Cell textAlign="center">{cosmetico?.cantidadComprado} Unid.</Table.Cell>
+                        <Table.Cell textAlign="center">Q. {cosmetico?.montoTotalDinero}</Table.Cell>
                       </Table.Row>
                     ))}
                   </Table.Body>
@@ -444,20 +427,14 @@ const ReporteProducto = () => {
                 }}
               >
                 <Header as="h3" icon textAlign="center">
-                  <Header.Subheader>
-                    Cantidad de producto PREVISTO para vender según lo comprado{" "}
-                  </Header.Subheader>
-                  <Header.Subheader>
-                    Y su equivalente en Quetzales
-                  </Header.Subheader>
+                  <Header.Subheader>Cantidad de producto PREVISTO para vender según lo comprado </Header.Subheader>
+                  <Header.Subheader>Y su equivalente en Quetzales</Header.Subheader>
                 </Header>
                 <Table celled unstackable>
                   <Table.Header>
                     <Table.Row textAlign="center">
                       <Table.HeaderCell>Producto</Table.HeaderCell>
-                      <Table.HeaderCell>
-                        Cantidad Total Vendida
-                      </Table.HeaderCell>
+                      <Table.HeaderCell>Cantidad Total Vendida</Table.HeaderCell>
                       <Table.HeaderCell>Equivalente en GTQ.</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
@@ -466,12 +443,8 @@ const ReporteProducto = () => {
                     {cosmeticos.map((cosmetico) => (
                       <Table.Row key={cosmetico?.producto}>
                         <Table.Cell>{cosmetico?.producto}</Table.Cell>
-                        <Table.Cell textAlign="center">
-                          {cosmetico?.cantidadComprado} Unid.
-                        </Table.Cell>
-                        <Table.Cell textAlign="center">
-                          Q. {cosmetico?.montoTotalVenta}
-                        </Table.Cell>
+                        <Table.Cell textAlign="center">{cosmetico?.cantidadComprado} Unid.</Table.Cell>
+                        <Table.Cell textAlign="center">Q. {cosmetico?.montoTotalVenta}</Table.Cell>
                       </Table.Row>
                     ))}
                   </Table.Body>
@@ -490,12 +463,8 @@ const ReporteProducto = () => {
                 }}
               >
                 <Header as="h3" icon textAlign="center">
-                  <Header.Subheader>
-                    Cantidad de utilidad PREVISTA según lo comprado y vendido{" "}
-                  </Header.Subheader>
-                  <Header.Subheader>
-                    Y su equivalente en Quetzales
-                  </Header.Subheader>
+                  <Header.Subheader>Cantidad de utilidad PREVISTA según lo comprado y vendido </Header.Subheader>
+                  <Header.Subheader>Y su equivalente en Quetzales</Header.Subheader>
                 </Header>
                 <Table celled unstackable style={{ marginBottom: "40px" }}>
                   <Table.Header>
@@ -512,18 +481,10 @@ const ReporteProducto = () => {
                     {cosmeticos.map((cosmetico) => (
                       <Table.Row key={cosmetico?.producto}>
                         <Table.Cell>{cosmetico?.producto}</Table.Cell>
-                        <Table.Cell textAlign="center">
-                          {cosmetico?.cantidadComprado} Unid.
-                        </Table.Cell>
-                        <Table.Cell textAlign="center">
-                          Q. {cosmetico?.montoTotalDinero}
-                        </Table.Cell>
-                        <Table.Cell textAlign="center">
-                          Q. {cosmetico?.montoTotalVenta}
-                        </Table.Cell>
-                        <Table.Cell textAlign="center">
-                          Q. {cosmetico?.utilidad}
-                        </Table.Cell>
+                        <Table.Cell textAlign="center">{cosmetico?.cantidadComprado} Unid.</Table.Cell>
+                        <Table.Cell textAlign="center">Q. {cosmetico?.montoTotalDinero}</Table.Cell>
+                        <Table.Cell textAlign="center">Q. {cosmetico?.montoTotalVenta}</Table.Cell>
+                        <Table.Cell textAlign="center">Q. {cosmetico?.utilidad}</Table.Cell>
                       </Table.Row>
                     ))}
                   </Table.Body>

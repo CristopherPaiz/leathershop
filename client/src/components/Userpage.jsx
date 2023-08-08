@@ -51,10 +51,7 @@ const Userpage = () => {
     localStorage.setItem("pestanaActivauser", numeroPestana);
   };
 
-  if (
-    (loggedIn && usuario.rol === "Admin") ||
-    (loggedIn && usuario.rol === "Moderator")
-  ) {
+  if ((loggedIn && usuario.rol === "Admin") || (loggedIn && usuario.rol === "Moderator")) {
     const botones = [
       { numero: 1, texto: "Productos", icono: "th" },
       { numero: 2, texto: "Categorías", icono: "tags" },
@@ -79,56 +76,22 @@ const Userpage = () => {
               {boton.texto}
             </Button>
           ))}
-          <Button
-            key={4}
-            as={Link}
-            toggle
-            style={{ margin: "3px", width: "175px" }}
-            to={`/user/addProducto`}
-          >
+          <Button key={4} as={Link} toggle style={{ margin: "3px", width: "175px" }} to={`/user/addProducto`}>
             <Icon name="add" />
             Añadir Producto
-          </Button>
-          <Button
-            key={5}
-            as={Link}
-            toggle
-            style={{ margin: "3px", width: "175px" }}
-            to={`/user/entregar`}
-          >
-            <Icon name="add square" />
-            Entregar Prod.
           </Button>
 
           {usuario.rol === "Admin" ? (
             <>
-              <Button
-                key={6}
-                as={Link}
-                toggle
-                style={{ margin: "3px", width: "175px" }}
-                to={`/user/addProductoCompra`}
-              >
+              <Button key={5} as={Link} toggle style={{ margin: "3px", width: "175px" }} to={`/user/addProductoCompra`}>
                 <Icon name="add square" />
                 Compra Producto
               </Button>
-              <Button
-                key={7}
-                as={Link}
-                toggle
-                style={{ margin: "3px", width: "175px" }}
-                to={`/user/productoHistorial`}
-              >
+              <Button key={6} as={Link} toggle style={{ margin: "3px", width: "175px" }} to={`/user/productoHistorial`}>
                 <Icon name="line graph" />
                 Historial compras
               </Button>
-              <Button
-                key={8}
-                as={Link}
-                toggle
-                style={{ margin: "3px", width: "175px" }}
-                to={`/user/ProductoReporte`}
-              >
+              <Button key={7} as={Link} toggle style={{ margin: "3px", width: "175px" }} to={`/user/ProductoReporte`}>
                 <Icon name="line graph" />
                 Reportes
               </Button>

@@ -142,13 +142,7 @@ const CategoriaProductos = () => {
           </Header>
         </div>
         Seleccione:
-        <Dropdown
-          placeholder="Categoría"
-          search
-          selection
-          options={listaCategorias}
-          onChange={handleCategoriaChange}
-        />
+        <Dropdown placeholder="Categoría" search selection options={listaCategorias} onChange={handleCategoriaChange} />
         {cosmeticos?.length > 0 ? (
           <div style={{ padding: "10px" }}>
             {cosmeticos?.map((cosmetico) => (
@@ -159,10 +153,7 @@ const CategoriaProductos = () => {
                 state={{ cosmetico }}
               >
                 <img
-                  src={
-                    cosmetico?.imagen[0] ??
-                    "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"
-                  }
+                  src={cosmetico?.imagen[0] ?? "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"}
                   alt={cosmetico?.producto ?? ""}
                   style={imageStyle}
                 />
@@ -171,7 +162,7 @@ const CategoriaProductos = () => {
                   <div>{cosmetico?.especificaciones ?? ""}</div>
                   <span style={spanStyle}>
                     <strong>Disponibles: </strong>
-                    {cosmetico?.cantidadTotal ?? ""}
+                    {cosmetico?.cantidadTotal - cosmetico?.vendidos - cosmetico?.apartados ?? ""}
                   </span>
                   <span style={spanStyle}>
                     <strong>Apartados: </strong>

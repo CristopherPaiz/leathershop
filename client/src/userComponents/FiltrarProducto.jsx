@@ -112,23 +112,12 @@ const FiltrarProducto = () => {
           textAlign: "center",
         }}
       >
-        <Header
-          size="tiny"
-          dividing
-          style={{ width: "80vw", margin: "20px auto" }}
-        >
+        <Header size="tiny" dividing style={{ width: "80vw", margin: "20px auto" }}>
           <Icon name="th" />
-          <Header.Content>
-            Combina uno o ambos campos para filtrar los productos
-          </Header.Content>
-          <Header.Content
-            size="tiny"
-            as="h5"
-            style={{ fontSize: "10px", color: "red" }}
-          >
-            ATENCIÓN: Una búsqueda con pocos parámetros puede cargar muchos
-            productos a la vez o si la búsqueda NO tiene parámetros, se cargarán
-            todos los productos.
+          <Header.Content>Combina uno o ambos campos para filtrar los productos</Header.Content>
+          <Header.Content size="tiny" as="h5" style={{ fontSize: "10px", color: "red" }}>
+            ATENCIÓN: Una búsqueda con pocos parámetros puede cargar muchos productos a la vez o si la búsqueda NO tiene
+            parámetros, se cargarán todos los productos.
           </Header.Content>
         </Header>
         <Grid centered style={{ width: "100vw", margin: "0 auto" }}>
@@ -174,10 +163,7 @@ const FiltrarProducto = () => {
                   state={{ cosmetico }}
                 >
                   <img
-                    src={
-                      cosmetico?.imagen[0] ??
-                      "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"
-                    }
+                    src={cosmetico?.imagen[0] ?? "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"}
                     alt={cosmetico?.producto ?? ""}
                     style={imageStyle}
                   />
@@ -186,7 +172,7 @@ const FiltrarProducto = () => {
                     <div>{cosmetico?.especificaciones ?? ""}</div>
                     <span style={spanStyle}>
                       <strong>Disponibles: </strong>
-                      {cosmetico?.cantidadTotal ?? ""}
+                      {cosmetico?.cantidadTotal - cosmetico?.vendidos - cosmetico?.apartados ?? ""}
                     </span>
                     <span style={spanStyle}>
                       <strong>Apartados: </strong>

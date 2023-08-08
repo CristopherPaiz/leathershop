@@ -1,13 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import {
-  Header,
-  Icon,
-  Form,
-  Button,
-  Grid,
-  Dropdown,
-  Radio,
-} from "semantic-ui-react";
+import { Header, Icon, Form, Button, Grid, Dropdown, Radio } from "semantic-ui-react";
 import { Navigate, useNavigate } from "react-router-dom";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
@@ -75,9 +67,7 @@ const AddProductoCompra = () => {
   //useEffect para controlar ventas y setear un valor a utilidad generada
   useEffect(() => {
     if (cantidadIngresoM > 0 && (costoUnitarioM > 0 || costoTotalM > 0)) {
-      setUtilidadGeneradaM(
-        Number(precioVentaM * cantidadIngresoM - costoTotalM)
-      );
+      setUtilidadGeneradaM(Number(precioVentaM * cantidadIngresoM - costoTotalM));
     } else {
       setUtilidadGeneradaM(0);
     }
@@ -103,14 +93,14 @@ const AddProductoCompra = () => {
       // Formatear los datos para el Dropdown
       const options = data?.map((categoria) => ({
         key: categoria._id,
-        image: {
-          avatar: true,
-          transition: "fade in",
-          duration: 1000,
-          src:
-            categoria?.imagen[0] ??
-            "https://cdn-icons-png.flaticon.com/512/7734/7734301.png",
-        },
+        // image: {
+        //   avatar: true,
+        //   transition: "fade in",
+        //   duration: 1000,
+        //   src:
+        //     categoria?.imagen[0] ??
+        //     "https://cdn-icons-png.flaticon.com/512/7734/7734301.png",
+        // },
         text: categoria.producto,
         value: categoria._id, // Usamos el _id como valor del Dropdown para filtrar por categoría
       }));
