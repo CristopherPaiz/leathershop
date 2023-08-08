@@ -12,18 +12,7 @@ const chumpaSchema = new Schema({
   precioAnterior: {
     type: Number,
   },
-  imagen: [
-    {
-      nombre: {
-        type: String,
-        required: true,
-      },
-      url: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
+  imagen: [String],
   descripcion: {
     type: String,
   },
@@ -31,6 +20,10 @@ const chumpaSchema = new Schema({
   tallas: [String],
   especificaciones: {
     type: String,
+  },
+  estado: {
+    type: Boolean,
+    default: true,
   },
 });
 

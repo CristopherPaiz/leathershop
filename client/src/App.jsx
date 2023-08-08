@@ -12,6 +12,7 @@ import Navbar from "./components/Navbar.jsx";
 import Login from "./components/pages/Login.jsx";
 import VerCliente from "./adminComponents/VerCliente.jsx";
 import AddCliente from "./adminComponents/AddCliente.jsx";
+import AddChumpa from "./adminComponents/AddChumpa.jsx";
 import VerProducto from "./userComponents/VerProducto.jsx";
 import AddProducto from "./userComponents/AddProducto.jsx";
 import AddProductoCompra from "./userComponents/AddProductoCompra.jsx";
@@ -84,6 +85,14 @@ const App = () => {
           element={
             <AdminElement>
               <AddCliente />
+            </AdminElement>
+          }
+        />
+        <Route
+          path="/admin/addChumpa"
+          element={
+            <AdminElement>
+              <AddChumpa />
             </AdminElement>
           }
         />

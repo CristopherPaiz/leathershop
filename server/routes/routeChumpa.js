@@ -31,22 +31,9 @@ router.get("/chumpas/getbyid/:id", async (req, res) => {
 //======= crear una nueva chumpa =======
 router.post("/chumpas/add", async (req, res) => {
   try {
-    const {
-      nombre,
-      precio,
-      precioAnterior,
-      imagen,
-      descripcion,
-      colores,
-      tallas,
-      especificaciones,
-    } = req.body;
+    const { nombre, precio, precioAnterior, imagen, descripcion, colores, tallas, especificaciones } = req.body;
 
-    // Crear un nuevo objeto para cada imagen que incluya el nombre y la URL
-    const imagenes = imagen.map((img) => ({
-      nombre: img.nombre,
-      url: img.url,
-    }));
+    const imagenes = await imagen;
 
     const chumpa = new Chumpa({
       nombre,
@@ -63,9 +50,7 @@ router.post("/chumpas/add", async (req, res) => {
     const resultado = await chumpa.save();
 
     //mandamos estado 200 de OK y el resultado de la operacion
-    res
-      .status(200)
-      .json({ message: "Chumpa añadida correctamente", resultado });
+    res.status(200).json({ message: "Chumpa añadida correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo añadir chumpa",
@@ -81,9 +66,7 @@ router.put("/chumpas/update/:id", async (req, res) => {
     const data = req.body;
     const options = { new: true };
     const resultado = await Chumpa.findByIdAndUpdate(id, data, options);
-    res
-      .status(200)
-      .json({ message: "Chumpa actualizada correctamente", resultado });
+    res.status(200).json({ message: "Chumpa actualizada correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo actualizar la chumpa",
