@@ -426,17 +426,17 @@ router.get("/CompraCosmetico/getbyid/:id", async (req, res) => {
   }
 });
 
-//======= crear un nuevo cliente =======
+// Crear un nuevo detalle de compra de cosmético
 router.post("/CompraCosmetico/add", async (req, res) => {
   try {
     const {
       idProducto,
       cantidadIngreso,
+      cantidadIngresoPorMayor,
       costoUnitario,
       costoTotal,
       costoDeVenta,
       utilidad,
-      cantidadIngresoPorMayor,
       costoUnitarioPorMayor,
       costoTotalPorMayor,
       costoDeVentaPorMayor,
@@ -447,11 +447,11 @@ router.post("/CompraCosmetico/add", async (req, res) => {
     const compraCosmetico = new CompraCosmetico({
       idProducto,
       cantidadIngreso,
+      cantidadIngresoPorMayor,
       costoUnitario,
       costoTotal,
       costoDeVenta,
       utilidad,
-      cantidadIngresoPorMayor,
       costoUnitarioPorMayor,
       costoTotalPorMayor,
       costoDeVentaPorMayor,
@@ -459,10 +459,14 @@ router.post("/CompraCosmetico/add", async (req, res) => {
       observaciones,
     });
 
-    // Guardar el objeto cliente en la base de datos u otras operaciones necesarias
+    // Guardar el detalle de compra en la base de datos
     const resultado = await compraCosmetico.save();
 
-    //mandamos estado 200 de OK y el resultado de la operacion
+    // Actualizar cantidadTotal en la colección "Cosmetico"
+    const cosmeticoToUpdate = await Cosmetico.findById(idProducto);
+    cosmeticoToUpdate.cantidadTotal += cantidadIngreso + cantidadIngresoPorMayor;
+    await cosmeticoToUpdate.save();
+
     res.status(200).json({ message: "Detalle cosmético añadido correctamente", resultado });
   } catch (error) {
     res.status(500).json({
