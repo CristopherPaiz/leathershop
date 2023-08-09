@@ -65,7 +65,6 @@ const Homepage = () => {
       setPost(datosJson.data);
       setLoading(false);
       setTotalPages(datosJson.totalPages);
-      console.log(datosJson);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -319,6 +318,7 @@ const Homepage = () => {
               </Card>
             ))}
           </Card.Group>
+
           {totalPages > 1 && (
             <div style={{ margin: "10px auto", textAlign: "center" }}>
               <Pagination
@@ -333,6 +333,7 @@ const Homepage = () => {
               />
             </div>
           )}
+          <br />
         </>
       )}
     </>
