@@ -6,8 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { contexto } from "../context/ContextProvider";
 import { fromBlob } from "image-resize-compress";
 
-const cloudinaryUploadUrl =
-  "https://api.cloudinary.com/v1_1/dbkfiarmr/image/upload";
+const cloudinaryUploadUrl = "https://api.cloudinary.com/v1_1/dbkfiarmr/image/upload";
 const AddChumpa = () => {
   const { loggedIn, usuario } = useContext(contexto);
   const [datosChumpa, setdatosChumpa] = useState({});
@@ -45,20 +44,14 @@ const AddChumpa = () => {
       setLoadingImages(true);
       setShowLoadingToast(true);
       // Upload each image to Cloudinary and get the URLs
-      const uploadedImages = await Promise.all(
-        imagenes.map((file) => uploadImageToCloudinary(file))
-      );
+      const uploadedImages = await Promise.all(imagenes.map((file) => uploadImageToCloudinary(file)));
       // Format the data including the uploaded image URLs
       const formattedData = {
         ...datosChumpa,
         precio: Number(datosChumpa.precio),
         precioAnterior: Number(datosChumpa.precioAnterior),
-        colores: datosChumpa.colores
-          ? datosChumpa.colores.split(",").map((color) => color.trim())
-          : [],
-        tallas: datosChumpa.tallas
-          ? datosChumpa.tallas.split(",").map((talla) => talla.trim())
-          : [],
+        colores: datosChumpa.colores ? datosChumpa.colores.split(",").map((color) => color.trim()) : [],
+        tallas: datosChumpa.tallas ? datosChumpa.tallas.split(",").map((talla) => talla.trim()) : [],
         imagen: uploadedImages.map((url) => url), // Adding the uploaded image URLs to the data
       };
       const response = await fetch(`${API_URL}/chumpas/add`, {
@@ -179,7 +172,6 @@ const AddChumpa = () => {
                 <Form.Input
                   label="Precio Anterior"
                   type="number"
-                  required
                   placeholder="0.00"
                   autoComplete="nope"
                   onChange={(e) =>
@@ -260,12 +252,7 @@ const AddChumpa = () => {
 
               <Form.Field>
                 <label>Imágenes</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageChange}
-                />
+                <input type="file" accept="image/*" multiple onChange={handleImageChange} />
               </Form.Field>
               <div
                 style={{
@@ -312,12 +299,7 @@ const AddChumpa = () => {
 
               <Grid>
                 <Grid.Column textAlign="center">
-                  <Button
-                    type="submit"
-                    color="green"
-                    fluid
-                    onClick={handleFormSubmit}
-                  >
+                  <Button type="submit" color="green" fluid onClick={handleFormSubmit}>
                     Añadir Chumpa o producto
                   </Button>
                 </Grid.Column>

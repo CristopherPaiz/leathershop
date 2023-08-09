@@ -10,18 +10,18 @@ import {
   Button,
   Icon,
   List,
+  Container,
+  Divider,
 } from "semantic-ui-react";
 import API_URL from "../config.js";
 import { contexto } from "../context/ContextProvider";
-import { Link } from "react-router-dom";
-import ProductoHistorial from "../userComponents/ProductoHistorial";
 
 const Homepage = () => {
   const [post, setPost] = useState([""]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const productsPerPage = 10;
+  const productsPerPage = 12;
   const [open, setOpen] = useState(false);
   const [producto, setProducto] = useState();
 
@@ -58,9 +58,7 @@ const Homepage = () => {
   const posts = async () => {
     try {
       // const res = await fetch("https://dummyjson.com/products");
-      const res = await fetch(
-        `${API_URL}/chumpas/getall?page=${currentPage}&limit=${productsPerPage}`
-      );
+      const res = await fetch(`${API_URL}/chumpas/getall?page=${currentPage}&limit=${productsPerPage}`);
       const datosJson = await res.json();
       setPost(datosJson.data);
       setLoading(false);
@@ -93,7 +91,7 @@ const Homepage = () => {
         <LoadingPage />
       ) : (
         <>
-          <Modal open={open} onClose={handleCloseModal}>
+          <Modal open={open} onClose={handleCloseModal} style={{ color: "black" }}>
             <Modal.Header>{producto?.nombre ?? ""}</Modal.Header>
             <Modal.Content image scrolling>
               <div
@@ -132,9 +130,7 @@ const Homepage = () => {
                   <List style={{ marginTop: "-10px" }}>
                     <List.Item>
                       Antes: {"   "}
-                      <Label color="red">
-                        Q. {producto?.precioAnterior ?? ""}
-                      </Label>
+                      <Label color="red">Q. {producto?.precioAnterior ?? ""}</Label>
                       {"  "}Ahora: {"   "}
                       <Label color="green" style={{ fontSize: "17px" }}>
                         Q. {producto?.precio ?? ""}
@@ -180,18 +176,14 @@ const Homepage = () => {
                   <h4>Colores</h4>
                   <Label.Group>
                     {producto?.colores.map((color, index) => (
-                      <Label key={index} color={color}>
-                        {color}
-                      </Label>
+                      <Label key={index}>{color}</Label>
                     ))}
                   </Label.Group>
 
                   <h4>Tallas</h4>
                   <Label.Group>
                     {producto?.tallas.map((tallas, index) => (
-                      <Label key={index} color={tallas}>
-                        {tallas}
-                      </Label>
+                      <Label key={index}>{tallas}</Label>
                     ))}
                   </Label.Group>
                 </div>
@@ -205,12 +197,7 @@ const Homepage = () => {
           </Modal>
 
           <div>
-            <Header
-              size="huge"
-              icon
-              textAlign="center"
-              style={{ marginTop: "-20px" }}
-            >
+            <Header size="huge" icon textAlign="center" style={{ marginTop: "-20px" }}>
               <Image
                 src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691542644/leathershop_wk2q9j.svg"
                 centered
@@ -229,95 +216,124 @@ const Homepage = () => {
               </Header>
             </Header>
           </div>
-          <Card.Group
-            centered
-            style={{ margin: "0px auto", maxWidth: "1100px" }}
-          >
-            {post.map((item) => (
-              <Card
-                raised
-                as="a"
-                key={item.id}
-                style={{ width: "170px" }}
-                onClick={() => handleActiveItem(item)}
-              >
-                {item.precioAnterior && item.precio ? (
-                  <Label color="green" attached="top right" size="mini">
-                    ¡
-                    {(
-                      ((item?.precioAnterior - item?.precio) /
-                        item?.precioAnterior) *
-                      100
-                    ).toFixed(0)}
-                    % de descuento!
-                  </Label>
-                ) : null}
-
-                <Image
-                  src={
-                    item?.imagen[0] ??
-                    "https://i.pinimg.com/736x/7c/1c/a4/7c1ca448be31c489fb66214ea3ae6deb.jpg"
-                  }
-                  centered
-                  size="small"
-                  style={{
-                    objectFit: "contain",
-                    width: "140px",
-                    height: "140px",
-                    marginTop: "10px",
-                    background: "transparent",
-                  }}
-                />
-
-                <Card.Header
-                  style={{
-                    width: "145px",
-                    fontSize: "16px",
-                    fontWeight: "800",
-                    margin: "15px 15px 0px 15px",
-                    overflow: "hidden",
-                    display: "-webkit-box",
-                    lineClamp: "1",
-                    WebkitLineClamp: "1",
-                    WebkitBoxOrient: "vertical",
-                  }}
-                >
-                  {item?.nombre ?? ""}
-                </Card.Header>
-
-                <Card.Description
-                  style={{
-                    width: "140px",
-                    margin: "5px 15px 15px 15px",
-                    overflow: "hidden",
-                    display: "-webkit-box",
-                    lineClamp: "1",
-                    WebkitLineClamp: "1",
-                    WebkitBoxOrient: "vertical",
-                    fontSize: "12px",
-                  }}
-                >
-                  {item?.descripcion ?? ""}
-                </Card.Description>
-                <div
-                  style={{ margin: "-8px 0px 5px 0px", textAlign: "center" }}
-                >
-                  <Label.Group>
-                    <Label size="mini" color="red" style={{ fontSize: "10px" }}>
-                      Antes: Q. {item?.precioAnterior ?? "0"}
-                    </Label>
-                    <Label
-                      size="large"
-                      color="blue"
-                      style={{ padding: "10px 20px" }}
+          <Container>
+            <Card.Group doubling itemsPerRow={6}>
+              {post.map((item, idx) => (
+                <React.Fragment key={idx}>
+                  <Card
+                    key={idx}
+                    style={{
+                      borderRadius: "10px",
+                      boxShadow: "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: "relative",
+                        margin: "0 auto",
+                        border: "0px solid transparent",
+                      }}
                     >
-                      Ahora: Q. {item?.precio ?? ""}
-                    </Label>
-                  </Label.Group>
-                </div>
-              </Card>
-            ))}
-          </Card.Group>
+                      <Image
+                        src={item?.imagen[0]}
+                        alt={item?.nombre}
+                        width="100%"
+                        height="180px !important"
+                        style={{
+                          objectFit: "cover",
+                          borderRadius: "10px 10px 0px 0px",
+                        }}
+                      />
+
+                      {item.precioAnterior && item.precio ? (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "-10px",
+                            right: "-10px",
+                            background: "red",
+                            color: "white",
+                            width: "30px",
+                            height: "30px",
+                            borderRadius: "50%",
+                            display: "flex",
+                            justifyContent: "center",
+                            border: "1px solid snow",
+                            alignItems: "center",
+                            fontSize: "10px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          -{(((item?.precioAnterior - item?.precio) / item?.precioAnterior) * 100).toFixed(0)}%
+                        </div>
+                      ) : null}
+
+                      <Button
+                        size="tiny"
+                        color="black"
+                        circular
+                        style={{
+                          width: "85px",
+                          position: "absolute",
+                          bottom: "-10%",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          border: "1px solid snow",
+                        }}
+                        onClick={() => {
+                          handleActiveItem(item);
+                        }}
+                      >
+                        Ver más
+                      </Button>
+                    </div>
+
+                    <Card.Content style={{ paddingTop: "30px" }}>
+                      <Card.Header textAlign="center" style={{ fontSize: "16px" }}>
+                        {item.nombre}
+                      </Card.Header>
+                      <Divider />
+                      <div
+                        className="price"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <div>
+                          {item.precioAnterior && (
+                            <span
+                              className="old-price"
+                              style={{
+                                textDecoration: "line-through",
+                                color: "red",
+                                fontSize: "10px",
+                                margin: "5px",
+                              }}
+                            >
+                              Q. {item?.precioAnterior}
+                              {"  "}
+                            </span>
+                          )}
+                          <span
+                            className="new-price"
+                            style={{
+                              fontWeight: "1000",
+                              color: "black",
+                              fontSize: "20px",
+                            }}
+                          >
+                            Q. {item.precio}
+                          </span>
+                        </div>
+                      </div>
+                    </Card.Content>
+                  </Card>
+                </React.Fragment>
+              ))}
+            </Card.Group>
+          </Container>
 
           {totalPages > 1 && (
             <div style={{ margin: "10px auto", textAlign: "center" }}>
