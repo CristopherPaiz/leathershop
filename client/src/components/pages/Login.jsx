@@ -63,9 +63,9 @@ const Login = () => {
           <Grid.Column
             style={{ minWidth: 200, maxWidth: 400, margin: "0 40px" }}
           >
-            <Header as="h2" color="teal" textAlign="center">
-              <Image src="https://react.semantic-ui.com/logo.png" /> Inicia
-              Sesión
+            <Header as="h2" color="black" textAlign="center">
+              <Image src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691542644/leathershop_wk2q9j.svg" />{" "}
+              Inicia Sesión
             </Header>
             <Form size="large">
               <Segment>
@@ -88,7 +88,7 @@ const Login = () => {
                 />
 
                 <Button
-                  color="teal"
+                  color="black"
                   fluid
                   size="large"
                   onClick={obtenerTipoUsuario}

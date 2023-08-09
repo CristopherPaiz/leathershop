@@ -60,8 +60,28 @@ const Homepage = () => {
       ) : (
         <>
           <div>
-            <Header size="huge" icon textAlign="center">
-              <Header.Content>Chumpas de cuero 100% Natural</Header.Content>
+            <Header
+              size="huge"
+              icon
+              textAlign="center"
+              style={{ marginTop: "-20px" }}
+            >
+              <Image
+                src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691542644/leathershop_wk2q9j.svg"
+                centered
+                size="small"
+                style={{
+                  objectFit: "contain",
+                  width: "80px",
+                  height: "80px",
+                  marginTop: "10px",
+                  background: "transparent",
+                }}
+              />
+              <Header.Content>Leather Shop</Header.Content>
+              <Header as="h3" style={{ margin: "5px" }}>
+                Chumpas de cuero 100% Natural
+              </Header>
             </Header>
           </div>
           <Card.Group

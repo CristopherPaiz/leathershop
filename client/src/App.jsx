@@ -18,6 +18,7 @@ import AddProducto from "./userComponents/AddProducto.jsx";
 import AddProductoCompra from "./userComponents/AddProductoCompra.jsx";
 import ProductoHistorial from "./userComponents/ProductoHistorial.jsx";
 import ReporteProducto from "./userComponents/ReporteProducto.jsx";
+import "./userComponents/AddProductoCompraCSS.css";
 
 const App = () => {
   return (

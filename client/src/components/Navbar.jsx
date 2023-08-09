@@ -27,7 +27,11 @@ const Navbar = () => {
           icon="user"
           as={Link}
           to="/login"
-          style={{ backgroundColor: "transparent" }}
+          style={{
+            backgroundColor: "transparent",
+            position: "absolute",
+            right: "0",
+          }}
         />
         <br />
         <br />
@@ -74,7 +78,6 @@ const Navbar = () => {
                 to="/user"
                 icon="diamond"
                 name="Cosméticos"
-                
               />
               <Menu.Item
                 as={Link}
