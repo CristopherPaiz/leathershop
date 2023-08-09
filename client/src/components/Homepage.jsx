@@ -242,15 +242,18 @@ const Homepage = () => {
                 style={{ width: "170px" }}
                 onClick={() => handleActiveItem(item)}
               >
-                <Label color="green" attached="top right" size="mini">
-                  ¡
-                  {(
-                    ((item.precioAnterior - item.precio) /
-                      item.precioAnterior) *
-                    100
-                  ).toFixed(0)}
-                  % de descuento!
-                </Label>
+                {item.precioAnterior && item.precio ? (
+                  <Label color="green" attached="top right" size="mini">
+                    ¡
+                    {(
+                      ((item?.precioAnterior - item?.precio) /
+                        item?.precioAnterior) *
+                      100
+                    ).toFixed(0)}
+                    % de descuento!
+                  </Label>
+                ) : null}
+
                 <Image
                   src={
                     item?.imagen[0] ??
@@ -302,7 +305,7 @@ const Homepage = () => {
                 >
                   <Label.Group>
                     <Label size="mini" color="red" style={{ fontSize: "10px" }}>
-                      Antes: Q. {item?.precioAnterior ?? ""}
+                      Antes: Q. {item?.precioAnterior ?? "0"}
                     </Label>
                     <Label
                       size="large"
