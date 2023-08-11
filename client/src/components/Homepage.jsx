@@ -239,7 +239,7 @@ const Homepage = () => {
                         src={item?.imagen[0]}
                         alt={item?.nombre}
                         width="100%"
-                        height="180px !important"
+                        height="165px !important"
                         style={{
                           objectFit: "cover",
                           borderRadius: "10px 10px 0px 0px",
@@ -320,7 +320,7 @@ const Homepage = () => {
                               style={{
                                 textDecoration: "line-through",
                                 color: "red",
-                                fontSize: "8px",
+                                fontSize: "11px",
                                 margin: "5px",
                               }}
                             >
@@ -333,7 +333,7 @@ const Homepage = () => {
                             style={{
                               fontWeight: "1000",
                               color: "black",
-                              fontSize: "17px",
+                              fontSize: "20px",
                             }}
                           >
                             Q. {item.precio}
