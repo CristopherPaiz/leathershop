@@ -12,6 +12,8 @@ import {
   List,
   Container,
   Divider,
+  Segment,
+  Grid,
 } from "semantic-ui-react";
 import API_URL from "../config.js";
 import { contexto } from "../context/ContextProvider";
@@ -391,7 +393,7 @@ const Homepage = () => {
               style={{ marginTop: "-20px" }}
             >
               <Image
-                src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691542644/leathershop_wk2q9j.svg"
+                src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691726873/leathershop_ojxbmm.svg"
                 centered
                 size="small"
                 style={{
@@ -419,6 +421,38 @@ const Homepage = () => {
           </h3>
         </>
       )}
+      <Segment
+        inverted
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: "100vw",
+          borderRadius: "0px",
+        }}
+      >
+        <Grid inverted>
+          <Grid.Row>
+            <Grid.Column textAlign="center">
+              <Header as="h5" inverted textAlign="center">
+                <Image
+                  style={{ backgroundColor: "snow", borderRadius: "6px" }}
+                  src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691726873/leathershop_ojxbmm.svg"
+                />
+                Leather Shop - Chumpas de cuero personalizadas
+              </Header>
+              <Label as="p" content="3521 5599" icon="phone" />
+              <Label
+                as="p"
+                content="15 Av. y 1 Calle Zona 1, Quetgo."
+                icon="map marker alternate"
+              />
+              <Header as="h5" inverted textAlign="center">
+                © 2021 Leather Shop. Todos los derechos reservados.
+              </Header>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </Segment>
     </>
   );
 };

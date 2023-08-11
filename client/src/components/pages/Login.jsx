@@ -64,7 +64,7 @@ const Login = () => {
             style={{ minWidth: 200, maxWidth: 400, margin: "0 40px" }}
           >
             <Header as="h2" color="black" textAlign="center">
-              <Image src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691542644/leathershop_wk2q9j.svg" />{" "}
+              <Image src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691726873/leathershop_ojxbmm.svg" />{" "}
               Inicia Sesión
             </Header>
             <Form size="large">
