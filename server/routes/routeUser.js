@@ -3,19 +3,6 @@ const router = express.Router();
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
-// ======= ruta para obtener todos las entradas de los usuarios usando el metodo GET =======
-router.get("/user/getall", async (req, res) => {
-  try {
-    const data = await User.find({});
-    res.status(200).json(data);
-  } catch (error) {
-    res.status(500).json({
-      messageDev: "No se pudo obtener los usuarios",
-      messageSys: error.message,
-    });
-  }
-});
-
 // ======= obtener un usuario por su id =======
 router.get("/user/getbyid/:id", async (req, res) => {
   try {
@@ -48,6 +35,7 @@ router.post("/user/getbyusername", async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "15d",
+      sameSite: "none",
     });
 
     const { nombre, imagen, rol } = user;
@@ -84,9 +72,7 @@ router.post("/user/add", async (req, res) => {
     const resultado = await user.save();
 
     //mandamos estado 200 de OK y el resultado de la operacion
-    res
-      .status(200)
-      .json({ message: "Usuario añadido correctamente", resultado });
+    res.status(200).json({ message: "Usuario añadido correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo añadir al usuario",
@@ -102,9 +88,7 @@ router.put("/user/update/:id", async (req, res) => {
     const data = req.body;
     const options = { new: true };
     const resultado = await User.findByIdAndUpdate(id, data, options);
-    res
-      .status(200)
-      .json({ message: "Usuario actualizado correctamente", resultado });
+    res.status(200).json({ message: "Usuario actualizado correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo actualizar al usuario",
