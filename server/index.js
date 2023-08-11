@@ -27,6 +27,11 @@ app.use(
   })
 );
 
+//add hello world route
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api", routesChumpa);
