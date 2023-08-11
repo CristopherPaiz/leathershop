@@ -2,32 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
-
-// // ======= ruta para obtener todos las entradas de los usuarios usando el metodo GET =======
-// router.get("/user/getall", async (req, res) => {
-//   try {
-//     const data = await User.find({});
-//     res.status(200).json(data);
-//   } catch (error) {
-//     res.status(500).json({
-//       messageDev: "No se pudo obtener los usuarios",
-//       messageSys: error.message,
-//     });
-//   }
-// });
-
-// // ======= obtener un usuario por su id =======
-// router.get("/user/getbyid/:id", async (req, res) => {
-//   try {
-//     const data = await User.findById(req.params.id);
-//     res.status(200).json(data);
-//   } catch (error) {
-//     res.status(500).json({
-//       messageDev: "No se pudo obtener al usuario por el id: " + req.params.id,
-//       messageSys: error.message,
-//     });
-//   }
-// });
+const authenticateToken = require("../middleware/auth");
 
 // ======= obtener un usuario por su username =======
 router.post("/user/getbyusername", async (req, res) => {
@@ -71,7 +46,7 @@ router.post("/user/getbyusername", async (req, res) => {
 });
 
 //======= crear un nuevo Usuario =======
-router.post("/user/add", async (req, res) => {
+router.post("/user/add", authenticateToken, async (req, res) => {
   try {
     const { nombre, username, password, imagen, rol } = req.body;
 
@@ -97,7 +72,7 @@ router.post("/user/add", async (req, res) => {
 });
 
 // ======= actualizar un usuario por su id =======
-router.put("/user/update/:id", async (req, res) => {
+router.put("/user/update/:id", authenticateToken, async (req, res) => {
   try {
     const id = req.params.id;
     const data = req.body;
@@ -113,7 +88,7 @@ router.put("/user/update/:id", async (req, res) => {
 });
 
 // ======= eliminar un usuario por su id =======
-router.delete("/user/delete/:id", async (req, res) => {
+router.delete("/user/delete/:id", authenticateToken, async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Usuario eliminado correctamente" });

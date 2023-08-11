@@ -20,16 +20,13 @@ const VerProductos = () => {
 
   const getCosmetico = async () => {
     try {
-      const response = await fetch(
-        `${API_URL}/cosmeticos/getall?page=${currentPage}&limit=${productsPerPage}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`${API_URL}/cosmeticos/getall?page=${currentPage}&limit=${productsPerPage}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
       if (!response.ok) {
         toast.error("Error al obtener la lista de productos");
@@ -39,6 +36,7 @@ const VerProductos = () => {
       const data = await response.json();
       setTotalPages(data.totalPages);
       setCosmeticos(data.data);
+      console.log(cosmeticos);
     } catch (error) {
       toast.error("Error al obtener la lista de productos");
       console.error("Error al obtener la lista de productos:", error);
@@ -101,21 +99,17 @@ const VerProductos = () => {
                 state={{ cosmetico }}
               >
                 <img
-                  src={
-                    cosmetico?.imagen[0] ??
-                    "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"
-                  }
+                  src={cosmetico?.imagen[0] ?? "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"}
                   alt={cosmetico?.producto ?? ""}
                   style={imageStyle}
                 />
+                {console.log(cosmetico)}
                 <div style={{ textAlign: "left" }}>
-                  <div style={titleStyle}>{cosmetico?.producto ?? ""}</div>
-                  <div>{cosmetico?.especificaciones ?? ""}</div>
+                  <div style={titleStyle}>{cosmetico?.producto}</div>
+                  <div>{cosmetico?.especificaciones}</div>
                   <span style={spanStyle}>
                     <strong>Disponibles: </strong>
-                    {cosmetico?.cantidadTotal -
-                      cosmetico?.apartados -
-                      cosmetico?.vendidos ?? ""}
+                    {cosmetico?.cantidadTotal - cosmetico?.apartados - (cosmetico?.vendidos ?? 0)}
                   </span>
                   <span style={spanStyle}>
                     <strong>Apartados: </strong>

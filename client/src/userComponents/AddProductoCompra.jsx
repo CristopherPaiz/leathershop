@@ -93,14 +93,6 @@ const AddProductoCompra = () => {
       // Formatear los datos para el Dropdown
       const options = data?.map((categoria) => ({
         key: categoria._id,
-        // image: {
-        //   avatar: true,
-        //   transition: "fade in",
-        //   duration: 1000,
-        //   src:
-        //     categoria?.imagen[0] ??
-        //     "https://cdn-icons-png.flaticon.com/512/7734/7734301.png",
-        // },
         text: categoria.producto,
         value: categoria._id, // Usamos el _id como valor del Dropdown para filtrar por categoría
       }));

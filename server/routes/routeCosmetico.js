@@ -1,10 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const {
-  Cosmetico,
-  CompraCosmetico,
-  CosmeticoCategoria,
-} = require("../models/cosmeticoModel");
+const { Cosmetico, CompraCosmetico, CosmeticoCategoria } = require("../models/cosmeticoModel");
+const authenticateToken = require("../middleware/auth");
 
 // Ruta para obtener todas las categorías de cosméticos
 router.get("/cosmeticos/categorias", async (req, res) => {
@@ -18,7 +15,7 @@ router.get("/cosmeticos/categorias", async (req, res) => {
   }
 });
 
-router.get("/cosmeticos/getall", async (req, res) => {
+router.get("/cosmeticos/getall", authenticateToken, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const productsPerPage = parseInt(req.query.limit) || 1;
@@ -47,7 +44,7 @@ router.get("/cosmeticos/getall", async (req, res) => {
 });
 
 // ======= obtener un cosmetico por su id =======
-router.get("/cosmeticos/getbyid/:id", async (req, res) => {
+router.get("/cosmeticos/getbyid/:id", authenticateToken, async (req, res) => {
   try {
     const data = await Cosmetico.findById(req.params.id);
     res.status(200).json(data);
@@ -60,18 +57,9 @@ router.get("/cosmeticos/getbyid/:id", async (req, res) => {
 });
 
 // Ruta para crear un cosmético
-router.post("/cosmeticos/add", async (req, res) => {
+router.post("/cosmeticos/add", authenticateToken, async (req, res) => {
   try {
-    const {
-      producto,
-      categoria,
-      cantidadTotal,
-      apartados,
-      especificaciones,
-      imagen,
-      inactivos,
-      estado,
-    } = req.body;
+    const { producto, categoria, cantidadTotal, apartados, especificaciones, imagen, inactivos, estado } = req.body;
 
     // Obtener un array de strings con las URLs de las imágenes
     const imagenes = await imagen;
@@ -109,15 +97,13 @@ router.post("/cosmeticos/add", async (req, res) => {
 });
 
 // ======= actualizar un cosmético por su id =======
-router.put("/cosmeticos/update/:id", async (req, res) => {
+router.put("/cosmeticos/update/:id", authenticateToken, async (req, res) => {
   try {
     const id = req.params.id;
     const data = req.body;
     const options = { new: true };
     const resultado = await Cosmetico.findByIdAndUpdate(id, data, options);
-    res
-      .status(200)
-      .json({ message: "Cosmético actualizado correctamente", resultado });
+    res.status(200).json({ message: "Cosmético actualizado correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo actualizar el cosmético",
@@ -127,15 +113,13 @@ router.put("/cosmeticos/update/:id", async (req, res) => {
 });
 
 // ======= Deshabilitar un cosmético por su id =======
-router.put("/cosmeticos/delete/:id", async (req, res) => {
+router.put("/cosmeticos/delete/:id", authenticateToken, async (req, res) => {
   try {
     const id = req.params.id;
     const data = req.body;
     const options = { new: true };
     const resultado = await Cosmetico.findByIdAndUpdate(id, data, options);
-    res
-      .status(200)
-      .json({ message: "Cosmético deshabilitado correctamente", resultado });
+    res.status(200).json({ message: "Cosmético deshabilitado correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo deshabilitar el cosmético",
@@ -144,8 +128,8 @@ router.put("/cosmeticos/delete/:id", async (req, res) => {
   }
 });
 
-// Ruta para crear una categoría de cosméticos
-router.post("/cosmeticos/categorias", async (req, res) => {
+// Ruta para crear una categoría de cosméticos AUN SIN USAR
+router.post("/cosmeticos/categorias", authenticateToken, async (req, res) => {
   const { nombre, descripcion } = req.body;
 
   try {
@@ -174,10 +158,7 @@ router.post("/cosmeticos/categorias", async (req, res) => {
 
 router.get("/cosmeticos/nombres", async (req, res) => {
   try {
-    const data = await Cosmetico.find(
-      {},
-      { producto: 1, imagen: { $slice: 1 } }
-    ).sort({
+    const data = await Cosmetico.find({}, { producto: 1, imagen: { $slice: 1 } }).sort({
       producto: 1,
     });
     res.status(200).json(data);
@@ -190,7 +171,7 @@ router.get("/cosmeticos/nombres", async (req, res) => {
 });
 
 // Ruta para filtrar por el campo de nombre o por el campo de descripción o por los dos campos, y por estado: true
-router.post("/cosmeticos/filtrar", async (req, res) => {
+router.post("/cosmeticos/filtrar", authenticateToken, async (req, res) => {
   try {
     const { nombre, especificaciones } = req.body;
 
@@ -231,7 +212,7 @@ const formatDate = (date) => {
   return `${day}/${month}/${year}`;
 };
 
-router.get("/CompraCosmetico/getall", async (req, res) => {
+router.get("/CompraCosmetico/getall", authenticateToken, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -245,10 +226,7 @@ router.get("/CompraCosmetico/getall", async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const data = await CompraCosmetico.find({})
-      .sort({ _id: -1 })
-      .skip(skip)
-      .limit(limit);
+    const data = await CompraCosmetico.find({}).sort({ _id: -1 }).skip(skip).limit(limit);
 
     // Obtener los nombres de productos asociados a los IDs
     const productoIds = data.map((item) => item.idProducto);
@@ -283,9 +261,7 @@ router.get("/CompraCosmetico/getall", async (req, res) => {
 
     // Combinar los datos de compras con los nombres de productos y aplicar la función de filtrado
     const dataWithProductos = data.map((item) => {
-      const nombreProducto = productos.find((prod) =>
-        prod._id.equals(item.idProducto)
-      )?.producto;
+      const nombreProducto = productos.find((prod) => prod._id.equals(item.idProducto))?.producto;
       const createdAtFormatted = formatDate(item.createdAt);
       return {
         ...getCamposSegunCondicion(item),
@@ -303,7 +279,7 @@ router.get("/CompraCosmetico/getall", async (req, res) => {
   }
 });
 
-router.get("/CompraCosmetico/getunidad", async (req, res) => {
+router.get("/CompraCosmetico/getunidad", authenticateToken, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -318,10 +294,7 @@ router.get("/CompraCosmetico/getunidad", async (req, res) => {
     const skip = (page - 1) * limit;
 
     // Filtrar los datos que corresponden a compras "Por Unidad"
-    const data = await CompraCosmetico.find({ utilidadPorMayor: 0 })
-      .sort({ _id: -1 })
-      .skip(skip)
-      .limit(limit);
+    const data = await CompraCosmetico.find({ utilidadPorMayor: 0 }).sort({ _id: -1 }).skip(skip).limit(limit);
 
     // Obtener los nombres de productos asociados a los IDs
     const productoIds = data.map((item) => item.idProducto);
@@ -343,9 +316,7 @@ router.get("/CompraCosmetico/getunidad", async (req, res) => {
 
     // Combinar los datos de compras con los nombres de productos y aplicar la función de filtrado
     const dataWithProductos = data.map((item) => {
-      const nombreProducto = productos.find((prod) =>
-        prod._id.equals(item.idProducto)
-      )?.producto;
+      const nombreProducto = productos.find((prod) => prod._id.equals(item.idProducto))?.producto;
       const createdAtFormatted = formatDate(item.createdAt);
       return {
         ...getCamposPorUnidad(item),
@@ -363,7 +334,7 @@ router.get("/CompraCosmetico/getunidad", async (req, res) => {
   }
 });
 
-router.get("/CompraCosmetico/getmayoreo", async (req, res) => {
+router.get("/CompraCosmetico/getmayoreo", authenticateToken, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -378,10 +349,7 @@ router.get("/CompraCosmetico/getmayoreo", async (req, res) => {
     const skip = (page - 1) * limit;
 
     // Filtrar los datos que corresponden a compras "Mayoreo"
-    const data = await CompraCosmetico.find({ utilidad: 0 })
-      .sort({ _id: -1 })
-      .skip(skip)
-      .limit(limit);
+    const data = await CompraCosmetico.find({ utilidad: 0 }).sort({ _id: -1 }).skip(skip).limit(limit);
 
     // Obtener los nombres de productos asociados a los IDs
     const productoIds = data.map((item) => item.idProducto);
@@ -403,9 +371,7 @@ router.get("/CompraCosmetico/getmayoreo", async (req, res) => {
 
     // Combinar los datos de compras con los nombres de productos y aplicar la función de filtrado
     const dataWithProductos = data.map((item) => {
-      const nombreProducto = productos.find((prod) =>
-        prod._id.equals(item.idProducto)
-      )?.producto;
+      const nombreProducto = productos.find((prod) => prod._id.equals(item.idProducto))?.producto;
       const createdAtFormatted = formatDate(item.createdAt);
       return {
         ...getCamposMayoreo(item),
@@ -426,10 +392,7 @@ router.get("/CompraCosmetico/getmayoreo", async (req, res) => {
 // Función para obtener los nombres de productos a partir de sus IDs
 async function obtenerNombresProductos(ids) {
   try {
-    const productos = await Cosmetico.find(
-      { _id: { $in: ids } },
-      { producto: 1 }
-    );
+    const productos = await Cosmetico.find({ _id: { $in: ids } }, { producto: 1 });
     return productos;
   } catch (error) {
     return [];
@@ -437,7 +400,7 @@ async function obtenerNombresProductos(ids) {
 }
 
 // ======= obtener todos los CompraCosmeticos de un ID de producto =======
-router.get("/CompraCosmetico/getbyproductid/:idProducto", async (req, res) => {
+router.get("/CompraCosmetico/getbyproductid/:idProducto", authenticateToken, async (req, res) => {
   try {
     const idProducto = req.params.idProducto;
     const data = await CompraCosmetico.find({ idProducto });
@@ -445,30 +408,27 @@ router.get("/CompraCosmetico/getbyproductid/:idProducto", async (req, res) => {
   } catch (error) {
     res.status(500).json({
       messageDev:
-        "No se pudo obtener los detalles de compra de los cosmeticos para el ID de producto: " +
-        req.params.idProducto,
+        "No se pudo obtener los detalles de compra de los cosmeticos para el ID de producto: " + req.params.idProducto,
       messageSys: error.message,
     });
   }
 });
 
 // ======= obtener un cosmetico por su id =======
-router.get("/CompraCosmetico/getbyid/:id", async (req, res) => {
+router.get("/CompraCosmetico/getbyid/:id", authenticateToken, async (req, res) => {
   try {
     const data = await CompraCosmetico.findById(req.params.id);
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({
-      messageDev:
-        "No se pudo obtener los detalles de compra de los cosmeticos por el id: " +
-        req.params.id,
+      messageDev: "No se pudo obtener los detalles de compra de los cosmeticos por el id: " + req.params.id,
       messageSys: error.message,
     });
   }
 });
 
 // Crear un nuevo detalle de compra de cosmético
-router.post("/CompraCosmetico/add", async (req, res) => {
+router.post("/CompraCosmetico/add", authenticateToken, async (req, res) => {
   try {
     const {
       idProducto,
@@ -505,13 +465,10 @@ router.post("/CompraCosmetico/add", async (req, res) => {
 
     // Actualizar cantidadTotal en la colección "Cosmetico"
     const cosmeticoToUpdate = await Cosmetico.findById(idProducto);
-    cosmeticoToUpdate.cantidadTotal +=
-      cantidadIngreso + cantidadIngresoPorMayor;
+    cosmeticoToUpdate.cantidadTotal += cantidadIngreso + cantidadIngresoPorMayor;
     await cosmeticoToUpdate.save();
 
-    res
-      .status(200)
-      .json({ message: "Detalle cosmético añadido correctamente", resultado });
+    res.status(200).json({ message: "Detalle cosmético añadido correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo añadir el detalle cosmético",
@@ -521,19 +478,13 @@ router.post("/CompraCosmetico/add", async (req, res) => {
 });
 
 // ======= actualizar un cosmético por su id =======
-router.put("/CompraCosmetico/update/:id", async (req, res) => {
+router.put("/CompraCosmetico/update/:id", authenticateToken, async (req, res) => {
   try {
     const id = req.params.id;
     const data = req.body;
     const options = { new: true };
-    const resultado = await CompraCosmetico.findByIdAndUpdate(
-      id,
-      data,
-      options
-    );
-    res
-      .status(200)
-      .json({ message: "Cosmético actualizado correctamente", resultado });
+    const resultado = await CompraCosmetico.findByIdAndUpdate(id, data, options);
+    res.status(200).json({ message: "Cosmético actualizado correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo actualizar el cosmético",
@@ -543,19 +494,13 @@ router.put("/CompraCosmetico/update/:id", async (req, res) => {
 });
 
 // ======= Deshabilitar un cosmético por su id =======
-router.put("/CompraCosmetico/delete/:id", async (req, res) => {
+router.put("/CompraCosmetico/delete/:id", authenticateToken, async (req, res) => {
   try {
     const id = req.params.id;
     const data = req.body;
     const options = { new: true };
-    const resultado = await CompraCosmetico.findByIdAndUpdate(
-      id,
-      data,
-      options
-    );
-    res
-      .status(200)
-      .json({ message: "Cosmético deshabilitado correctamente", resultado });
+    const resultado = await CompraCosmetico.findByIdAndUpdate(id, data, options);
+    res.status(200).json({ message: "Cosmético deshabilitado correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo deshabilitar el cosmético",
@@ -569,7 +514,7 @@ module.exports = router;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 //obtener todos los cosmeticos por disponibilidad
-router.get("/cosmeticos/getalldisponibility", async (req, res) => {
+router.get("/cosmeticos/getalldisponibility", authenticateToken, async (req, res) => {
   try {
     const categoria = req.query.categoria; // Obtener el parámetro de la URL
 
@@ -601,7 +546,7 @@ router.get("/cosmeticos/getalldisponibility", async (req, res) => {
 });
 
 //obtener todos los cosmeticos por apartados
-router.get("/cosmeticos/getallapartados", async (req, res) => {
+router.get("/cosmeticos/getallapartados", authenticateToken, async (req, res) => {
   try {
     const categoria = req.query.categoria; // Obtener el parámetro de la URL
 
@@ -633,7 +578,7 @@ router.get("/cosmeticos/getallapartados", async (req, res) => {
 });
 
 // Nueva ruta para obtener la suma total de utilidad por producto (solo para compras de unidad)
-router.get("/cosmeticos/utilidad-por-unidad", async (req, res) => {
+router.get("/cosmeticos/utilidad-por-unidad", authenticateToken, async (req, res) => {
   try {
     const data = await CompraCosmetico.aggregate([
       {
@@ -680,7 +625,7 @@ router.get("/cosmeticos/utilidad-por-unidad", async (req, res) => {
 });
 
 // Nueva ruta para obtener la suma total de utilidad por producto (solo para compras por mayor)
-router.get("/cosmeticos/utilidad-por-mayor", async (req, res) => {
+router.get("/cosmeticos/utilidad-por-mayor", authenticateToken, async (req, res) => {
   try {
     const data = await CompraCosmetico.aggregate([
       {
@@ -727,7 +672,7 @@ router.get("/cosmeticos/utilidad-por-mayor", async (req, res) => {
 });
 
 // Ruta para obtener la suma total de cantidad comprada y monto total de dinero por producto (ordenado de mayor a menor)
-router.get("/cosmeticos/cantidad-y-monto-comprado", async (req, res) => {
+router.get("/cosmeticos/cantidad-y-monto-comprado", authenticateToken, async (req, res) => {
   try {
     const data = await CompraCosmetico.aggregate([
       {
@@ -768,15 +713,14 @@ router.get("/cosmeticos/cantidad-y-monto-comprado", async (req, res) => {
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({
-      messageDev:
-        "No se pudo obtener la suma total de cantidad y monto comprado por producto",
+      messageDev: "No se pudo obtener la suma total de cantidad y monto comprado por producto",
       messageSys: error.message,
     });
   }
 });
 
 // Ruta para obtener la suma total de cantidad comprada y monto total de venta por producto (ordenado de mayor a menor)
-router.get("/cosmeticos/cantidad-y-monto-venta", async (req, res) => {
+router.get("/cosmeticos/cantidad-y-monto-venta", authenticateToken, async (req, res) => {
   try {
     const data = await CompraCosmetico.aggregate([
       {
@@ -788,10 +732,7 @@ router.get("/cosmeticos/cantidad-y-monto-venta", async (req, res) => {
               $add: [
                 { $multiply: ["$cantidadIngreso", "$costoDeVenta"] },
                 {
-                  $multiply: [
-                    "$cantidadIngresoPorMayor",
-                    "$costoDeVentaPorMayor",
-                  ],
+                  $multiply: ["$cantidadIngresoPorMayor", "$costoDeVentaPorMayor"],
                 },
               ],
             },
@@ -827,15 +768,14 @@ router.get("/cosmeticos/cantidad-y-monto-venta", async (req, res) => {
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({
-      messageDev:
-        "No se pudo obtener la suma total de cantidad y monto de venta por producto",
+      messageDev: "No se pudo obtener la suma total de cantidad y monto de venta por producto",
       messageSys: error.message,
     });
   }
 });
 
 // Ruta para obtener la cantidad comprada, monto total de dinero y utilidad generada por producto (ordenado de mayor a menor por utilidad)
-router.get("/cosmeticos/cantidad-monto-utilidad", async (req, res) => {
+router.get("/cosmeticos/cantidad-monto-utilidad", authenticateToken, async (req, res) => {
   try {
     const data = await CompraCosmetico.aggregate([
       {
@@ -850,10 +790,7 @@ router.get("/cosmeticos/cantidad-monto-utilidad", async (req, res) => {
               $add: [
                 { $multiply: ["$cantidadIngreso", "$costoDeVenta"] },
                 {
-                  $multiply: [
-                    "$cantidadIngresoPorMayor",
-                    "$costoDeVentaPorMayor",
-                  ],
+                  $multiply: ["$cantidadIngresoPorMayor", "$costoDeVentaPorMayor"],
                 },
               ],
             },
@@ -893,8 +830,7 @@ router.get("/cosmeticos/cantidad-monto-utilidad", async (req, res) => {
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({
-      messageDev:
-        "No se pudo obtener la cantidad, monto y utilidad por producto",
+      messageDev: "No se pudo obtener la cantidad, monto y utilidad por producto",
       messageSys: error.message,
     });
   }

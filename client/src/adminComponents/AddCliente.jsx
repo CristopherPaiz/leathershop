@@ -6,8 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { contexto } from "../context/ContextProvider";
 import { fromBlob } from "image-resize-compress";
 
-const cloudinaryUploadUrl =
-  "https://api.cloudinary.com/v1_1/dbkfiarmr/image/upload";
+const cloudinaryUploadUrl = "https://api.cloudinary.com/v1_1/dbkfiarmr/image/upload";
 
 const AddCliente = () => {
   const { loggedIn, usuario } = useContext(contexto);
@@ -46,9 +45,7 @@ const AddCliente = () => {
       setLoadingImages(true);
       setShowLoadingToast(true);
       // Upload each image to Cloudinary and get the URLs
-      const uploadedImages = await Promise.all(
-        imagenes.map((file) => uploadImageToCloudinary(file))
-      );
+      const uploadedImages = await Promise.all(imagenes.map((file) => uploadImageToCloudinary(file)));
       // Format the data including the uploaded image URLs
       const formattedData = {
         ...datosCliente,
@@ -57,12 +54,8 @@ const AddCliente = () => {
         precio: Number(datosCliente.precio),
         anticipo: Number(datosCliente.anticipo),
         saldo: Number(datosCliente.saldo),
-        colores: datosCliente.colores
-          ? datosCliente.colores.split(",").map((color) => color.trim())
-          : [],
-        tallas: datosCliente.tallas
-          ? datosCliente.tallas.split(",").map((talla) => talla.trim())
-          : [],
+        colores: datosCliente.colores ? datosCliente.colores.split(",").map((color) => color.trim()) : [],
+        tallas: datosCliente.tallas ? datosCliente.tallas.split(",").map((talla) => talla.trim()) : [],
         imagen: uploadedImages.map((url) => url), // Adding the uploaded image URLs to the data
       };
 
@@ -107,7 +100,7 @@ const AddCliente = () => {
     for (const file of files) {
       // Compress the image using image-resize-compress library
       try {
-        const compressedImage = await fromBlob(file, 80, 0, 0, "webp"); // Comprimir la imagen con calidad 80 y formato webp
+        const compressedImage = await fromBlob(file, 80, "auto", 800, "webp"); // Comprimir la imagen con calidad 80 y formato webp
         compressedImages.push(compressedImage);
       } catch (error) {
         console.error("Error compressing image:", error);
@@ -374,12 +367,7 @@ const AddCliente = () => {
 
               <Form.Field>
                 <label>Imágenes</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageChange}
-                />
+                <input type="file" accept="image/*" multiple onChange={handleImageChange} />
               </Form.Field>
               <div
                 style={{
@@ -426,12 +414,7 @@ const AddCliente = () => {
 
               <Grid>
                 <Grid.Column textAlign="center">
-                  <Button
-                    type="submit"
-                    color="green"
-                    fluid
-                    onClick={handleFormSubmit}
-                  >
+                  <Button type="submit" color="green" fluid onClick={handleFormSubmit}>
                     Añadir cliente
                   </Button>
                 </Grid.Column>

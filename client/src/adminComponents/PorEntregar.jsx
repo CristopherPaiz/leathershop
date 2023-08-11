@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Header,
-  Icon,
-  Container,
-  Input,
-  Button,
-  Card,
-  Image,
-  Pagination,
-} from "semantic-ui-react";
+import { Header, Icon, Container, Input, Button, Card, Image, Pagination } from "semantic-ui-react";
 import API_URL from "../config.js";
 import { Link } from "react-router-dom";
 
@@ -66,30 +57,27 @@ const PorEntregar = () => {
       const fechaFinISO = new Date(fechaFin);
       fechaFinISO.setDate(fechaFinISO.getDate() + 1);
 
-      const response = await fetch(
-        `${API_URL}/cliente/getbyfecha?page=${currentPage}&limit=${productsPerPage}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fechaRecibo: fechaInicioISO,
-            fechaEntrega: fechaFinISO,
-          }),
-          credentials: "include", // Asegúrate de incluir esta opción
-        }
-      );
+      const response = await fetch(`${API_URL}/cliente/getbyfecha?page=${currentPage}&limit=${productsPerPage}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fechaRecibo: fechaInicioISO,
+          fechaEntrega: fechaFinISO,
+        }),
+        credentials: "include", // Asegúrate de incluir esta opción
+      });
 
       if (!response.ok) {
-        throw new Error("Error al obtener los clientes por fecha");
+        throw new Error("Error al obtener los clientes");
       }
 
       const data = await response.json();
       setTotalPages(data.totalPages);
       setResultados(data.data);
     } catch (error) {
-      console.error("Error al obtener los clientes por fecha:", error);
+      console.error("Error al obtener los clientes:", error);
     }
   };
 
@@ -125,20 +113,10 @@ const PorEntregar = () => {
       </div>
       <form onSubmit={handleSubmit} style={{ margin: "10px" }}>
         <strong> Del </strong>
-        <Input
-          type="date"
-          id="fechaInicio"
-          value={fechaInicio}
-          onChange={(e) => setFechaInicio(e.target.value)}
-        />
+        <Input type="date" id="fechaInicio" value={fechaInicio} onChange={(e) => setFechaInicio(e.target.value)} />
 
         <strong> Al </strong>
-        <Input
-          type="date"
-          id="fechaFin"
-          value={fechaFin}
-          onChange={(e) => setFechaFin(e.target.value)}
-        />
+        <Input type="date" id="fechaFin" value={fechaFin} onChange={(e) => setFechaFin(e.target.value)} />
         <Container textAlign="center">
           <Button type="submit" style={{ margin: "10px auto", width: "200px" }}>
             Filtrar
@@ -179,10 +157,7 @@ const PorEntregar = () => {
                     state={{ cliente }}
                   >
                     <Image
-                      src={
-                        cliente?.imagen[0] ??
-                        "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"
-                      }
+                      src={cliente?.imagen[0] ?? "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"}
                       size="tiny"
                       floated="left"
                       verticalAlign="middle"
@@ -201,12 +176,10 @@ const PorEntregar = () => {
                     </Card.Meta>
 
                     <Card.Meta>
-                      <strong>Fecha recibido:</strong>{" "}
-                      {formatDate(cliente?.fechaRecibo)}
+                      <strong>Fecha recibido:</strong> {formatDate(cliente?.fechaRecibo)}
                     </Card.Meta>
                     <Card.Meta>
-                      <strong>Fecha Entrega:</strong>{" "}
-                      {formatDate(cliente.fechaEntrega)}
+                      <strong>Fecha Entrega:</strong> {formatDate(cliente.fechaEntrega)}
                     </Card.Meta>
                     <Card.Description>
                       <strong>Especificaciones: </strong>

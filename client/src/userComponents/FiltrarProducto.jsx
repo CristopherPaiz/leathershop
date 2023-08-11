@@ -172,7 +172,7 @@ const FiltrarProducto = () => {
                     <div>{cosmetico?.especificaciones ?? ""}</div>
                     <span style={spanStyle}>
                       <strong>Disponibles: </strong>
-                      {cosmetico?.cantidadTotal - cosmetico?.vendidos - cosmetico?.apartados ?? ""}
+                      {cosmetico?.cantidadTotal - (cosmetico?.vendidos ?? 0) - cosmetico?.apartados ?? ""}
                     </span>
                     <span style={spanStyle}>
                       <strong>Apartados: </strong>

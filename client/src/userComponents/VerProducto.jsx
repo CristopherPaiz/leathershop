@@ -28,7 +28,7 @@ const VerProducto = () => {
   const { cosmetico } = location.state;
 
   //valores iniciales
-  const [disponible, SetDisponibles] = useState(cosmetico?.cantidadTotal - cosmetico?.vendidos); //95
+  const [disponible, SetDisponibles] = useState(cosmetico?.cantidadTotal - (cosmetico?.vendidos ?? 0)); //95
   const [apartados, setApartados] = useState(cosmetico?.apartados); // 5
   const [vender, setVender] = useState(0); // 0
 
@@ -46,7 +46,7 @@ const VerProducto = () => {
     for (const file of files) {
       // Compress the image using image-resize-compress library
       try {
-        const compressedImage = await fromBlob(file, 80, 0, 0, "webp"); // Comprimir la imagen con calidad 80 y formato webp
+        const compressedImage = await fromBlob(file, 80, "auto", 800, "webp"); // Comprimir la imagen con calidad 80 y formato webp
         compressedImages.push(compressedImage);
       } catch (error) {
         console.error("Error compressing image:", error);

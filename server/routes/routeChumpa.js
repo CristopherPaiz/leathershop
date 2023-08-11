@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Chumpa = require("../models/chumpaModel");
+const authenticateToken = require("../middleware/auth");
 
 // ======= ruta para obtener todos las entradas de las chumpas usando el metodo GET =======
 router.get("/chumpas/getall", async (req, res) => {
@@ -17,10 +18,7 @@ router.get("/chumpas/getall", async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const data = await Chumpa.find({ estado: true })
-      .sort({ _id: -1 })
-      .skip(skip)
-      .limit(limit);
+    const data = await Chumpa.find({ estado: true }).sort({ _id: -1 }).skip(skip).limit(limit);
 
     res.status(200).json({ data: data, totalPages });
   } catch (error) {
@@ -45,18 +43,9 @@ router.get("/chumpas/getbyid/:id", async (req, res) => {
 });
 
 //======= crear una nueva chumpa =======
-router.post("/chumpas/add", async (req, res) => {
+router.post("/chumpas/add", authenticateToken, async (req, res) => {
   try {
-    const {
-      nombre,
-      precio,
-      precioAnterior,
-      imagen,
-      descripcion,
-      colores,
-      tallas,
-      especificaciones,
-    } = req.body;
+    const { nombre, precio, precioAnterior, imagen, descripcion, colores, tallas, especificaciones } = req.body;
 
     const imagenes = await imagen;
 
@@ -75,9 +64,7 @@ router.post("/chumpas/add", async (req, res) => {
     const resultado = await chumpa.save();
 
     //mandamos estado 200 de OK y el resultado de la operacion
-    res
-      .status(200)
-      .json({ message: "Chumpa añadida correctamente", resultado });
+    res.status(200).json({ message: "Chumpa añadida correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo añadir chumpa",
@@ -87,15 +74,13 @@ router.post("/chumpas/add", async (req, res) => {
 });
 
 // ======= actualizar una chumpa por su id =======
-router.put("/chumpas/update/:id", async (req, res) => {
+router.put("/chumpas/update/:id", authenticateToken, async (req, res) => {
   try {
     const id = req.params.id;
     const data = req.body;
     const options = { new: true };
     const resultado = await Chumpa.findByIdAndUpdate(id, data, options);
-    res
-      .status(200)
-      .json({ message: "Chumpa actualizada correctamente", resultado });
+    res.status(200).json({ message: "Chumpa actualizada correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo actualizar la chumpa",
@@ -105,7 +90,7 @@ router.put("/chumpas/update/:id", async (req, res) => {
 });
 
 // ======= eliminar una chumpa por su id =======
-router.delete("/chumpas/delete/:id", async (req, res) => {
+router.delete("/chumpas/delete/:id", authenticateToken, async (req, res) => {
   try {
     await Chumpa.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Chumpa eliminada correctamente" });

@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Cliente = require("../models/clienteModel");
-const jwt = require("jsonwebtoken");
+const authenticateToken = require("../middleware/auth");
 
 // ======= ruta para obtener todos los clientes usando el metodo GET =======
-router.get("/cliente/getall", async (req, res) => {
+router.get("/cliente/getall", authenticateToken, async (req, res) => {
   try {
     const data = await Cliente.find({});
     res.status(200).json(data);
@@ -17,7 +17,7 @@ router.get("/cliente/getall", async (req, res) => {
 });
 
 // ======= obtener un cliente por su id =======
-router.get("/cliente/getbyid/:id", async (req, res) => {
+router.get("/cliente/getbyid/:id", authenticateToken, async (req, res) => {
   try {
     const data = await Cliente.findById(req.params.id);
     res.status(200).json(data);
@@ -30,7 +30,7 @@ router.get("/cliente/getbyid/:id", async (req, res) => {
 });
 
 //======= crear un nuevo cliente =======
-router.post("/cliente/add", async (req, res) => {
+router.post("/cliente/add", authenticateToken, async (req, res) => {
   try {
     const {
       nombre,
@@ -83,9 +83,7 @@ router.post("/cliente/add", async (req, res) => {
     const resultado = await cliente.save();
 
     //mandamos estado 200 de OK y el resultado de la operacion
-    res
-      .status(200)
-      .json({ message: "Cliente añadido correctamente", resultado });
+    res.status(200).json({ message: "Cliente añadido correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo añadir al cliente",
@@ -95,15 +93,13 @@ router.post("/cliente/add", async (req, res) => {
 });
 
 // ======= actualizar un cliente por su id =======
-router.put("/cliente/update/:id", async (req, res) => {
+router.put("/cliente/update/:id", authenticateToken, async (req, res) => {
   try {
     const id = req.params.id;
     const data = req.body;
     const options = { new: true };
     const resultado = await Cliente.findByIdAndUpdate(id, data, options);
-    res
-      .status(200)
-      .json({ message: "Cliente actualizado correctamente", resultado });
+    res.status(200).json({ message: "Cliente actualizado correctamente", resultado });
   } catch (error) {
     res.status(500).json({
       messageDev: "No se pudo actualizar al cliente",
@@ -112,64 +108,50 @@ router.put("/cliente/update/:id", async (req, res) => {
   }
 });
 
-router.post(
-  "/cliente/getbyfecha",
-  (req, res, next) => {
-    const token = req.cookies.token;
-    try {
-      const ValidPayload = jwt.verify(token, process.env.JWT_SECRET);
-      // Llamar a next solo si el token es válido
-      next();
-    } catch (error) {
-      res.status(401).json({ message: "No autorizado" });
+router.post("/cliente/getbyfecha", authenticateToken, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const { fechaRecibo, fechaEntrega } = req.body;
+
+    const count = await Cliente.countDocuments();
+    const totalPages = Math.ceil(count / limit);
+
+    if (page < 1 || page > totalPages) {
+      return res.status(400).json({ message: "Página inválida" });
     }
-  },
-  async (req, res) => {
-    try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-      const { fechaRecibo, fechaEntrega } = req.body;
 
-      const count = await Cliente.countDocuments();
-      const totalPages = Math.ceil(count / limit);
+    const skip = (page - 1) * limit;
 
-      if (page < 1 || page > totalPages) {
-        return res.status(400).json({ message: "Página inválida" });
-      }
-
-      const skip = (page - 1) * limit;
-
-      const data = await Cliente.find({
-        $and: [
-          {
-            fechaRecibo: {
-              $gte: new Date(fechaRecibo),
-              $lte: new Date(fechaEntrega),
-            },
+    const data = await Cliente.find({
+      $and: [
+        {
+          fechaRecibo: {
+            $gte: new Date(fechaRecibo),
+            $lte: new Date(fechaEntrega),
           },
-          {
-            estado: false,
-          },
-        ],
-      })
-        .sort({ fechaEntrega: 1 }) // Ordenar por fecha de entrega en orden ascendente (el más antiguo primero)
-        .skip(skip)
-        .limit(limit);
+        },
+        {
+          estado: false,
+        },
+      ],
+    })
+      .sort({ fechaEntrega: 1 }) // Ordenar por fecha de entrega en orden ascendente (el más antiguo primero)
+      .skip(skip)
+      .limit(limit);
 
-      res.status(200).json({ data, totalPages });
-      // res.status(200).json(data);
-    } catch (error) {
-      res.status(500).json({
-        messageDev:
-          "No se pudo obtener los clientes por fecha de entrega y estado",
-        messageSys: error.message,
-      });
-    }
+    res.status(200).json({ data, totalPages });
+    // res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({
+      messageDev: "No se pudo obtener los clientes por fecha de entrega y estado",
+      messageSys: error.message,
+    });
   }
-);
+});
 
 // Ruta para obtener clientes cuyas fechas de entrega estén dentro de un rango específico y con estado=true
-router.post("/cliente/getbyfechafin", async (req, res) => {
+router.post("/cliente/getbyfechafin", authenticateToken, async (req, res) => {
   try {
     const { fechaRecibo, fechaEntrega } = req.body;
     const page = parseInt(req.query.page) || 1;
@@ -205,15 +187,14 @@ router.post("/cliente/getbyfechafin", async (req, res) => {
     res.status(200).json({ data, totalPages });
   } catch (error) {
     res.status(500).json({
-      messageDev:
-        "No se pudo obtener los clientes por fecha de entrega y estado",
+      messageDev: "No se pudo obtener los clientes por fecha de entrega y estado",
       messageSys: error.message,
     });
   }
 });
 
 // Ruta para filtrar clientes por nombre, apellido o numeroTel y ordenar alfabéticamente
-router.post("/cliente/filtrar", async (req, res) => {
+router.post("/cliente/filtrar", authenticateToken, async (req, res) => {
   try {
     const { nombre, apellido, numeroTel } = req.body;
 
@@ -244,7 +225,7 @@ router.post("/cliente/filtrar", async (req, res) => {
 });
 
 // ======= eliminar un cliente por su id =======
-router.delete("/cliente/delete/:id", async (req, res) => {
+router.delete("/cliente/delete/:id", authenticateToken, async (req, res) => {
   try {
     await Cliente.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Cliente eliminado correctamente" });

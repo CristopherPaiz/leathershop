@@ -1,13 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import {
-  Header,
-  Icon,
-  Form,
-  Button,
-  Grid,
-  Label,
-  Modal,
-} from "semantic-ui-react";
+import { Header, Icon, Form, Button, Grid, Label, Modal } from "semantic-ui-react";
 import { useLocation, Navigate, useNavigate } from "react-router-dom";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
@@ -15,8 +7,7 @@ import { contexto } from "../context/ContextProvider";
 import ImageViewer from "react-simple-image-viewer";
 import { fromBlob } from "image-resize-compress";
 
-const cloudinaryUploadUrl =
-  "https://api.cloudinary.com/v1_1/dbkfiarmr/image/upload";
+const cloudinaryUploadUrl = "https://api.cloudinary.com/v1_1/dbkfiarmr/image/upload";
 
 const VerCliente = () => {
   const navigate = useNavigate();
@@ -94,7 +85,7 @@ const VerCliente = () => {
     for (const file of files) {
       // Compress the image using image-resize-compress library
       try {
-        const compressedImage = await fromBlob(file, 80, 0, 0, "webp"); // Comprimir la imagen con calidad 80 y formato webp
+        const compressedImage = await fromBlob(file, 80, "auto", 800, "webp"); // Comprimir la imagen con calidad 80 y formato webp
         compressedImages.push(compressedImage);
       } catch (error) {
         console.error("Error compressing image:", error);
@@ -112,9 +103,7 @@ const VerCliente = () => {
     setLoadingImages(true);
     setShowLoadingToast(true);
     // Upload each image to Cloudinary and get the URLs
-    const uploadedImages = await Promise.all(
-      imagenes.map((file) => uploadImageToCloudinary(file))
-    );
+    const uploadedImages = await Promise.all(imagenes.map((file) => uploadImageToCloudinary(file)));
 
     const imagenesv2 = uploadedImages.map((url) => url);
     // Format the data including the uploaded image URLs
@@ -128,15 +117,11 @@ const VerCliente = () => {
       saldo: Number(datosClienteActualizados.saldo),
       colores:
         typeof datosClienteActualizados.colores === "string"
-          ? datosClienteActualizados.colores
-              .split(",")
-              .map((color) => color.trim())
+          ? datosClienteActualizados.colores.split(",").map((color) => color.trim())
           : [],
       tallas:
         typeof datosClienteActualizados.tallas === "string"
-          ? datosClienteActualizados.tallas
-              .split(",")
-              .map((talla) => talla.trim())
+          ? datosClienteActualizados.tallas.split(",").map((talla) => talla.trim())
           : [],
       imagen: [...cliente.imagen, ...imagenesv2],
     };
@@ -175,13 +160,10 @@ const VerCliente = () => {
     setConfirmDelete(true);
     if (confirmDelete) {
       try {
-        const response = await fetch(
-          `${API_URL}/cliente/delete/${cliente._id}`,
-          {
-            method: "DELETE",
-            credentials: "include",
-          }
-        );
+        const response = await fetch(`${API_URL}/cliente/delete/${cliente._id}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
 
         if (!response.ok) {
           console.error("Error al eliminar el cliente");
@@ -510,12 +492,7 @@ const VerCliente = () => {
                 )}
                 <Form.Field>
                   <label>Imágenes</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageChange}
-                  />
+                  <input type="file" accept="image/*" multiple onChange={handleImageChange} />
                 </Form.Field>
                 <div
                   style={{
@@ -563,11 +540,7 @@ const VerCliente = () => {
               <Grid>
                 <Grid.Column textAlign="center">
                   <br />
-                  <Button
-                    type="submit"
-                    color="green"
-                    onClick={handleFormSubmit}
-                  >
+                  <Button type="submit" color="green" onClick={handleFormSubmit}>
                     Actualizar Datos
                   </Button>
                   <Button type="button" color="red" onClick={handleModalOpen}>

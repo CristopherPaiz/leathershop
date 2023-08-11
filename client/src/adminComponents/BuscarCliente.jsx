@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Icon,
-  Button,
-  Header,
-  Grid,
-  Form,
-  Card,
-  Image,
-} from "semantic-ui-react";
+import { Icon, Button, Header, Grid, Form, Card, Image } from "semantic-ui-react";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -17,13 +9,6 @@ const BuscarCliente = () => {
   const [apellido, setApellido] = useState("");
   const [numeroTel, setNumeroTel] = useState("");
   const [resultados, setResultados] = useState([]);
-
-  // useEffect(() => {
-  //   const storedBusqueda = JSON.parse(localStorage.getItem("busquedaActual"));
-  //   if (storedBusqueda) {
-  //     setResultados(storedBusqueda);
-  //   }
-  // }, []);
 
   const handleBuscar = async (event) => {
     if (event) {
@@ -69,7 +54,7 @@ const BuscarCliente = () => {
         position: "bottom-center",
       });
     } catch (error) {
-      toast.error("Error al obtener los clientes por fecha", {
+      toast.error("Error al obtener los clientes", {
         position: "bottom-center",
       });
     }
@@ -85,22 +70,14 @@ const BuscarCliente = () => {
 
   return (
     <>
-      <Toaster />{" "}
-      {/* Coloca el Toaster fuera del form para que sea accesible en toda la página */}
+      <Toaster /> {/* Coloca el Toaster fuera del form para que sea accesible en toda la página */}
       <div style={{ margin: "15px", textAlign: "center" }}>
         <Header size="tiny" dividing>
           <Icon name="calendar alternate" />
-          <Header.Content>
-            Combina uno o varios campos filtrar clientes
-          </Header.Content>
-          <Header.Content
-            size="tiny"
-            as="h5"
-            style={{ fontSize: "10px", color: "red" }}
-          >
-            ATENCIÓN: Una búsqueda con pocos parámetros puede cargar muchos
-            clientes a la vez o si la búsqueda NO tiene parámetros, se cargarán
-            todos los clientes.
+          <Header.Content>Combina uno o varios campos filtrar clientes</Header.Content>
+          <Header.Content size="tiny" as="h5" style={{ fontSize: "10px", color: "red" }}>
+            ATENCIÓN: Una búsqueda con pocos parámetros puede cargar muchos clientes a la vez o si la búsqueda NO tiene
+            parámetros, se cargarán todos los clientes.
           </Header.Content>
         </Header>
       </div>
@@ -169,10 +146,7 @@ const BuscarCliente = () => {
                     state={{ cliente }}
                   >
                     <Image
-                      src={
-                        cliente?.imagen[0] ??
-                        "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"
-                      }
+                      src={cliente?.imagen[0] ?? "https://cdn-icons-png.flaticon.com/512/7734/7734301.png"}
                       size="tiny"
                       floated="left"
                       verticalAlign="middle"
@@ -187,21 +161,15 @@ const BuscarCliente = () => {
                       {cliente?.nombre ?? ""} {cliente?.apellido ?? ""}
                     </Card.Header>
                     <Card.Meta>Producto: {cliente?.producto ?? ""}</Card.Meta>
-                    <Card.Meta>
-                      Descripción: {cliente?.descripcion ?? ""}
-                    </Card.Meta>
+                    <Card.Meta>Descripción: {cliente?.descripcion ?? ""}</Card.Meta>
                     <Card.Description>
                       <strong>Precio:</strong> Q. {cliente?.precio ?? ""}
-                      <strong>&nbsp;&nbsp;&nbsp;&nbsp;Anticipo:</strong> Q.{" "}
-                      {cliente?.anticipo ?? ""}
-                      <strong>&nbsp;&nbsp;&nbsp;&nbsp;Saldo </strong> Q.{" "}
-                      {cliente?.saldo ?? ""}
+                      <strong>&nbsp;&nbsp;&nbsp;&nbsp;Anticipo:</strong> Q. {cliente?.anticipo ?? ""}
+                      <strong>&nbsp;&nbsp;&nbsp;&nbsp;Saldo </strong> Q. {cliente?.saldo ?? ""}
                     </Card.Description>
                     <Card.Description>
-                      <strong>Recibido:</strong>{" "}
-                      {formatDate(cliente.fechaRecibo)}
-                      <strong> Entrega:</strong>{" "}
-                      {formatDate(cliente.fechaEntrega)}
+                      <strong>Recibido:</strong> {formatDate(cliente.fechaRecibo)}
+                      <strong> Entrega:</strong> {formatDate(cliente.fechaEntrega)}
                     </Card.Description>
                   </Card.Content>
                 </React.Fragment>
