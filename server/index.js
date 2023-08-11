@@ -13,13 +13,12 @@ const app = express();
 app.use(cookieParser());
 app.use(
   cors({
+    //add all domains of netlify
     origin: [
-      "http://localhost:5173",
-      "http://127.0.0.1:5173",
       "http://localhost:3000",
-      "http://localhost",
-      "http://127.0.0.1",
-      "http://127.0.0.1:3000",
+      "https://inquisitive-uniform-foal.cyclic.app",
+      "https://leathershopxela.netlify.app/",
+      "https://leathershopxela/",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
