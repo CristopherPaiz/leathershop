@@ -11,13 +11,13 @@ router.get("/chumpas/getall", async (req, res) => {
     const count = await Chumpa.countDocuments();
     const totalPages = Math.ceil(count / limit);
 
-    if (page < 1 || page > totalPages) {
+    if (page < -1 || page > totalPages) {
       return res.status(400).json({ message: "Página inválida" });
     }
 
     const skip = (page - 1) * limit;
 
-    const data = await Chumpa.find({})
+    const data = await Chumpa.find({ estado: true })
       .sort({ _id: -1 })
       .skip(skip)
       .limit(limit);

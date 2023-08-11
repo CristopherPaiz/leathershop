@@ -76,13 +76,35 @@ const Adminpage = () => {
               {boton.texto}
             </Button>
           ))}
-          <Button key={4} as={Link} toggle style={{ margin: "3px", width: "170px" }} to={`/admin/addcliente`}>
+          <Button
+            key={4}
+            as={Link}
+            toggle
+            style={{ margin: "3px", width: "170px" }}
+            to={`/admin/addcliente`}
+          >
             <Icon name="add user" />
             Añadir cliente
           </Button>
-          <Button key={5} as={Link} toggle style={{ margin: "3px", width: "170px" }} to={`/admin/addChumpa`}>
+          <Button
+            key={5}
+            as={Link}
+            toggle
+            style={{ margin: "3px", width: "170px" }}
+            to={`/admin/addChumpa`}
+          >
             <Icon name="add square" />
             Añadir Chumpa
+          </Button>
+          <Button
+            key={6}
+            as={Link}
+            toggle
+            style={{ margin: "3px", width: "170px" }}
+            to={`/admin/deleteChumpa`}
+          >
+            <Icon name="delete" />
+            Eliminar chumpa
           </Button>
         </div>
         {pestanaActiva === 1 ? <PorEntregar /> : null}

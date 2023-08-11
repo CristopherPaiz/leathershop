@@ -19,6 +19,7 @@ import AddProductoCompra from "./userComponents/AddProductoCompra.jsx";
 import ProductoHistorial from "./userComponents/ProductoHistorial.jsx";
 import ReporteProducto from "./userComponents/ReporteProducto.jsx";
 import "./userComponents/AddProductoCompraCSS.css";
+import EliminarChumpa from "./adminComponents/EliminarChumpa.jsx";
 
 const App = () => {
   return (
@@ -86,6 +87,14 @@ const App = () => {
           element={
             <AdminElement>
               <AddCliente />
+            </AdminElement>
+          }
+        />
+        <Route
+          path="/admin/deleteChumpa"
+          element={
+            <AdminElement>
+              <EliminarChumpa />
             </AdminElement>
           }
         />

@@ -18,7 +18,7 @@ const PorEntregar = () => {
   const [resultados, setResultados] = useState([]);
   const [loaded, setLoaded] = useState(false); // Bandera de control
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState();
+  const [totalPages, setTotalPages] = useState(0);
   const productsPerPage = 10;
 
   useEffect(() => {

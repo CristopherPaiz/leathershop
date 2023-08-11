@@ -1,0 +1,49 @@
+.card {
+  display: flex;
+  flex-direction: column;
+}
+.divhijo {
+  border: 1px solid #ccc;
+  display: flex;
+  padding: 10px;
+  margin-bottom: 10px; /* Agrega un margen inferior para separar las tarjetas */
+  align-items: center;
+  border-radius: 10px;
+}
+
+.column {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0 5px;
+}
+
+.column .iamgenunica {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+}
+
+.delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.column p {
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.column h2 {
+  font-size: 18px;
+  font-weight: 1000;
+  margin: 0;
+  padding: 5px 0px;
+}

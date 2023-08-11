@@ -59,7 +59,6 @@ const ProductoHistorial = () => {
 
       if (!response.ok) {
         setLoading(false);
-        toast.error("Error al obtener el historial de compras");
         throw new Error("Error al obtener el historial de compras");
       }
 
@@ -90,7 +89,6 @@ const ProductoHistorial = () => {
 
       if (!response.ok) {
         setLoading(false);
-        toast.error("Error al obtener el historial de compras");
         throw new Error("Error al obtener el historial de compras");
       }
 
@@ -131,7 +129,6 @@ const ProductoHistorial = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      toast.error("Error al obtener el historial de compras");
       console.error("Error al obtener el historial de compras:", error);
     }
   };
@@ -193,7 +190,7 @@ const ProductoHistorial = () => {
                   <h2>Todos</h2>
                   <Accordion styled>
                     {historial.map((item, index) => (
-                      <React.Fragment key={item._id}>
+                      <React.Fragment key={index}>
                         <Accordion.Title
                           active={activeIndex === index}
                           index={index}

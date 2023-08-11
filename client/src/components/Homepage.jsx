@@ -23,7 +23,7 @@ const Homepage = () => {
   const [totalPages, setTotalPages] = useState(0);
   const productsPerPage = 12;
   const [open, setOpen] = useState(false);
-  const [producto, setProducto] = useState();
+  const [producto, setProducto] = useState(null);
 
   const { setLoggedIn, setUsuario } = useContext(contexto);
 
@@ -57,8 +57,9 @@ const Homepage = () => {
 
   const posts = async () => {
     try {
-      // const res = await fetch("https://dummyjson.com/products");
-      const res = await fetch(`${API_URL}/chumpas/getall?page=${currentPage}&limit=${productsPerPage}`);
+      const res = await fetch(
+        `${API_URL}/chumpas/getall?page=${currentPage}&limit=${productsPerPage}`
+      );
       const datosJson = await res.json();
       setPost(datosJson.data);
       setLoading(false);
@@ -89,9 +90,13 @@ const Homepage = () => {
     <>
       {loading ? (
         <LoadingPage />
-      ) : (
+      ) : post > 0 ? (
         <>
-          <Modal open={open} onClose={handleCloseModal} style={{ color: "black" }}>
+          <Modal
+            open={open}
+            onClose={handleCloseModal}
+            style={{ color: "black" }}
+          >
             <Modal.Header>{producto?.nombre ?? ""}</Modal.Header>
             <Modal.Content image scrolling>
               <div
@@ -130,9 +135,11 @@ const Homepage = () => {
                   <List style={{ marginTop: "-10px" }}>
                     <List.Item>
                       Antes: {"   "}
-                      <Label color="red">Q. {producto?.precioAnterior ?? ""}</Label>
+                      <Label color="red">
+                        Q. {producto?.precioAnterior ?? ""}
+                      </Label>
                       {"  "}Ahora: {"   "}
-                      <Label color="green" style={{ fontSize: "17px" }}>
+                      <Label color="green" style={{ fontSize: "15px" }}>
                         Q. {producto?.precio ?? ""}
                       </Label>
                     </List.Item>
@@ -197,7 +204,12 @@ const Homepage = () => {
           </Modal>
 
           <div>
-            <Header size="huge" icon textAlign="center" style={{ marginTop: "-20px" }}>
+            <Header
+              size="huge"
+              icon
+              textAlign="center"
+              style={{ marginTop: "-20px" }}
+            >
               <Image
                 src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691542644/leathershop_wk2q9j.svg"
                 centered
@@ -224,7 +236,8 @@ const Homepage = () => {
                     key={idx}
                     style={{
                       borderRadius: "10px",
-                      boxShadow: "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
+                      boxShadow:
+                        "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
                     }}
                   >
                     <div
@@ -264,7 +277,13 @@ const Homepage = () => {
                             fontWeight: "bold",
                           }}
                         >
-                          -{(((item?.precioAnterior - item?.precio) / item?.precioAnterior) * 100).toFixed(0)}%
+                          -
+                          {(
+                            ((item?.precioAnterior - item?.precio) /
+                              item?.precioAnterior) *
+                            100
+                          ).toFixed(0)}
+                          %
                         </div>
                       ) : null}
 
@@ -289,9 +308,20 @@ const Homepage = () => {
                     </div>
 
                     <Card.Content style={{ paddingTop: "30px" }}>
-                      <Card.Header textAlign="center" style={{ fontSize: "16px" }}>
-                        {item.nombre}
+                      <Card.Header
+                        textAlign="center"
+                        style={{
+                          fontSize: "16px",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          display: "-webkit-box",
+                          WebkitBoxOrient: "vertical",
+                          WebkitLineClamp: 1,
+                        }}
+                      >
+                        {item?.nombre}
                       </Card.Header>
+
                       <Divider />
                       <div
                         className="price"
@@ -308,7 +338,7 @@ const Homepage = () => {
                               style={{
                                 textDecoration: "line-through",
                                 color: "red",
-                                fontSize: "10px",
+                                fontSize: "8px",
                                 margin: "5px",
                               }}
                             >
@@ -321,7 +351,7 @@ const Homepage = () => {
                             style={{
                               fontWeight: "1000",
                               color: "black",
-                              fontSize: "20px",
+                              fontSize: "17px",
                             }}
                           >
                             Q. {item.precio}
@@ -351,6 +381,16 @@ const Homepage = () => {
           )}
           <br />
         </>
+      ) : (
+        <h3
+          style={{
+            margin: "0 auto",
+            textAlign: "center",
+            marginTop: "230px",
+          }}
+        >
+          No hay productos para por el momento, regresa más tarde :D
+        </h3>
       )}
     </>
   );
