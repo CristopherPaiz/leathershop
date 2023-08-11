@@ -15,11 +15,14 @@ app.use(
     //add all domains of netlify
     origin: [
       "http://localhost:3000",
+      "127.0.0.1:3000",
       "https://inquisitive-uniform-foal.cyclic.app",
       "https://leathershopxela.netlify.app",
       "https://*.netlify.app",
       "*.netlify.app",
       "*.netlify.*",
+      "*.app",
+      ".app",
       "*",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
