@@ -158,10 +158,10 @@ const PorEntregar = () => {
               const daysDifference = getDaysDifference(cliente.fechaEntrega);
 
               let backgroundColor;
-              if (daysDifference <= 3) {
-                backgroundColor = "#ea9999"; // 3 días o menos para entregar
-              } else if (daysDifference <= 5) {
-                backgroundColor = "#ffe599"; // 5 días o menos para entregar
+              if (daysDifference <= 2) {
+                backgroundColor = "#ea9999"; // 2 días o menos para entregar
+              } else if (daysDifference <= 4) {
+                backgroundColor = "#ffe599"; // 4 días o menos para entregar
               } else {
                 backgroundColor = "#9fc5e8"; // Más de 7 días para entregar
               }
