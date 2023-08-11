@@ -14,6 +14,8 @@ app.use(
   cors({
     //add all domains of netlify
     origin: [
+      "*",
+      "http://127.0.0.1:3000",
       "http://localhost:3000",
       "127.0.0.1:3000",
       "https://inquisitive-uniform-foal.cyclic.app",
@@ -23,7 +25,7 @@ app.use(
       "*.netlify.*",
       "*.app",
       ".app",
-      "*",
+      //for all sites
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
