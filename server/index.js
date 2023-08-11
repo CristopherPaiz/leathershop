@@ -19,6 +19,7 @@ app.use(
       "https://inquisitive-uniform-foal.cyclic.app",
       "https://leathershopxela.netlify.app/",
       "https://leathershopxela/",
+      "*",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
