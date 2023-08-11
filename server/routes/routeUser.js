@@ -3,18 +3,31 @@ const router = express.Router();
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
-// ======= obtener un usuario por su id =======
-router.get("/user/getbyid/:id", async (req, res) => {
-  try {
-    const data = await User.findById(req.params.id);
-    res.status(200).json(data);
-  } catch (error) {
-    res.status(500).json({
-      messageDev: "No se pudo obtener al usuario por el id: " + req.params.id,
-      messageSys: error.message,
-    });
-  }
-});
+// // ======= ruta para obtener todos las entradas de los usuarios usando el metodo GET =======
+// router.get("/user/getall", async (req, res) => {
+//   try {
+//     const data = await User.find({});
+//     res.status(200).json(data);
+//   } catch (error) {
+//     res.status(500).json({
+//       messageDev: "No se pudo obtener los usuarios",
+//       messageSys: error.message,
+//     });
+//   }
+// });
+
+// // ======= obtener un usuario por su id =======
+// router.get("/user/getbyid/:id", async (req, res) => {
+//   try {
+//     const data = await User.findById(req.params.id);
+//     res.status(200).json(data);
+//   } catch (error) {
+//     res.status(500).json({
+//       messageDev: "No se pudo obtener al usuario por el id: " + req.params.id,
+//       messageSys: error.message,
+//     });
+//   }
+// });
 
 // ======= obtener un usuario por su username =======
 router.post("/user/getbyusername", async (req, res) => {
@@ -35,7 +48,6 @@ router.post("/user/getbyusername", async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "15d",
-      sameSite: "none",
     });
 
     const { nombre, imagen, rol } = user;
@@ -43,6 +55,9 @@ router.post("/user/getbyusername", async (req, res) => {
     //devolver una cookie para guardar el token con una duración de 15 días y que sea solo accesible por HTTP y no por JS
     res.cookie("token", token, {
       maxAge: 1000 * 60 * 60 * 24 * 15,
+      sameSite: "none",
+      secure: false,
+      httpOnly: false,
     });
 
     // Usuario y contraseña son válidos, devolver solo los campos requeridos
