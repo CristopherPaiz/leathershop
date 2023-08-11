@@ -151,7 +151,7 @@ router.post("/cliente/getbyfecha", authenticateToken, async (req, res) => {
 });
 
 // Ruta para obtener clientes cuyas fechas de entrega estén dentro de un rango específico y con estado=true
-router.post("/cliente/getbyfechafin", authenticateToken, async (req, res) => {
+router.post("/cliente/getbyfechafin", async (req, res) => {
   try {
     const { fechaRecibo, fechaEntrega } = req.body;
     const page = parseInt(req.query.page) || 1;
