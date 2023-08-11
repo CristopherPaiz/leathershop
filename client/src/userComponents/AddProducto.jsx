@@ -199,6 +199,7 @@ const AddProducto = () => {
                   label="Cantidad Inicial"
                   placeholder="Cantidad Inicial"
                   autoComplete="nope"
+                  type="number"
                   defaultValue={valorInicial}
                   required
                   onChange={(e) =>
@@ -212,6 +213,7 @@ const AddProducto = () => {
                   label="Apartados Inicial"
                   placeholder="Apartados Inicial"
                   autoComplete="nope"
+                  type="number"
                   defaultValue={valorInicial}
                   required
                   onChange={(e) =>
