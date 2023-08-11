@@ -418,7 +418,7 @@ const Homepage = () => {
               <Label as="p" content="3521 5599" icon="phone" />
               <Label as="p" content="15 Av. y 1 Calle Zona 1, Quetgo." icon="map marker alternate" />
               <Header as="h5" inverted textAlign="center">
-                © 2021 Leather Shop. Todos los derechos reservados.
+                © 2023 Leather Shop. Todos los derechos reservados.
               </Header>
             </Grid.Column>
           </Grid.Row>
