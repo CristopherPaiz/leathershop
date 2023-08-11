@@ -348,6 +348,7 @@ const AddProductoCompra = () => {
                   <Form.Input
                     label="Precio de Venta"
                     placeholder="Precio de Venta"
+                    type="number"
                     required={value === "menor"}
                     value={precioVenta === 0 ? "" : precioVenta}
                     style={{ marginBottom: "10px" }}
@@ -443,6 +444,7 @@ const AddProductoCompra = () => {
                   <Form.Input
                     label="Precio de Venta"
                     placeholder="Precio de Venta"
+                    type="number"
                     required={value === "mayor"}
                     value={precioVentaM === 0 ? "" : precioVentaM}
                     style={{ marginBottom: "10px" }}
