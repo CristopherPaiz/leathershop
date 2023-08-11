@@ -514,7 +514,7 @@ module.exports = router;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 //obtener todos los cosmeticos por disponibilidad
-router.get("/cosmeticos/getalldisponibility", authenticateToken, async (req, res) => {
+router.get("/cosmeticos/getalldisponibility", async (req, res) => {
   try {
     const categoria = req.query.categoria; // Obtener el parámetro de la URL
 
@@ -529,7 +529,7 @@ router.get("/cosmeticos/getalldisponibility", authenticateToken, async (req, res
     const result = data.map((item) => {
       return {
         producto: item.producto,
-        Disponible: item.cantidadTotal - item.apartados - item.vendidos,
+        Disponible: item.cantidadTotal - item.apartados - (item?.vendidos ?? 0),
       };
     });
 
@@ -678,7 +678,9 @@ router.get("/cosmeticos/cantidad-y-monto-comprado", authenticateToken, async (re
       {
         $group: {
           _id: "$idProducto",
-          cantidadComprado: { $sum: "$cantidadIngreso" },
+          cantidadComprado: {
+            $sum: { $add: ["$cantidadIngreso", "$cantidadIngresoPorMayor"] },
+          },
           montoTotalDinero: {
             $sum: { $add: ["$costoTotal", "$costoTotalPorMayor"] },
           },
@@ -726,7 +728,9 @@ router.get("/cosmeticos/cantidad-y-monto-venta", authenticateToken, async (req, 
       {
         $group: {
           _id: "$idProducto",
-          cantidadComprado: { $sum: "$cantidadIngreso" },
+          cantidadComprado: {
+            $sum: { $add: ["$cantidadIngreso", "$cantidadIngresoPorMayor"] },
+          },
           montoTotalVenta: {
             $sum: {
               $add: [
@@ -781,7 +785,9 @@ router.get("/cosmeticos/cantidad-monto-utilidad", authenticateToken, async (req,
       {
         $group: {
           _id: "$idProducto",
-          cantidadComprado: { $sum: "$cantidadIngreso" },
+          cantidadComprado: {
+            $sum: { $add: ["$cantidadIngreso", "$cantidadIngresoPorMayor"] },
+          },
           montoTotalDinero: {
             $sum: { $add: ["$costoTotal", "$costoTotalPorMayor"] },
           },

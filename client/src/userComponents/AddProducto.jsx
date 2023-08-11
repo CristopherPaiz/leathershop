@@ -81,6 +81,7 @@ const AddProducto = () => {
         especificaciones: datosCosmetico.especificaciones,
         producto: datosCosmetico.producto,
         estado: true,
+        vendidos: 0,
         categoria: selectedCategoriaId,
         imagen: uploadedImages.map((url) => url), // Adding the uploaded image URLs to the data
       };

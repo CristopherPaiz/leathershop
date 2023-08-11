@@ -103,7 +103,6 @@ const VerProductos = () => {
                   alt={cosmetico?.producto ?? ""}
                   style={imageStyle}
                 />
-                {console.log(cosmetico)}
                 <div style={{ textAlign: "left" }}>
                   <div style={titleStyle}>{cosmetico?.producto}</div>
                   <div>{cosmetico?.especificaciones}</div>
