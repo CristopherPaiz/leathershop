@@ -56,7 +56,7 @@ router.post("/user/getbyusername", async (req, res) => {
     res.cookie("token", token, {
       maxAge: 1000 * 60 * 60 * 24 * 15,
       sameSite: "none",
-      secure: false,
+      secure: true,
       httpOnly: false,
     });
 
