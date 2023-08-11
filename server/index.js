@@ -10,15 +10,16 @@ const cookieParser = require("cookie-parser");
 
 connect();
 const app = express();
-app.use(cookieParser());
 app.use(
   cors({
     //add all domains of netlify
     origin: [
       "http://localhost:3000",
       "https://inquisitive-uniform-foal.cyclic.app",
-      "https://leathershopxela.netlify.app/",
-      "https://leathershopxela/",
+      "https://leathershopxela.netlify.app",
+      "https://*.netlify.app",
+      "*.netlify.app",
+      "*.netlify.*",
       "*",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -27,9 +28,9 @@ app.use(
   })
 );
 
-//add hello world route
+app.use(cookieParser());
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Api leathershop!");
 });
 
 app.use(express.json());
