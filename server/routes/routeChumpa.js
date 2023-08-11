@@ -90,7 +90,7 @@ router.put("/chumpas/update/:id", authenticateToken, async (req, res) => {
 });
 
 // ======= eliminar una chumpa por su id =======
-router.delete("/chumpas/delete/:id", authenticateToken, async (req, res) => {
+router.delete("/chumpas/delete/:id", async (req, res) => {
   try {
     await Chumpa.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "Chumpa eliminada correctamente" });
