@@ -382,15 +382,42 @@ const Homepage = () => {
           <br />
         </>
       ) : (
-        <h3
-          style={{
-            margin: "0 auto",
-            textAlign: "center",
-            marginTop: "230px",
-          }}
-        >
-          No hay productos para por el momento, regresa más tarde :D
-        </h3>
+        <>
+          <div>
+            <Header
+              size="huge"
+              icon
+              textAlign="center"
+              style={{ marginTop: "-20px" }}
+            >
+              <Image
+                src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691542644/leathershop_wk2q9j.svg"
+                centered
+                size="small"
+                style={{
+                  objectFit: "contain",
+                  width: "80px",
+                  height: "80px",
+                  marginTop: "10px",
+                  background: "transparent",
+                }}
+              />
+              <Header.Content>Leather Shop</Header.Content>
+              <Header as="h3" style={{ margin: "5px" }}>
+                Chumpas de cuero 100% Natural
+              </Header>
+            </Header>
+          </div>
+          <h3
+            style={{
+              margin: "0 auto",
+              textAlign: "center",
+              marginTop: "130px",
+            }}
+          >
+            No hay productos para por el momento, regresa más tarde :D
+          </h3>
+        </>
       )}
     </>
   );
