@@ -239,7 +239,7 @@ const Homepage = () => {
                         src={item?.imagen[0]}
                         alt={item?.nombre}
                         width="100%"
-                        height="165px !important"
+                        height="190px !important"
                         style={{
                           objectFit: "cover",
                           borderRadius: "10px 10px 0px 0px",
