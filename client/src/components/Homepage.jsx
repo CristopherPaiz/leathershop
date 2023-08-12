@@ -59,7 +59,9 @@ const Homepage = () => {
 
   const posts = async () => {
     try {
-      const res = await fetch(`${API_URL}/chumpas/getall?page=${currentPage}&limit=${productsPerPage}`);
+      const res = await fetch(
+        `${API_URL}/chumpas/getall?page=${currentPage}&limit=${productsPerPage}`
+      );
       const datosJson = await res.json();
       setPost(datosJson.data);
       setLoading(false);
@@ -92,7 +94,11 @@ const Homepage = () => {
         <LoadingPage />
       ) : totalPages > 0 ? (
         <>
-          <Modal open={open} onClose={handleCloseModal} style={{ color: "black" }}>
+          <Modal
+            open={open}
+            onClose={handleCloseModal}
+            style={{ color: "black" }}
+          >
             <Modal.Header>{producto?.nombre ?? ""}</Modal.Header>
             <Modal.Content image scrolling>
               <div
@@ -131,7 +137,9 @@ const Homepage = () => {
                   <List style={{ marginTop: "-10px" }}>
                     <List.Item>
                       Antes: {"   "}
-                      <Label color="red">Q. {producto?.precioAnterior ?? ""}</Label>
+                      <Label color="red">
+                        Q. {producto?.precioAnterior ?? ""}
+                      </Label>
                       {"  "}Ahora: {"   "}
                       <Label color="green" style={{ fontSize: "15px" }}>
                         Q. {producto?.precio ?? ""}
@@ -198,7 +206,12 @@ const Homepage = () => {
           </Modal>
 
           <div>
-            <Header size="huge" icon textAlign="center" style={{ marginTop: "-20px" }}>
+            <Header
+              size="huge"
+              icon
+              textAlign="center"
+              style={{ marginTop: "-20px" }}
+            >
               <Image
                 src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691726873/leathershop_ojxbmm.svg"
                 centered
@@ -225,7 +238,8 @@ const Homepage = () => {
                     key={idx}
                     style={{
                       borderRadius: "10px",
-                      boxShadow: "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
+                      boxShadow:
+                        "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
                     }}
                   >
                     <div
@@ -265,7 +279,13 @@ const Homepage = () => {
                             fontWeight: "bold",
                           }}
                         >
-                          -{(((item?.precioAnterior - item?.precio) / item?.precioAnterior) * 100).toFixed(0)}%
+                          -
+                          {(
+                            ((item?.precioAnterior - item?.precio) /
+                              item?.precioAnterior) *
+                            100
+                          ).toFixed(0)}
+                          %
                         </div>
                       ) : null}
 
@@ -362,11 +382,83 @@ const Homepage = () => {
             </div>
           )}
           <br />
+          {post.length > 2 ? (
+            <Segment
+              inverted
+              style={{
+                bottom: 0,
+                width: "100vw",
+                borderRadius: "0px",
+              }}
+            >
+              <Grid inverted>
+                <Grid.Row>
+                  <Grid.Column textAlign="center">
+                    <Header as="h5" inverted textAlign="center">
+                      <Image
+                        style={{ backgroundColor: "snow", borderRadius: "6px" }}
+                        src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691726873/leathershop_ojxbmm.svg"
+                      />
+                      Leather Shop - Chumpas de cuero personalizadas
+                    </Header>
+                    <Label as="p" content="3521 5599" icon="phone" />
+                    <Label
+                      as="p"
+                      content="15 Av. y 1 Calle Zona 1, Quetgo."
+                      icon="map marker alternate"
+                    />
+                    <Header as="h5" inverted textAlign="center">
+                      © 2023 Leather Shop. Todos los derechos reservados.
+                    </Header>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Segment>
+          ) : (
+            <Segment
+              inverted
+              style={{
+                position: "absolute",
+                bottom: 0,
+                width: "100vw",
+                borderRadius: "0px",
+                marginTop: "20px",
+              }}
+            >
+              <Grid inverted>
+                <Grid.Row>
+                  <Grid.Column textAlign="center">
+                    <Header as="h5" inverted textAlign="center">
+                      <Image
+                        style={{ backgroundColor: "snow", borderRadius: "6px" }}
+                        src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691726873/leathershop_ojxbmm.svg"
+                      />
+                      Leather Shop - Chumpas de cuero personalizadas
+                    </Header>
+                    <Label as="p" content="3521 5599" icon="phone" />
+                    <Label
+                      as="p"
+                      content="15 Av. y 1 Calle Zona 1, Quetgo."
+                      icon="map marker alternate"
+                    />
+                    <Header as="h5" inverted textAlign="center">
+                      © 2023 Leather Shop. Todos los derechos reservados.
+                    </Header>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Segment>
+          )}
         </>
       ) : (
         <>
           <div>
-            <Header size="huge" icon textAlign="center" style={{ marginTop: "-20px" }}>
+            <Header
+              size="huge"
+              icon
+              textAlign="center"
+              style={{ marginTop: "-20px" }}
+            >
               <Image
                 src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691726873/leathershop_ojxbmm.svg"
                 centered
@@ -394,36 +486,40 @@ const Homepage = () => {
           >
             No hay productos para por el momento, regresa más tarde :D
           </h3>
+          <Segment
+            inverted
+            style={{
+              position: "absolute",
+              bottom: 0,
+              width: "100vw",
+              borderRadius: "0px",
+            }}
+          >
+            <Grid inverted>
+              <Grid.Row>
+                <Grid.Column textAlign="center">
+                  <Header as="h5" inverted textAlign="center">
+                    <Image
+                      style={{ backgroundColor: "snow", borderRadius: "6px" }}
+                      src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691726873/leathershop_ojxbmm.svg"
+                    />
+                    Leather Shop - Chumpas de cuero personalizadas
+                  </Header>
+                  <Label as="p" content="3521 5599" icon="phone" />
+                  <Label
+                    as="p"
+                    content="15 Av. y 1 Calle Zona 1, Quetgo."
+                    icon="map marker alternate"
+                  />
+                  <Header as="h5" inverted textAlign="center">
+                    © 2023 Leather Shop. Todos los derechos reservados.
+                  </Header>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Segment>
         </>
       )}
-      <Segment
-        inverted
-        style={{
-          position: "absolute",
-          bottom: 0,
-          width: "100vw",
-          borderRadius: "0px",
-        }}
-      >
-        <Grid inverted>
-          <Grid.Row>
-            <Grid.Column textAlign="center">
-              <Header as="h5" inverted textAlign="center">
-                <Image
-                  style={{ backgroundColor: "snow", borderRadius: "6px" }}
-                  src="https://res.cloudinary.com/dbkfiarmr/image/upload/v1691726873/leathershop_ojxbmm.svg"
-                />
-                Leather Shop - Chumpas de cuero personalizadas
-              </Header>
-              <Label as="p" content="3521 5599" icon="phone" />
-              <Label as="p" content="15 Av. y 1 Calle Zona 1, Quetgo." icon="map marker alternate" />
-              <Header as="h5" inverted textAlign="center">
-                © 2023 Leather Shop. Todos los derechos reservados.
-              </Header>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Segment>
     </>
   );
 };

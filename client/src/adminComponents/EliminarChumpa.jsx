@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Header, Pagination, Modal, Button, Icon, Container, Item } from "semantic-ui-react";
+import {
+  Header,
+  Pagination,
+  Modal,
+  Button,
+  Icon,
+  Container,
+  Item,
+} from "semantic-ui-react";
 import API_URL from "../config.js";
 import { contexto } from "../context/ContextProvider";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -19,7 +27,9 @@ const EliminarChumpa = () => {
 
   const posts = async () => {
     try {
-      const res = await fetch(`${API_URL}/chumpas/getall?page=${currentPage}&limit=${productsPerPage}`);
+      const res = await fetch(
+        `${API_URL}/chumpas/getall?page=${currentPage}&limit=${productsPerPage}`
+      );
       const datosJson = await res.json();
       setPost(datosJson.data);
       setLoading(false);
@@ -47,7 +57,6 @@ const EliminarChumpa = () => {
   };
 
   const handleYes = () => {
-    console.log(producto);
     fetch(`${API_URL}/chumpas/delete/${producto._id}`, {
       method: "DELETE",
       headers: {
@@ -60,7 +69,7 @@ const EliminarChumpa = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        null;
       });
   };
 
@@ -72,7 +81,12 @@ const EliminarChumpa = () => {
         ) : totalPages > 0 ? (
           <>
             <Toaster />
-            <Modal size="tiny" open={open} onClose={handleCloseModal} dimmer={"blurring"}>
+            <Modal
+              size="tiny"
+              open={open}
+              onClose={handleCloseModal}
+              dimmer={"blurring"}
+            >
               <Modal.Header>Desea borrar {producto?.nombre}</Modal.Header>
               <Modal.Content>
                 <p>¿Está seguro que desea eliminar?</p>
@@ -97,7 +111,11 @@ const EliminarChumpa = () => {
                 {post.map((item, idx) => (
                   <div className="divhijo" key={idx}>
                     <div className="column" key={idx}>
-                      <img className="iamgenunica" src={item?.imagen[0]} alt={item?.nombre} />
+                      <img
+                        className="iamgenunica"
+                        src={item?.imagen[0]}
+                        alt={item?.nombre}
+                      />
                     </div>
                     <div className="column">
                       <h2>{item?.nombre}</h2>
@@ -143,7 +161,8 @@ const EliminarChumpa = () => {
               marginTop: "230px",
             }}
           >
-            No hay productos para eliminar, agrega primero algunos y luego regresa nuevamente :D
+            No hay productos para eliminar, agrega primero algunos y luego
+            regresa nuevamente :D
           </h3>
         )}
       </>
