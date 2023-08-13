@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import { Header, Form, Button, Grid, Label, Modal, Image } from "semantic-ui-react";
+import {
+  Header,
+  Form,
+  Button,
+  Grid,
+  Label,
+  Modal,
+  Image,
+} from "semantic-ui-react";
 import { useLocation, Navigate, useNavigate } from "react-router-dom";
 import API_URL from "../config.js";
 import toast, { Toaster } from "react-hot-toast";
@@ -7,7 +15,8 @@ import { contexto } from "../context/ContextProvider";
 import ImageViewer from "react-simple-image-viewer";
 import { fromBlob } from "image-resize-compress";
 
-const cloudinaryUploadUrl = "https://api.cloudinary.com/v1_1/dbkfiarmr/image/upload";
+const cloudinaryUploadUrl =
+  "https://api.cloudinary.com/v1_1/dbkfiarmr/image/upload";
 
 const VerProducto = () => {
   const navigate = useNavigate();
@@ -26,11 +35,15 @@ const VerProducto = () => {
     return <Navigate to={"/"} />;
   }
   const { cosmetico } = location.state;
+  console.log(cosmetico);
 
   //valores iniciales
-  const [disponible, SetDisponibles] = useState(cosmetico?.cantidadTotal - (cosmetico?.vendidos ?? 0)); //95
+  const [disponible, SetDisponibles] = useState(
+    cosmetico?.cantidadTotal - (cosmetico?.vendidos ?? 0)
+  ); //95
   const [apartados, setApartados] = useState(cosmetico?.apartados); // 5
   const [vender, setVender] = useState(0); // 0
+  const [especificaciones, setEspecificaciones] = useState("");
 
   // Paso 1: Agregar estado para seguir los datos actualizados del cliente
   const [datosCosmeticoActualizados, setDatosCosmeticoActualizados] = useState({
@@ -106,7 +119,9 @@ const VerProducto = () => {
     setLoadingImages(true);
     setShowLoadingToast(true);
     // Upload each image to Cloudinary and get the URLs
-    const uploadedImages = await Promise.all(imagenes.map((file) => uploadImageToCloudinary(file)));
+    const uploadedImages = await Promise.all(
+      imagenes.map((file) => uploadImageToCloudinary(file))
+    );
 
     const imagenesv2 = uploadedImages.map((url) => url);
 
@@ -115,7 +130,7 @@ const VerProducto = () => {
       cantidadTotal: Number(cosmetico.cantidadTotal),
       apartados: Number(apartados - vender),
       vendidos: Number(cosmetico?.vendidos + vender),
-      especificaciones: cosmetico.especificaciones,
+      especificaciones,
       producto: cosmetico.producto,
       estado: true,
       categoria: selectedCategoriaId,
@@ -125,14 +140,17 @@ const VerProducto = () => {
     console.log(formattedData);
 
     try {
-      const response = await fetch(`${API_URL}/cosmeticos/update/${cosmetico._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formattedData),
-        credentials: "include", // Asegúrate de incluir esta opción
-      });
+      const response = await fetch(
+        `${API_URL}/cosmeticos/update/${cosmetico._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formattedData),
+          credentials: "include", // Asegúrate de incluir esta opción
+        }
+      );
 
       if (!response.ok) {
         // Manejar escenarios de error si es necesario
@@ -202,17 +220,20 @@ const VerProducto = () => {
     setConfirmDelete(true);
     if (confirmDelete) {
       try {
-        const response = await fetch(`${API_URL}/cosmeticos/update/${cosmetico._id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...cosmetico,
-            estado: false, // Cambiar el estado a false
-          }),
-          credentials: "include",
-        });
+        const response = await fetch(
+          `${API_URL}/cosmeticos/update/${cosmetico._id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...cosmetico,
+              estado: false, // Cambiar el estado a false
+            }),
+            credentials: "include",
+          }
+        );
 
         if (!response.ok) {
           console.error("Error al cambiar el estado del producto");
@@ -243,7 +264,9 @@ const VerProducto = () => {
   };
 
   // Paso 3: Crear estado para manejar la categoría seleccionada por su ID
-  const [selectedCategoriaId, setSelectedCategoriaId] = useState(cosmetico?.categoria);
+  const [selectedCategoriaId, setSelectedCategoriaId] = useState(
+    cosmetico?.categoria
+  );
 
   // Paso 4: Crear una función para manejar el cambio de la categoría en el Dropdown
   const handleCategoriaChange = (e, { value }) => {
@@ -256,7 +279,10 @@ const VerProducto = () => {
     value: categoria._id, // Usamos el _id como valor del Dropdown para filtrar por categoría
   }));
 
-  if ((loggedIn && usuario.rol === "Admin") || (loggedIn && usuario.rol === "Moderator")) {
+  if (
+    (loggedIn && usuario.rol === "Admin") ||
+    (loggedIn && usuario.rol === "Moderator")
+  ) {
     return (
       <>
         <Modal open={modalOpen} onClose={handleModalClose} size="small">
@@ -316,7 +342,11 @@ const VerProducto = () => {
               <Button
                 icon="minus"
                 color="red"
-                onClick={() => (apartados < 1 ? handleApartadosChange(0) : handleApartadosChange(apartados - 1))}
+                onClick={() =>
+                  apartados < 1
+                    ? handleApartadosChange(0)
+                    : handleApartadosChange(apartados - 1)
+                }
               />
               <Label
                 basic
@@ -333,7 +363,9 @@ const VerProducto = () => {
                 icon="plus"
                 color="green"
                 onClick={() =>
-                  apartados > disponible - 1 ? handleApartadosChange(disponible) : handleApartadosChange(apartados + 1)
+                  apartados > disponible - 1
+                    ? handleApartadosChange(disponible)
+                    : handleApartadosChange(apartados + 1)
                 }
               />
             </Button.Group>
@@ -356,7 +388,11 @@ const VerProducto = () => {
               <Button
                 icon="minus"
                 color="red"
-                onClick={() => (vender < 1 ? handleVenderChange(0) : handleVenderChange(vender - 1))}
+                onClick={() =>
+                  vender < 1
+                    ? handleVenderChange(0)
+                    : handleVenderChange(vender - 1)
+                }
               />
               <Label
                 basic
@@ -373,7 +409,9 @@ const VerProducto = () => {
                 icon="plus"
                 color="green"
                 onClick={() =>
-                  vender > apartados - 1 ? handleVenderChange(apartados) : handleVenderChange(vender + 1)
+                  vender > apartados - 1
+                    ? handleVenderChange(apartados)
+                    : handleVenderChange(vender + 1)
                 }
               />
             </Button.Group>
@@ -401,13 +439,8 @@ const VerProducto = () => {
                   label="Especificaciones"
                   placeholder="Especificaciones del producto"
                   // defaultValue={cosmetico?.especificaciones ?? ""}
-                  defaultValue={cosmetico?.especificaciones} // Asigna el valor del estado al input
-                  onChange={(e) =>
-                    setDatosCosmeticoActualizados({
-                      ...datosCosmeticoActualizados,
-                      especificaciones: e.target.value,
-                    })
-                  } // Maneja el cambio del input
+                  defaultValue={cosmetico?.especificaciones ?? ""} // Asigna el valor del estado al input
+                  onChange={(e) => setEspecificaciones(e.target.value)} // Maneja el cambio del input
                   autoComplete="nope"
                 />
               </Form.Group>
@@ -451,7 +484,12 @@ const VerProducto = () => {
               </div>
               <Form.Field>
                 <label>Imágenes</label>
-                <input type="file" accept="image/*" multiple onChange={handleImageChange} />
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                />
               </Form.Field>
               <div
                 style={{
@@ -498,7 +536,11 @@ const VerProducto = () => {
               <Grid>
                 <Grid.Column textAlign="center">
                   <br />
-                  <Button type="submit" color="green" onClick={handleFormSubmit}>
+                  <Button
+                    type="submit"
+                    color="green"
+                    onClick={handleFormSubmit}
+                  >
                     Actualizar
                   </Button>
                   <Button type="button" color="red" onClick={handleModalOpen}>
